@@ -1,0 +1,697 @@
+1632803 30622564
+apsize = 50 k = 1 rrsize = 1000000
+ap avg degree = 18.88
+RR set generation time = 99.3683 total size = 16088862
+IMM:
+total time = 0.037183 time select seed = 0.027017
+total = 941 selected = 41 unselected = 900
+seed of IMM = 10918.6	size = 41
+
+Threshold(xi = 0.05):
+total time = 0.036138 time select seed = 0.026936
+total = 941 selected = 38 unselected = 762
+seed of Threshold = 10908.8	size = 38
+
+prob(alpha = 1):
+total time = 0.03466 time select seed = 0.030001
+total = 941 selected = 41 unselected = 900
+seed of prob = 10918.6	size = 41
+
+prob(alpha = 1):
+total time = 0.034267 time select seed = 0.029628
+total = 941 selected = 41 unselected = 900
+seed of prob = 10890.8	size = 41
+
+determined prob:
+total time = 0.029542 time select seed = 0.025469
+total = 941 selected = 41 unselected = 900
+seed of d-prob = 10913.7	size = 41
+
+
+apsize = 100 k = 1 rrsize = 1000000
+ap avg degree = 25.1
+RR set generation time = 98.6107 total size = 16032857
+IMM:
+total time = 0.03592 time select seed = 0.029269
+total = 2506 selected = 89 unselected = 2417
+seed of IMM = 10838.5	size = 89
+
+Threshold(xi = 0.05):
+total time = 0.034688 time select seed = 0.029314
+total = 2506 selected = 89 unselected = 2348
+seed of Threshold = 10835.3	size = 89
+
+prob(alpha = 1):
+total time = 0.043613 time select seed = 0.033756
+total = 2506 selected = 89 unselected = 2417
+seed of prob = 10797.7	size = 89
+
+prob(alpha = 1):
+total time = 0.042355 time select seed = 0.032864
+total = 2506 selected = 89 unselected = 2417
+seed of prob = 10690	size = 89
+
+determined prob:
+total time = 0.036977 time select seed = 0.028135
+total = 2506 selected = 89 unselected = 2417
+seed of d-prob = 10840.2	size = 89
+
+
+apsize = 200 k = 1 rrsize = 1000000
+ap avg degree = 19.74
+RR set generation time = 102.229 total size = 16005810
+IMM:
+total time = 0.127552 time select seed = 0.110594
+total = 3939 selected = 174 unselected = 3765
+seed of IMM = 29490.1	size = 174
+
+Threshold(xi = 0.05):
+total time = 0.090307 time select seed = 0.070465
+total = 3939 selected = 167 unselected = 3537
+seed of Threshold = 29467.2	size = 167
+
+prob(alpha = 1):
+total time = 0.101869 time select seed = 0.083374
+total = 3939 selected = 174 unselected = 3765
+seed of prob = 29401.9	size = 174
+
+prob(alpha = 1):
+total time = 0.100892 time select seed = 0.082322
+total = 3939 selected = 174 unselected = 3765
+seed of prob = 29344.7	size = 174
+
+determined prob:
+total time = 0.088869 time select seed = 0.071315
+total = 3939 selected = 174 unselected = 3765
+seed of d-prob = 29455.8	size = 174
+
+
+apsize = 50 k = 2 rrsize = 1000000
+ap avg degree = 20.12
+RR set generation time = 102.362 total size = 15992132
+IMM:
+total time = 0.053842 time select seed = 0.044668
+total = 1004 selected = 88 unselected = 916
+seed of IMM = 17650.6	size = 88
+
+Threshold(xi = 0.05):
+total time = 0.051731 time select seed = 0.046412
+total = 1004 selected = 84 unselected = 863
+seed of Threshold = 17650.6	size = 84
+
+prob(alpha = 1):
+total time = 0.06384 time select seed = 0.056866
+total = 1004 selected = 88 unselected = 916
+seed of prob = 17549.4	size = 88
+
+prob(alpha = 1):
+total time = 0.059927 time select seed = 0.053925
+total = 1004 selected = 88 unselected = 916
+seed of prob = 17524.9	size = 88
+
+determined prob:
+total time = 0.05351 time select seed = 0.047984
+total = 1004 selected = 88 unselected = 916
+seed of d-prob = 17604.9	size = 88
+
+
+apsize = 100 k = 2 rrsize = 1000000
+ap avg degree = 14.82
+RR set generation time = 102.74 total size = 16085196
+IMM:
+total time = 0.052813 time select seed = 0.047508
+total = 1482 selected = 150 unselected = 1332
+seed of IMM = 17884.1	size = 150
+
+Threshold(xi = 0.05):
+total time = 0.052258 time select seed = 0.047462
+total = 1482 selected = 148 unselected = 1273
+seed of Threshold = 17884.1	size = 148
+
+prob(alpha = 1):
+total time = 0.075044 time select seed = 0.066178
+total = 1482 selected = 150 unselected = 1332
+seed of prob = 17823.7	size = 150
+
+prob(alpha = 1):
+total time = 0.062763 time select seed = 0.054086
+total = 1482 selected = 150 unselected = 1332
+seed of prob = 17794.3	size = 150
+
+determined prob:
+total time = 0.053475 time select seed = 0.045529
+total = 1482 selected = 150 unselected = 1332
+seed of d-prob = 17892.3	size = 150
+
+
+apsize = 200 k = 2 rrsize = 1000000
+ap avg degree = 19.565
+RR set generation time = 102.072 total size = 16111164
+IMM:
+total time = 0.109385 time select seed = 0.094309
+total = 3902 selected = 328 unselected = 3574
+seed of IMM = 36295.6	size = 328
+
+Threshold(xi = 0.05):
+total time = 0.091165 time select seed = 0.083428
+total = 3902 selected = 324 unselected = 3458
+seed of Threshold = 36311.9	size = 324
+
+prob(alpha = 1):
+total time = 0.125909 time select seed = 0.100212
+total = 3902 selected = 328 unselected = 3574
+seed of prob = 36192.7	size = 328
+
+prob(alpha = 1):
+total time = 0.124776 time select seed = 0.098796
+total = 3902 selected = 328 unselected = 3574
+seed of prob = 36153.5	size = 328
+
+determined prob:
+total time = 0.109286 time select seed = 0.084431
+total = 3902 selected = 328 unselected = 3574
+seed of d-prob = 36302.1	size = 328
+
+
+apsize = 50 k = 5 rrsize = 1000000
+ap avg degree = 17.8
+RR set generation time = 102.575 total size = 16144550
+IMM:
+total time = 0.046354 time select seed = 0.04156
+total = 888 selected = 193 unselected = 695
+seed of IMM = 15794.1	size = 193
+
+Threshold(xi = 0.05):
+total time = 0.048893 time select seed = 0.044583
+total = 888 selected = 190 unselected = 670
+seed of Threshold = 15794.1	size = 190
+
+prob(alpha = 1):
+total time = 0.057302 time select seed = 0.050141
+total = 888 selected = 193 unselected = 695
+seed of prob = 15764.7	size = 193
+
+prob(alpha = 1):
+total time = 0.055728 time select seed = 0.048673
+total = 888 selected = 193 unselected = 695
+seed of prob = 15779.4	size = 193
+
+determined prob:
+total time = 0.046458 time select seed = 0.040086
+total = 888 selected = 193 unselected = 695
+seed of d-prob = 15799	size = 193
+
+
+apsize = 100 k = 5 rrsize = 1000000
+ap avg degree = 15.49
+RR set generation time = 101.991 total size = 16142833
+IMM:
+total time = 0.067013 time select seed = 0.061007
+total = 1549 selected = 325 unselected = 1224
+seed of IMM = 24678.2	size = 325
+
+Threshold(xi = 0.05):
+total time = 0.067977 time select seed = 0.062862
+total = 1549 selected = 325 unselected = 1185
+seed of Threshold = 24681.5	size = 325
+
+prob(alpha = 1):
+total time = 0.085603 time select seed = 0.07224
+total = 1549 selected = 325 unselected = 1224
+seed of prob = 24643.9	size = 325
+
+prob(alpha = 1):
+total time = 0.084151 time select seed = 0.070862
+total = 1549 selected = 325 unselected = 1224
+seed of prob = 24640.6	size = 325
+
+determined prob:
+total time = 0.070226 time select seed = 0.058484
+total = 1549 selected = 325 unselected = 1224
+seed of d-prob = 24688	size = 325
+
+
+apsize = 200 k = 5 rrsize = 1000000
+ap avg degree = 17.295
+RR set generation time = 101.47 total size = 16034251
+IMM:
+total time = 0.105766 time select seed = 0.094324
+total = 3451 selected = 721 unselected = 2730
+seed of IMM = 43754.2	size = 721
+
+Threshold(xi = 0.05):
+total time = 0.10142 time select seed = 0.092999
+total = 3451 selected = 714 unselected = 2616
+seed of Threshold = 43754.2	size = 714
+
+prob(alpha = 1):
+total time = 0.15467 time select seed = 0.112508
+total = 3451 selected = 721 unselected = 2730
+seed of prob = 43733	size = 721
+
+prob(alpha = 1):
+total time = 0.153438 time select seed = 0.111204
+total = 3451 selected = 721 unselected = 2730
+seed of prob = 43708.5	size = 721
+
+determined prob:
+total time = 0.144575 time select seed = 0.101625
+total = 3451 selected = 721 unselected = 2730
+seed of d-prob = 43791.8	size = 721
+
+
+apsize = 50 k = 10 rrsize = 1000000
+ap avg degree = 18.56
+RR set generation time = 101.483 total size = 16058790
+IMM:
+total time = 0.04632 time select seed = 0.041312
+total = 927 selected = 312 unselected = 615
+seed of IMM = 15841.5	size = 312
+
+Threshold(xi = 0.05):
+total time = 0.045388 time select seed = 0.041153
+total = 927 selected = 303 unselected = 587
+seed of Threshold = 15848	size = 303
+
+prob(alpha = 1):
+total time = 0.057038 time select seed = 0.047588
+total = 927 selected = 312 unselected = 615
+seed of prob = 15849.6	size = 312
+
+prob(alpha = 1):
+total time = 0.056849 time select seed = 0.047346
+total = 927 selected = 312 unselected = 615
+seed of prob = 15854.5	size = 312
+
+determined prob:
+total time = 0.047015 time select seed = 0.039403
+total = 927 selected = 312 unselected = 615
+seed of d-prob = 15852.9	size = 312
+
+
+apsize = 100 k = 10 rrsize = 1000000
+ap avg degree = 20.16
+RR set generation time = 101.124 total size = 16069095
+IMM:
+total time = 0.111526 time select seed = 0.103075
+total = 2011 selected = 651 unselected = 1360
+seed of IMM = 49398.8	size = 651
+
+Threshold(xi = 0.05):
+total time = 0.110948 time select seed = 0.104103
+total = 2011 selected = 635 unselected = 1307
+seed of Threshold = 49393.9	size = 635
+
+prob(alpha = 1):
+total time = 0.146111 time select seed = 0.122201
+total = 2011 selected = 651 unselected = 1360
+seed of prob = 49434.7	size = 651
+
+prob(alpha = 1):
+total time = 0.145818 time select seed = 0.121814
+total = 2011 selected = 651 unselected = 1360
+seed of prob = 49418.4	size = 651
+
+determined prob:
+total time = 0.121891 time select seed = 0.101717
+total = 2011 selected = 651 unselected = 1360
+seed of d-prob = 49442.9	size = 651
+
+
+apsize = 200 k = 10 rrsize = 1000000
+ap avg degree = 20.135
+RR set generation time = 100.679 total size = 16098930
+IMM:
+total time = 0.151915 time select seed = 0.137746
+total = 4015 selected = 1218 unselected = 2797
+seed of IMM = 74908.1	size = 1218
+
+Threshold(xi = 0.05):
+total time = 0.150217 time select seed = 0.138147
+total = 4015 selected = 1176 unselected = 2606
+seed of Threshold = 74909.7	size = 1176
+
+prob(alpha = 1):
+total time = 0.233999 time select seed = 0.166316
+total = 4015 selected = 1218 unselected = 2797
+seed of prob = 74916.3	size = 1218
+
+prob(alpha = 1):
+total time = 0.232575 time select seed = 0.163962
+total = 4015 selected = 1218 unselected = 2797
+seed of prob = 74932.6	size = 1218
+
+determined prob:
+total time = 0.194085 time select seed = 0.135737
+total = 4015 selected = 1218 unselected = 2797
+seed of d-prob = 74945.7	size = 1218
+
+
+apsize = 50 k = 1 rrsize = 10000000
+ap avg degree = 16.14
+RR set generation time = 995.153 total size = 160546647
+IMM:
+total time = 0.27836 time select seed = 0.267405
+total = 807 selected = 45 unselected = 762
+seed of IMM = 10073.7	size = 45
+
+Threshold(xi = 0.05):
+total time = 0.298517 time select seed = 0.289051
+total = 807 selected = 44 unselected = 668
+seed of Threshold = 10067.4	size = 44
+
+prob(alpha = 0.9375):
+total time = 0.328365 time select seed = 0.322908
+total = 807 selected = 45 unselected = 762
+seed of prob = 10039.6	size = 45
+
+prob(alpha = 1):
+total time = 0.324113 time select seed = 0.318696
+total = 807 selected = 45 unselected = 762
+seed of prob = 10050.7	size = 45
+
+determined prob:
+total time = 0.271128 time select seed = 0.266336
+total = 807 selected = 45 unselected = 762
+seed of d-prob = 10074.9	size = 45
+
+
+apsize = 100 k = 1 rrsize = 10000000
+ap avg degree = 16.15
+RR set generation time = 1006.88 total size = 160796165
+IMM:
+total time = 0.375765 time select seed = 0.364606
+total = 1604 selected = 86 unselected = 1518
+seed of IMM = 14121.6	size = 86
+
+Threshold(xi = 0.05):
+total time = 0.365961 time select seed = 0.360678
+total = 1604 selected = 85 unselected = 1394
+seed of Threshold = 14114.9	size = 85
+
+prob(alpha = 0.930233):
+total time = 0.43893 time select seed = 0.42959
+total = 1604 selected = 86 unselected = 1518
+seed of prob = 14071	size = 86
+
+prob(alpha = 1):
+total time = 0.441064 time select seed = 0.432272
+total = 1604 selected = 86 unselected = 1518
+seed of prob = 14053.9	size = 86
+
+determined prob:
+total time = 0.368093 time select seed = 0.359863
+total = 1604 selected = 86 unselected = 1518
+seed of d-prob = 14119.8	size = 86
+
+
+apsize = 200 k = 1 rrsize = 10000000
+ap avg degree = 15.335
+RR set generation time = 1010.97 total size = 160678068
+IMM:
+total time = 0.638408 time select seed = 0.62928
+total = 3060 selected = 179 unselected = 2881
+seed of IMM = 25633.2	size = 179
+
+Threshold(xi = 0.05):
+total time = 0.633144 time select seed = 0.626072
+total = 3060 selected = 173 unselected = 2710
+seed of Threshold = 25620.1	size = 173
+
+prob(alpha = 1):
+total time = 0.769165 time select seed = 0.750159
+total = 3060 selected = 179 unselected = 2881
+seed of prob = 25545.9	size = 179
+
+prob(alpha = 1):
+total time = 0.763649 time select seed = 0.745574
+total = 3060 selected = 179 unselected = 2881
+seed of prob = 25464.7	size = 179
+
+determined prob:
+total time = 0.696418 time select seed = 0.677515
+total = 3060 selected = 179 unselected = 2881
+seed of d-prob = 25631.3	size = 179
+
+
+apsize = 50 k = 2 rrsize = 10000000
+ap avg degree = 20.56
+RR set generation time = 1012.13 total size = 160982822
+IMM:
+total time = 0.212131 time select seed = 0.207394
+total = 1028 selected = 78 unselected = 950
+seed of IMM = 7472.2	size = 78
+
+Threshold(xi = 0.05):
+total time = 0.21198 time select seed = 0.207652
+total = 1028 selected = 78 unselected = 950
+seed of Threshold = 7465.5	size = 78
+
+prob(alpha = 1):
+total time = 0.261817 time select seed = 0.254486
+total = 1028 selected = 78 unselected = 950
+seed of prob = 7448.68	size = 78
+
+prob(alpha = 1):
+total time = 0.262566 time select seed = 0.255734
+total = 1028 selected = 78 unselected = 950
+seed of prob = 7472.03	size = 78
+
+determined prob:
+total time = 0.21673 time select seed = 0.210723
+total = 1028 selected = 78 unselected = 950
+seed of d-prob = 7472.2	size = 78
+
+
+apsize = 100 k = 2 rrsize = 10000000
+ap avg degree = 19.07
+RR set generation time = 1008.4 total size = 160831596
+IMM:
+total time = 0.324632 time select seed = 0.317966
+total = 1907 selected = 159 unselected = 1748
+seed of IMM = 11829.3	size = 159
+
+Threshold(xi = 0.05):
+total time = 0.322575 time select seed = 0.316965
+total = 1907 selected = 159 unselected = 1748
+seed of Threshold = 11822.1	size = 159
+
+prob(alpha = 1):
+total time = 0.393758 time select seed = 0.381542
+total = 1907 selected = 159 unselected = 1748
+seed of prob = 11801.2	size = 159
+
+prob(alpha = 1):
+total time = 0.397985 time select seed = 0.385391
+total = 1907 selected = 159 unselected = 1748
+seed of prob = 11774.5	size = 159
+
+determined prob:
+total time = 0.348259 time select seed = 0.33654
+total = 1907 selected = 159 unselected = 1748
+seed of d-prob = 11829.7	size = 159
+
+
+apsize = 200 k = 2 rrsize = 10000000
+ap avg degree = 19.555
+RR set generation time = 1005.49 total size = 160503247
+IMM:
+total time = 0.984797 time select seed = 0.97291
+total = 3887 selected = 337 unselected = 3550
+seed of IMM = 44789.3	size = 337
+
+Threshold(xi = 0.05):
+total time = 1.00045 time select seed = 0.990984
+total = 3887 selected = 331 unselected = 3392
+seed of Threshold = 44779.6	size = 331
+
+prob(alpha = 1):
+total time = 1.22714 time select seed = 1.19527
+total = 3887 selected = 337 unselected = 3550
+seed of prob = 45646.8	size = 337
+
+prob(alpha = 1):
+total time = 1.20819 time select seed = 1.17795
+total = 3887 selected = 337 unselected = 3550
+seed of prob = 45614	size = 337
+
+determined prob:
+total time = 1.05799 time select seed = 1.02669
+total = 3887 selected = 337 unselected = 3550
+seed of d-prob = 45734.5	size = 337
+
+
+apsize = 50 k = 5 rrsize = 10000000
+ap avg degree = 15.96
+RR set generation time = 1007.42 total size = 160916941
+IMM:
+total time = 0.76148 time select seed = 0.756371
+total = 796 selected = 179 unselected = 617
+seed of IMM = 32246.2	size = 179
+
+Threshold(xi = 0.05):
+total time = 0.756629 time select seed = 0.749633
+total = 796 selected = 172 unselected = 577
+seed of Threshold = 32240.7	size = 172
+
+prob(alpha = 1):
+total time = 0.973807 time select seed = 0.964832
+total = 796 selected = 179 unselected = 617
+seed of prob = 32196.4	size = 179
+
+prob(alpha = 1):
+total time = 0.910645 time select seed = 0.902753
+total = 796 selected = 179 unselected = 617
+seed of prob = 32235	size = 179
+
+determined prob:
+total time = 0.767978 time select seed = 0.7608
+total = 796 selected = 179 unselected = 617
+seed of d-prob = 32246.7	size = 179
+
+
+apsize = 100 k = 5 rrsize = 10000000
+ap avg degree = 20.59
+RR set generation time = 993.195 total size = 160380384
+IMM:
+total time = 0.708132 time select seed = 0.698749
+total = 2056 selected = 375 unselected = 1681
+seed of IMM = 26784.3	size = 375
+
+Threshold(xi = 0.05):
+total time = 0.645337 time select seed = 0.638458
+total = 2056 selected = 374 unselected = 1676
+seed of Threshold = 26777.6	size = 374
+
+prob(alpha = 0.948276):
+total time = 0.779728 time select seed = 0.759369
+total = 2056 selected = 375 unselected = 1681
+seed of prob = 26747.8	size = 375
+
+prob(alpha = 1):
+total time = 0.788878 time select seed = 0.768929
+total = 2056 selected = 375 unselected = 1681
+seed of prob = 26753.6	size = 375
+
+determined prob:
+total time = 0.647761 time select seed = 0.630615
+total = 2056 selected = 375 unselected = 1681
+seed of d-prob = 26785.6	size = 375
+
+
+apsize = 200 k = 5 rrsize = 10000000
+ap avg degree = 19.83
+RR set generation time = 999.768 total size = 160748109
+IMM:
+total time = 1.06457 time select seed = 1.04991
+total = 3950 selected = 736 unselected = 3214
+seed of IMM = 50900	size = 736
+
+Threshold(xi = 0.05):
+total time = 1.04544 time select seed = 1.03449
+total = 3950 selected = 735 unselected = 3212
+seed of Threshold = 50893.2	size = 735
+
+prob(alpha = 1):
+total time = 1.37017 time select seed = 1.31623
+total = 3950 selected = 736 unselected = 3214
+seed of prob = 50845.3	size = 736
+
+prob(alpha = 1):
+total time = 1.29156 time select seed = 1.23968
+total = 3950 selected = 736 unselected = 3214
+seed of prob = 50819.7	size = 736
+
+determined prob:
+total time = 1.11883 time select seed = 1.07093
+total = 3950 selected = 736 unselected = 3214
+seed of d-prob = 50905.7	size = 736
+
+
+apsize = 50 k = 10 rrsize = 10000000
+ap avg degree = 14.22
+RR set generation time = 1001.04 total size = 160628257
+IMM:
+total time = 0.334723 time select seed = 0.324839
+total = 711 selected = 283 unselected = 428
+seed of IMM = 12872.5	size = 283
+
+Threshold(xi = 0.05):
+total time = 0.326539 time select seed = 0.321935
+total = 711 selected = 283 unselected = 428
+seed of Threshold = 12872.2	size = 283
+
+prob(alpha = 0.906977):
+total time = 0.42063 time select seed = 0.410853
+total = 711 selected = 283 unselected = 428
+seed of prob = 12866.2	size = 283
+
+prob(alpha = 1):
+total time = 0.395077 time select seed = 0.386256
+total = 711 selected = 283 unselected = 428
+seed of prob = 12854.7	size = 283
+
+determined prob:
+total time = 0.331777 time select seed = 0.323993
+total = 711 selected = 283 unselected = 428
+seed of d-prob = 12873.2	size = 283
+
+
+apsize = 100 k = 10 rrsize = 10000000
+ap avg degree = 14.69
+RR set generation time = 994.592 total size = 160632757
+IMM:
+total time = 0.831707 time select seed = 0.823166
+total = 1465 selected = 599 unselected = 866
+seed of IMM = 37406.9	size = 599
+
+Threshold(xi = 0.05):
+total time = 0.82939 time select seed = 0.821977
+total = 1465 selected = 598 unselected = 864
+seed of Threshold = 37403.9	size = 598
+
+prob(alpha = 0.965517):
+total time = 1.00895 time select seed = 0.986938
+total = 1465 selected = 599 unselected = 866
+seed of prob = 37425.8	size = 599
+
+prob(alpha = 1):
+total time = 1.01569 time select seed = 0.994336
+total = 1465 selected = 599 unselected = 866
+seed of prob = 37427.3	size = 599
+
+determined prob:
+total time = 0.838478 time select seed = 0.819476
+total = 1465 selected = 599 unselected = 866
+seed of d-prob = 37445.6	size = 599
+
+
+apsize = 200 k = 10 rrsize = 10000000
+ap avg degree = 20.305
+RR set generation time = 993.273 total size = 160427713
+IMM:
+total time = 1.34301 time select seed = 1.32473
+total = 4044 selected = 1237 unselected = 2807
+seed of IMM = 70827.6	size = 1237
+
+Threshold(xi = 0.05):
+total time = 1.31316 time select seed = 1.29937
+total = 4044 selected = 1236 unselected = 2804
+seed of Threshold = 70838.2	size = 1236
+
+prob(alpha = 1):
+total time = 1.65871 time select seed = 1.58126
+total = 4045 selected = 1237 unselected = 2808
+seed of prob = 70842.8	size = 1237
+
+prob(alpha = 1):
+total time = 1.66455 time select seed = 1.58489
+total = 4045 selected = 1237 unselected = 2808
+seed of prob = 70825.8	size = 1237
+
+determined prob:
+total time = 1.40472 time select seed = 1.33618
+total = 4045 selected = 1237 unselected = 2808
+seed of d-prob = 70863.8	size = 1237
+
+

@@ -1,0 +1,668 @@
+41652230 1468365182
+apsize = 100 k = 1 rrsize = 100000
+ap avg degree = 24.84
+RR set generation time = 1004.79 total size = 1805198
+IMM:
+total time = 0.455931 time select seed = 0.039329
+total = 2465 selected = 98 unselected = 2367
+seed of IMM = 2.71489e+06	size = 98
+
+OPIM:
+total time = 0.333807 time select seed = 0.022674
+total = 2465 selected = 98 unselected = 2367
+seed of OPIM = 2.71489e+06	size = 98
+
+Threshold(xi = 0.05):
+total time = 0.335323 time select seed = 0.020835
+total = 2465 selected = 25 unselected = 571
+seed of Threshold = 2.70823e+06	size = 25
+
+
+apsize = 200 k = 1 rrsize = 100000
+ap avg degree = 54.735
+RR set generation time = 950.475 total size = 1739938
+IMM:
+total time = 0.499116 time select seed = 0.031178
+total = 10855 selected = 190 unselected = 10665
+seed of IMM = 2.63075e+06	size = 190
+
+OPIM:
+total time = 0.552205 time select seed = 0.026797
+total = 10855 selected = 190 unselected = 10665
+seed of OPIM = 2.63075e+06	size = 190
+
+Threshold(xi = 0.05):
+total time = 0.30019 time select seed = 0.029552
+total = 10855 selected = 62 unselected = 6291
+seed of Threshold = 2.63075e+06	size = 62
+
+
+apsize = 500 k = 1 rrsize = 100000
+ap avg degree = 53.036
+RR set generation time = 950.182 total size = 1773335
+IMM:
+total time = 0.568648 time select seed = 0.053304
+total = 26128 selected = 473 unselected = 25655
+seed of IMM = 3.92614e+06	size = 473
+
+OPIM:
+total time = 1.11126 time select seed = 0.047597
+total = 26128 selected = 474 unselected = 25654
+seed of OPIM = 3.92656e+06	size = 474
+
+Threshold(xi = 0.05):
+total time = 0.402509 time select seed = 0.039125
+total = 26128 selected = 147 unselected = 12097
+seed of Threshold = 3.92531e+06	size = 147
+
+
+apsize = 1000 k = 1 rrsize = 100000
+ap avg degree = 36.86
+RR set generation time = 964.859 total size = 1757514
+IMM:
+total time = 0.674227 time select seed = 0.077864
+total = 36453 selected = 966 unselected = 35487
+seed of IMM = 4.89622e+06	size = 966
+
+OPIM:
+total time = 3.20044 time select seed = 0.061072
+total = 36453 selected = 966 unselected = 35487
+seed of OPIM = 4.89497e+06	size = 966
+
+Threshold(xi = 0.05):
+total time = 0.470522 time select seed = 0.052985
+total = 36453 selected = 298 unselected = 5779
+seed of Threshold = 4.8958e+06	size = 298
+
+
+apsize = 100 k = 2 rrsize = 100000
+ap avg degree = 17.82
+RR set generation time = 978.187 total size = 1768156
+IMM:
+total time = 0.479997 time select seed = 0.043447
+total = 1778 selected = 182 unselected = 1596
+seed of IMM = 1.68275e+06	size = 182
+
+OPIM:
+total time = 0.411164 time select seed = 0.026289
+total = 1778 selected = 182 unselected = 1596
+seed of OPIM = 1.68275e+06	size = 182
+
+Threshold(xi = 0.05):
+total time = 0.344659 time select seed = 0.030184
+total = 1778 selected = 44 unselected = 310
+seed of Threshold = 1.68275e+06	size = 44
+
+
+apsize = 200 k = 2 rrsize = 100000
+ap avg degree = 24.315
+RR set generation time = 967.537 total size = 1753178
+IMM:
+total time = 0.514933 time select seed = 0.072313
+total = 4813 selected = 368 unselected = 4445
+seed of IMM = 3.1235e+06	size = 368
+
+OPIM:
+total time = 0.54115 time select seed = 0.043414
+total = 4813 selected = 368 unselected = 4445
+seed of OPIM = 3.12308e+06	size = 368
+
+Threshold(xi = 0.05):
+total time = 0.414616 time select seed = 0.042126
+total = 4813 selected = 105 unselected = 1537
+seed of Threshold = 3.1235e+06	size = 105
+
+
+apsize = 500 k = 2 rrsize = 100000
+ap avg degree = 22.774
+RR set generation time = 945.313 total size = 1750867
+IMM:
+total time = 0.482417 time select seed = 0.063367
+total = 11252 selected = 923 unselected = 10329
+seed of IMM = 4.40889e+06	size = 923
+
+OPIM:
+total time = 1.27332 time select seed = 0.070501
+total = 11252 selected = 922 unselected = 10330
+seed of OPIM = 4.40847e+06	size = 922
+
+Threshold(xi = 0.05):
+total time = 0.322043 time select seed = 0.047424
+total = 11252 selected = 242 unselected = 2771
+seed of Threshold = 4.40847e+06	size = 242
+
+
+apsize = 1000 k = 2 rrsize = 100000
+ap avg degree = 24.477
+RR set generation time = 962.983 total size = 1780142
+IMM:
+total time = 0.578202 time select seed = 0.07337
+total = 23641 selected = 1849 unselected = 21792
+seed of IMM = 4.91705e+06	size = 1849
+
+OPIM:
+total time = 4.24585 time select seed = 0.060029
+total = 23641 selected = 1849 unselected = 21792
+seed of OPIM = 4.91121e+06	size = 1849
+
+Threshold(xi = 0.05):
+total time = 0.434575 time select seed = 0.062611
+total = 23641 selected = 392 unselected = 8498
+seed of Threshold = 4.91455e+06	size = 392
+
+
+apsize = 100 k = 5 rrsize = 100000
+ap avg degree = 31.86
+RR set generation time = 956.197 total size = 1766520
+IMM:
+total time = 0.473804 time select seed = 0.067277
+total = 3145 selected = 434 unselected = 2711
+seed of IMM = 2.73697e+06	size = 434
+
+OPIM:
+total time = 0.481657 time select seed = 0.032937
+total = 3145 selected = 434 unselected = 2711
+seed of OPIM = 2.73613e+06	size = 434
+
+Threshold(xi = 0.05):
+total time = 0.40254 time select seed = 0.030987
+total = 3145 selected = 77 unselected = 816
+seed of Threshold = 2.73447e+06	size = 77
+
+
+apsize = 200 k = 5 rrsize = 100000
+ap avg degree = 65.27
+RR set generation time = 942.78 total size = 1718243
+IMM:
+total time = 0.530982 time select seed = 0.066818
+total = 12643 selected = 841 unselected = 11802
+seed of IMM = 4.36682e+06	size = 841
+
+OPIM:
+total time = 1.0383 time select seed = 0.046032
+total = 12643 selected = 841 unselected = 11802
+seed of OPIM = 4.3664e+06	size = 841
+
+Threshold(xi = 0.05):
+total time = 0.406698 time select seed = 0.0396
+total = 12643 selected = 187 unselected = 7000
+seed of Threshold = 4.36682e+06	size = 187
+
+
+apsize = 500 k = 5 rrsize = 100000
+ap avg degree = 33.084
+RR set generation time = 957.428 total size = 1749478
+IMM:
+total time = 0.584898 time select seed = 0.064165
+total = 16334 selected = 1999 unselected = 14335
+seed of IMM = 4.28851e+06	size = 1999
+
+OPIM:
+total time = 2.80944 time select seed = 0.048022
+total = 16334 selected = 1999 unselected = 14335
+seed of OPIM = 4.28893e+06	size = 1999
+
+Threshold(xi = 0.05):
+total time = 0.43504 time select seed = 0.040264
+total = 16334 selected = 330 unselected = 6543
+seed of Threshold = 4.28851e+06	size = 330
+
+
+apsize = 1000 k = 5 rrsize = 100000
+ap avg degree = 24.784
+RR set generation time = 967.226 total size = 1749859
+IMM:
+total time = 0.602991 time select seed = 0.074853
+total = 24490 selected = 4009 unselected = 20481
+seed of IMM = 5.55266e+06	size = 4009
+
+OPIM:
+total time = 9.91068 time select seed = 0.066278
+total = 24490 selected = 4012 unselected = 20478
+seed of OPIM = 5.55016e+06	size = 4012
+
+Threshold(xi = 0.05):
+total time = 0.54912 time select seed = 0.049051
+total = 24490 selected = 620 unselected = 4569
+seed of Threshold = 5.55058e+06	size = 620
+
+
+apsize = 100 k = 10 rrsize = 100000
+ap avg degree = 37.24
+RR set generation time = 980.682 total size = 1779314
+IMM:
+total time = 0.531187 time select seed = 0.058161
+total = 3717 selected = 671 unselected = 3046
+seed of IMM = 3.04436e+06	size = 671
+
+OPIM:
+total time = 0.568691 time select seed = 0.035238
+total = 3717 selected = 671 unselected = 3046
+seed of OPIM = 3.04394e+06	size = 671
+
+Threshold(xi = 0.05):
+total time = 0.41332 time select seed = 0.033914
+total = 3717 selected = 145 unselected = 1480
+seed of Threshold = 3.04394e+06	size = 145
+
+
+apsize = 200 k = 10 rrsize = 100000
+ap avg degree = 21.245
+RR set generation time = 969.962 total size = 1776167
+IMM:
+total time = 0.503055 time select seed = 0.061889
+total = 4236 selected = 1190 unselected = 3046
+seed of IMM = 3.2268e+06	size = 1190
+
+OPIM:
+total time = 0.733702 time select seed = 0.036945
+total = 4236 selected = 1189 unselected = 3047
+seed of OPIM = 3.2268e+06	size = 1189
+
+Threshold(xi = 0.05):
+total time = 0.407994 time select seed = 0.033037
+total = 4236 selected = 155 unselected = 1395
+seed of Threshold = 3.2268e+06	size = 155
+
+
+apsize = 500 k = 10 rrsize = 100000
+ap avg degree = 24.702
+RR set generation time = 952.429 total size = 1746559
+IMM:
+total time = 0.470209 time select seed = 0.072373
+total = 12195 selected = 3124 unselected = 9071
+seed of IMM = 4.90497e+06	size = 3124
+
+OPIM:
+total time = 4.00533 time select seed = 0.05241
+total = 12195 selected = 3124 unselected = 9071
+seed of OPIM = 4.90205e+06	size = 3124
+
+Threshold(xi = 0.05):
+total time = 0.314181 time select seed = 0.040781
+total = 12195 selected = 502 unselected = 2507
+seed of Threshold = 4.90372e+06	size = 502
+
+
+apsize = 1000 k = 10 rrsize = 100000
+ap avg degree = 43.126
+RR set generation time = 968.553 total size = 1771250
+IMM:
+total time = 0.661205 time select seed = 0.104146
+total = 42418 selected = 6361 unselected = 36057
+seed of IMM = 5.83215e+06	size = 6361
+
+OPIM:
+total time = 18.8002 time select seed = 0.081876
+total = 42418 selected = 6362 unselected = 36056
+seed of OPIM = 5.83006e+06	size = 6362
+
+Threshold(xi = 0.05):
+total time = 0.531171 time select seed = 0.052938
+total = 42418 selected = 727 unselected = 16819
+seed of Threshold = 5.83131e+06	size = 727
+
+
+apsize = 100 k = 1 rrsize = 1000000
+ap avg degree = 191.2
+RR set generation time = 9767.71 total size = 17753215
+IMM:
+total time = 0.853511 time select seed = 0.430927
+total = 19105 selected = 91 unselected = 19014
+seed of IMM = 2.94969e+06	size = 91
+
+OPIM:
+total time = 0.752827 time select seed = 0.282675
+total = 19105 selected = 91 unselected = 19014
+seed of OPIM = 2.94969e+06	size = 91
+
+Threshold(xi = 0.05):
+total time = 0.668444 time select seed = 0.283163
+total = 19105 selected = 21 unselected = 2308
+seed of Threshold = 2.93615e+06	size = 21
+
+
+apsize = 200 k = 1 rrsize = 1000000
+ap avg degree = 39.915
+RR set generation time = 9710.36 total size = 17695486
+IMM:
+total time = 1.07202 time select seed = 0.544242
+total = 7787 selected = 194 unselected = 7593
+seed of IMM = 3.69709e+06	size = 194
+
+OPIM:
+total time = 0.904813 time select seed = 0.416584
+total = 7787 selected = 194 unselected = 7593
+seed of OPIM = 3.69709e+06	size = 194
+
+Threshold(xi = 0.05):
+total time = 0.720216 time select seed = 0.33579
+total = 7787 selected = 51 unselected = 3722
+seed of Threshold = 3.69155e+06	size = 51
+
+
+apsize = 500 k = 1 rrsize = 1000000
+ap avg degree = 34.256
+RR set generation time = 9885.38 total size = 17702034
+IMM:
+total time = 0.94554 time select seed = 0.536855
+total = 16893 selected = 476 unselected = 16417
+seed of IMM = 4.28343e+06	size = 476
+
+OPIM:
+total time = 1.3299 time select seed = 0.446939
+total = 16893 selected = 476 unselected = 16417
+seed of OPIM = 4.28347e+06	size = 476
+
+Threshold(xi = 0.05):
+total time = 0.706235 time select seed = 0.360708
+total = 16893 selected = 142 unselected = 7164
+seed of Threshold = 4.27618e+06	size = 142
+
+
+apsize = 1000 k = 1 rrsize = 1000000
+ap avg degree = 21.461
+RR set generation time = 9876.75 total size = 17673423
+IMM:
+total time = 1.13651 time select seed = 0.626639
+total = 20893 selected = 978 unselected = 19915
+seed of IMM = 5.01035e+06	size = 978
+
+OPIM:
+total time = 2.55049 time select seed = 0.467084
+total = 20893 selected = 978 unselected = 19915
+seed of OPIM = 5.01039e+06	size = 978
+
+Threshold(xi = 0.05):
+total time = 0.727793 time select seed = 0.44152
+total = 20893 selected = 334 unselected = 8553
+seed of Threshold = 4.99998e+06	size = 334
+
+
+apsize = 100 k = 2 rrsize = 1000000
+ap avg degree = 11.48
+RR set generation time = 9373.28 total size = 17484591
+IMM:
+total time = 0.799213 time select seed = 0.358982
+total = 1145 selected = 191 unselected = 954
+seed of IMM = 2.32365e+06	size = 191
+
+OPIM:
+total time = 0.650629 time select seed = 0.248584
+total = 1145 selected = 191 unselected = 954
+seed of OPIM = 2.32365e+06	size = 191
+
+Threshold(xi = 0.05):
+total time = 0.627718 time select seed = 0.243826
+total = 1145 selected = 30 unselected = 121
+seed of Threshold = 2.31766e+06	size = 30
+
+
+apsize = 200 k = 2 rrsize = 1000000
+ap avg degree = 24.8
+RR set generation time = 9892.12 total size = 17744386
+IMM:
+total time = 0.835734 time select seed = 0.379889
+total = 4948 selected = 364 unselected = 4584
+seed of IMM = 3.1113e+06	size = 364
+
+OPIM:
+total time = 0.802749 time select seed = 0.290567
+total = 4948 selected = 364 unselected = 4584
+seed of OPIM = 3.1113e+06	size = 364
+
+Threshold(xi = 0.05):
+total time = 0.692152 time select seed = 0.29594
+total = 4948 selected = 88 unselected = 571
+seed of Threshold = 3.10476e+06	size = 88
+
+
+apsize = 500 k = 2 rrsize = 1000000
+ap avg degree = 25.854
+RR set generation time = 9936.74 total size = 17703817
+IMM:
+total time = 0.93207 time select seed = 0.450299
+total = 12731 selected = 932 unselected = 11799
+seed of IMM = 4.30822e+06	size = 932
+
+OPIM:
+total time = 1.68962 time select seed = 0.356261
+total = 12731 selected = 932 unselected = 11799
+seed of OPIM = 4.30822e+06	size = 932
+
+Threshold(xi = 0.05):
+total time = 0.781637 time select seed = 0.381684
+total = 12731 selected = 278 unselected = 5576
+seed of Threshold = 4.34287e+06	size = 278
+
+
+apsize = 1000 k = 2 rrsize = 1000000
+ap avg degree = 32.978
+RR set generation time = 9960.09 total size = 17743174
+IMM:
+total time = 1.0755 time select seed = 0.659611
+total = 31030 selected = 1856 unselected = 29174
+seed of IMM = 4.9173e+06	size = 1856
+
+OPIM:
+total time = 5.01062 time select seed = 0.517843
+total = 31030 selected = 1856 unselected = 29174
+seed of OPIM = 4.9173e+06	size = 1856
+
+Threshold(xi = 0.05):
+total time = 0.939621 time select seed = 0.633707
+total = 31030 selected = 946 unselected = 19083
+seed of Threshold = 4.91725e+06	size = 946
+
+
+apsize = 100 k = 5 rrsize = 1000000
+ap avg degree = 13.89
+RR set generation time = 9346.21 total size = 17610765
+IMM:
+total time = 0.747686 time select seed = 0.349668
+total = 1386 selected = 425 unselected = 961
+seed of IMM = 2.19749e+06	size = 425
+
+OPIM:
+total time = 0.678315 time select seed = 0.23839
+total = 1386 selected = 425 unselected = 961
+seed of OPIM = 2.19749e+06	size = 425
+
+Threshold(xi = 0.05):
+total time = 0.613074 time select seed = 0.231422
+total = 1386 selected = 106 unselected = 105
+seed of Threshold = 2.1922e+06	size = 106
+
+
+apsize = 200 k = 5 rrsize = 1000000
+ap avg degree = 19.83
+RR set generation time = 9834.6 total size = 17654167
+IMM:
+total time = 0.909654 time select seed = 0.433025
+total = 3951 selected = 789 unselected = 3162
+seed of IMM = 3.42448e+06	size = 789
+
+OPIM:
+total time = 0.916003 time select seed = 0.306028
+total = 3951 selected = 789 unselected = 3162
+seed of OPIM = 3.42448e+06	size = 789
+
+Threshold(xi = 0.05):
+total time = 0.681081 time select seed = 0.295911
+total = 3951 selected = 140 unselected = 1244
+seed of Threshold = 3.41865e+06	size = 140
+
+
+apsize = 500 k = 5 rrsize = 1000000
+ap avg degree = 21.036
+RR set generation time = 9798.31 total size = 17546762
+IMM:
+total time = 0.979926 time select seed = 0.493642
+total = 10452 selected = 2044 unselected = 8408
+seed of IMM = 4.37323e+06	size = 2044
+
+OPIM:
+total time = 2.6188 time select seed = 0.382209
+total = 10452 selected = 2044 unselected = 8408
+seed of OPIM = 4.37323e+06	size = 2044
+
+Threshold(xi = 0.05):
+total time = 0.732727 time select seed = 0.342478
+total = 10452 selected = 713 unselected = 5252
+seed of Threshold = 4.37286e+06	size = 713
+
+
+apsize = 1000 k = 5 rrsize = 1000000
+ap avg degree = 26.412
+RR set generation time = 9989.24 total size = 17746196
+IMM:
+total time = 1.03449 time select seed = 0.53825
+total = 25638 selected = 4152 unselected = 21486
+seed of IMM = 5.9449e+06	size = 4152
+
+OPIM:
+total time = 9.89616 time select seed = 0.464019
+total = 25638 selected = 4153 unselected = 21485
+seed of OPIM = 5.9449e+06	size = 4153
+
+Threshold(xi = 0.05):
+total time = 0.837208 time select seed = 0.417131
+total = 25638 selected = 1415 unselected = 14308
+seed of Threshold = 5.9459e+06	size = 1415
+
+
+apsize = 100 k = 10 rrsize = 1000000
+ap avg degree = 18.43
+RR set generation time = 9913.48 total size = 17591793
+IMM:
+total time = 0.802299 time select seed = 0.379271
+total = 1830 selected = 617 unselected = 1213
+seed of IMM = 3.18527e+06	size = 617
+
+OPIM:
+total time = 0.746481 time select seed = 0.293749
+total = 1830 selected = 617 unselected = 1213
+seed of OPIM = 3.18519e+06	size = 617
+
+Threshold(xi = 0.05):
+total time = 0.691324 time select seed = 0.304552
+total = 1830 selected = 147 unselected = 707
+seed of Threshold = 3.18211e+06	size = 147
+
+
+apsize = 200 k = 10 rrsize = 1000000
+ap avg degree = 17.08
+RR set generation time = 9998.56 total size = 17671647
+IMM:
+total time = 0.86931 time select seed = 0.395635
+total = 3406 selected = 1343 unselected = 2063
+seed of IMM = 3.25879e+06	size = 1343
+
+OPIM:
+total time = 1.03811 time select seed = 0.297251
+total = 3406 selected = 1343 unselected = 2063
+seed of OPIM = 3.25883e+06	size = 1343
+
+Threshold(xi = 0.05):
+total time = 0.713883 time select seed = 0.321094
+total = 3406 selected = 480 unselected = 1070
+seed of Threshold = 3.25879e+06	size = 480
+
+
+apsize = 500 k = 10 rrsize = 1000000
+ap avg degree = 19.75
+RR set generation time = 9870.89 total size = 17642164
+IMM:
+total time = 1.12009 time select seed = 0.578542
+total = 9786 selected = 3191 unselected = 6595
+seed of IMM = 4.71391e+06	size = 3191
+
+OPIM:
+total time = 3.85003 time select seed = 0.38089
+total = 9786 selected = 3192 unselected = 6594
+seed of OPIM = 4.71391e+06	size = 3192
+
+Threshold(xi = 0.05):
+total time = 0.756424 time select seed = 0.358145
+total = 9786 selected = 975 unselected = 3809
+seed of Threshold = 4.71391e+06	size = 975
+
+
+apsize = 1000 k = 10 rrsize = 1000000
+ap avg degree = 16.996
+RR set generation time = 9913.04 total size = 17645615
+IMM:
+total time = 1.15841 time select seed = 0.588496
+total = 16716 selected = 6264 unselected = 10452
+seed of IMM = 5.47648e+06	size = 6264
+
+OPIM:
+total time = 12.5113 time select seed = 0.449721
+total = 16716 selected = 6258 unselected = 10458
+seed of OPIM = 5.47706e+06	size = 6258
+
+Threshold(xi = 0.05):
+total time = 0.876937 time select seed = 0.440034
+total = 16716 selected = 1976 unselected = 5150
+seed of Threshold = 5.47694e+06	size = 1976
+
+
+apsize = 100 k = 1 rrsize = 5000000
+ap avg degree = 18.1
+RR set generation time = 49872.3 total size = 88408387
+IMM:
+total time = 2.25369 time select seed = 1.76538
+total = 1807 selected = 97 unselected = 1710
+seed of IMM = 2.10246e+06	size = 97
+
+OPIM:
+total time = 1.80388 time select seed = 1.38514
+total = 1807 selected = 97 unselected = 1710
+seed of OPIM = 2.10246e+06	size = 97
+
+Threshold(xi = 0.05):
+total time = 1.50303 time select seed = 1.13373
+total = 1807 selected = 22 unselected = 231
+seed of Threshold = 2.09795e+06	size = 22
+
+
+apsize = 200 k = 1 rrsize = 5000000
+ap avg degree = 33.285
+RR set generation time = 49550.1 total size = 88434023
+IMM:
+total time = 2.55045 time select seed = 2.02799
+total = 6625 selected = 192 unselected = 6433
+seed of IMM = 2.91232e+06	size = 192
+
+OPIM:
+total time = 1.87495 time select seed = 1.41202
+total = 6625 selected = 192 unselected = 6433
+seed of OPIM = 2.91232e+06	size = 192
+
+Threshold(xi = 0.05):
+total time = 1.81566 time select seed = 1.43543
+total = 6625 selected = 47 unselected = 2155
+seed of Threshold = 2.90676e+06	size = 47
+
+
+apsize = 500 k = 1 rrsize = 5000000
+ap avg degree = 29.902
+RR set generation time = 49311.8 total size = 88403983
+IMM:
+total time = 3.5274 time select seed = 3.10205
+total = 14700 selected = 482 unselected = 14218
+seed of IMM = 4.3813e+06	size = 482
+
+OPIM:
+total time = 4.25003 time select seed = 3.2047
+total = 14700 selected = 482 unselected = 14218
+seed of OPIM = 4.3813e+06	size = 482
+
+Threshold(xi = 0.05):
+total time = 2.14614 time select seed = 1.86913
+total = 14700 selected = 145 unselected = 7051
+seed of Threshold = 4.37427e+06	size = 145
+
+
+apsize = 1000 k = 1 rrsize = 5000000
+ap avg degree = 21.772

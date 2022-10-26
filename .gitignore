@@ -1,0 +1,10 @@
+exp/cmake-build-debug/
+exp/cmake-build-debug-/
+exp/data/twitter-2010.txt.gz
+exp/data/soc-LiveJournal.txt
+exp/data/soc-pokec.txt
+.git/
+.idea/
+results/
+spread.txt
+exp/.idea
