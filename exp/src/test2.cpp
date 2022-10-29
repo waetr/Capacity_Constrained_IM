@@ -30,7 +30,7 @@ int main(int argc, char const *argv[]) {
     vector<int64> A;
     vector<bi_node> seeds;
 
-    vector<int64> apsize_ = {10}, k_ = {1, 2, 5, 10}, rrsize_ = {1000000, 10000000};
+    vector<int64> apsize_ = {10}, k_ = {1, 2}, rrsize_ = {10000};
 
     int count = 0;
     for (auto rrsize : rrsize_) {

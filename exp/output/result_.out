@@ -1,81 +1,71 @@
-317080 2099732
+10312 667966
 apsize = 10 k = 1 rrsize = 1000000
-overlap ratio = 0.00152905
-ap avg degree = 12.6
-RR set generation time = 12.229 total size = 4.80745e+06
+overlap ratio = 0.188874
+ap avg degree = 90.2333
+RR set generation time = 804.537 total size = 1.63842e+07
 
-IMM             = 339.70	size = 10.00	squander ratio = 0.00
-Threshold       = 339.70	size = 10.00	squander ratio = 0.00
-determined prob = 306.72	size = 10.00	squander ratio = 0.00
-prob            = 302.71	size = 10.00	squander ratio = 0.00
+IMM             = 2619.77	size = 10.00	squander ratio = 0.00
+Threshold       = 2619.77	size = 10.00	squander ratio = 0.00
+determined prob = 2626.00	size = 10.00	squander ratio = 0.00
+prob            = 2610.51	size = 10.00	squander ratio = 0.00
 
 apsize = 10 k = 2 rrsize = 1000000
-overlap ratio = 0.00
-ap avg degree = 5.97
-RR set generation time = 12.14 total size = 4804429.33
+overlap ratio = 0.15
+ap avg degree = 35.37
+RR set generation time = 804.33 total size = 16534495.33
 
-IMM             = 316.66	size = 18.00	squander ratio = 0.00
-Threshold       = 316.55	size = 17.67	squander ratio = 0.03
-determined prob = 316.66	size = 18.00	squander ratio = 0.00
-prob            = 315.49	size = 18.00	squander ratio = 0.00
+IMM             = 3351.28	size = 20.00	squander ratio = 0.00
+Threshold       = 3347.53	size = 19.67	squander ratio = 0.03
+determined prob = 3401.93	size = 20.00	squander ratio = 0.00
+prob            = 3369.23	size = 20.00	squander ratio = 0.00
 
 apsize = 10 k = 5 rrsize = 1000000
-overlap ratio = 0.00
-ap avg degree = 6.33
-RR set generation time = 11.97 total size = 4807461.33
+overlap ratio = 0.18
+ap avg degree = 86.53
+RR set generation time = 800.72 total size = 16413454.33
 
-IMM             = 528.47	size = 36.33	squander ratio = 0.00
-Threshold       = 528.47	size = 35.33	squander ratio = 0.10
-determined prob = 528.47	size = 36.33	squander ratio = 0.00
-prob            = 527.83	size = 36.33	squander ratio = 0.00
+IMM             = 4346.79	size = 46.33	squander ratio = 0.07
+Threshold       = 4345.68	size = 46.33	squander ratio = 0.07
+determined prob = 4396.36	size = 47.00	squander ratio = 0.00
+prob            = 4391.36	size = 47.00	squander ratio = 0.00
 
 apsize = 10 k = 10 rrsize = 1000000
-overlap ratio = 0.00
-ap avg degree = 6.07
-RR set generation time = 11.80 total size = 4812050.33
+overlap ratio = 0.16
+ap avg degree = 30.67
+RR set generation time = 807.24 total size = 16540729.00
 
-IMM             = 552.46	size = 39.00	squander ratio = 0.00
-Threshold       = 552.46	size = 37.67	squander ratio = 0.13
-determined prob = 552.46	size = 39.00	squander ratio = 0.00
-prob            = 552.46	size = 39.00	squander ratio = 0.00
+IMM             = 4608.42	size = 84.00	squander ratio = 0.60
+Threshold       = 4608.42	size = 84.00	squander ratio = 0.60
+determined prob = 4698.02	size = 86.00	squander ratio = 0.40
+prob            = 4693.52	size = 85.33	squander ratio = 0.47
 
 apsize = 10 k = 1 rrsize = 10000000
-overlap ratio = 0.00
-ap avg degree = 5.73
-RR set generation time = 114.86 total size = 48099487.00
+overlap ratio = 0.17
+ap avg degree = 34.10
+RR set generation time = 7983.88 total size = 165163110.67
 
-IMM             = 202.04	size = 10.00	squander ratio = 0.00
-Threshold       = 202.04	size = 10.00	squander ratio = 0.00
-determined prob = 202.04	size = 10.00	squander ratio = 0.00
-prob            = 197.68	size = 10.00	squander ratio = 0.00
+IMM             = 2627.17	size = 10.00	squander ratio = 0.00
+Threshold       = 2641.11	size = 10.00	squander ratio = 0.00
+determined prob = 2632.45	size = 10.00	squander ratio = 0.00
+prob            = 2621.94	size = 10.00	squander ratio = 0.00
 
 apsize = 10 k = 2 rrsize = 10000000
-overlap ratio = 0.00
-ap avg degree = 4.03
-RR set generation time = 113.97 total size = 48109169.33
+overlap ratio = 0.09
+ap avg degree = 35.97
+RR set generation time = 8002.02 total size = 165036285.33
 
-IMM             = 264.44	size = 19.00	squander ratio = 0.00
-Threshold       = 264.38	size = 19.00	squander ratio = 0.00
-determined prob = 264.44	size = 19.00	squander ratio = 0.00
-prob            = 263.39	size = 19.00	squander ratio = 0.00
+IMM             = 3289.88	size = 19.67	squander ratio = 0.00
+Threshold       = 3281.83	size = 19.67	squander ratio = 0.00
+determined prob = 3299.70	size = 19.67	squander ratio = 0.00
+prob            = 3305.17	size = 19.67	squander ratio = 0.00
 
 apsize = 10 k = 5 rrsize = 10000000
-overlap ratio = 0.00
-ap avg degree = 7.23
-RR set generation time = 113.66 total size = 48092611.00
+overlap ratio = 0.11
+ap avg degree = 107.40
+RR set generation time = 8129.16 total size = 163508614.33
 
-IMM             = 604.42	size = 35.33	squander ratio = 0.00
-Threshold       = 604.33	size = 35.33	squander ratio = 0.00
-determined prob = 604.42	size = 35.33	squander ratio = 0.00
-prob            = 603.56	size = 35.33	squander ratio = 0.00
-
-apsize = 10 k = 10 rrsize = 10000000
-overlap ratio = 0.00
-ap avg degree = 8.47
-RR set generation time = 113.48 total size = 48080655.00
-
-IMM             = 671.18	size = 58.67	squander ratio = 0.00
-Threshold       = 671.14	size = 58.67	squander ratio = 0.00
-determined prob = 671.18	size = 58.67	squander ratio = 0.00
-prob            = 671.09	size = 58.67	squander ratio = 0.00
+IMM             = 3980.62	size = 43.00	squander ratio = 0.27
+Threshold       = 3977.31	size = 42.67	squander ratio = 0.30
+determined prob = 4172.94	size = 45.00	squander ratio = 0.07
+prob            = 4094.32	size = 45.00	squander ratio = 0.07
 
