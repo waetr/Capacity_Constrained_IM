@@ -24,26 +24,12 @@ void init_commandLine(int argc, char const *argv[]) {
             .add_help_option()
             .add_argument<std::string>("input", "initialize graph file")
             .add_option("-v", "--verbose", "output verbose message or not")
-            .add_option<std::string>("-l", "--local", "use local value as single spread or not", "")
             .add_option<int64>("-r", "--rounds", "number of MC simulation iterations per time, default is 10000", 10000)
             .parse(argc, argv);
     graphFilePath = "../data/" + args.get_argument_string("input");
     if (args.has_option("--verbose")) {
         verbose_flag = 1;
         std::cout << "verbose flag set to 1\n";
-    }
-    if (!args.get_option_string("--local").empty()) {
-        local_mg = 1;
-        std::string MGPath = "../data/" + args.get_option_string("--local");
-        std::cout << "local spread flag set to 1, file path = " << MGPath << std::endl;
-        std::ifstream inFile(MGPath, std::ios::in);
-        if (!inFile.is_open()) {
-            std::cerr << "(get error) local file not found: " << args.get_option_string("--local") << std::endl;
-            std::exit(-1);
-        }
-        int64 cnt = 0;
-        while (inFile.good()) inFile >> MG0[cnt++];
-        inFile.close();
     }
     MC_iteration_rounds = args.get_option_int64("--rounds");
     std::cout << "MC_iteration_rounds set to " << MC_iteration_rounds << std::endl;
@@ -94,15 +80,6 @@ double solvers(Graph &graph, int64 k, std::vector<int64> &A, std::vector<int64> 
             break;
         case OPIM_ADVANCED:
             advanced_OPIM_method(graph, k, A, seeds);
-            break;
-        case CELF_THRESHOLD:
-            //Thresholding_CELF(graph, k, A, seeds);
-            break;
-        case CELF_THRESHOLD1:
-            //Thresholding_CELF1(graph, k, A, seeds, seedAvgDegree);
-            break;
-        case CELF_THRESHOLD2:
-            //Thresholding_CELF2(graph, k, A, seeds, seedAvgDegree);
             break;
         default:
             break;
@@ -159,7 +136,7 @@ void Run_simulation(std::vector<int64> &A_batch, std::vector<int64> &k_batch, st
                 for (IM_solver solver_used : solver_batch) {
                     double seedAvgDegree = 0;
                     timer[solver_used][k] += solvers(G, k, A, seeds, solver_used, seedAvgDegree) / rounds;
-                    result[solver_used][k] += FI_simulation(G, seeds) / rounds;
+                    result[solver_used][k] += FI_simulation_new(G, seeds, A) / rounds;
                     seedSize[solver_used][k] += (double) seeds.size() / rounds;
                     seedsAvgDegree[solver_used][k] += (double) seedAvgDegree / rounds;
                 }

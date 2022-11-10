@@ -6,12 +6,12 @@
 #define EXP_IMS_H
 
 #include "simulation.h"
+#include <map>
+#define ASSERT(X) \
+do {              \
+    if(time_by(X) > 86400.0) return -1; \
+} while(false)
 
-
-/*!
- * @brief MG0[u] stores influence spread of {u}
- */
-double MG0[MAX_NODE_SIZE];
 
 /*!
  * @brief CELF algorithm is used to select k most influential nodes at a given candidate.
@@ -21,36 +21,25 @@ double MG0[MAX_NODE_SIZE];
  * @param A : the active participant set A
  * @param seeds : returns the most influential nodes set
  */
-void CELF(Graph &graph, int64 k, std::vector<int64> &candidate, std::vector<int64> &A, std::vector<int64> &seeds){
-    if (k >= candidate.size()) {
-        seeds = candidate;
-        if (verbose_flag) printf("Nodes are not exceeding k. All selected.\n");
-        return;
-    }
-    double cur = clock();
-    int64 r = 0;
+void CELF_local(Graph &graph, int64 k, std::vector<int64> &candidate, std::vector<int64> &A, std::vector<int64> &seeds){
     /// first double : magimal influence
     /// first node : index
     /// second int64 : iteration round
+    /// initialization
     typedef std::pair<double, std::pair<int64, int64> > node0;
     std::priority_queue<node0> Q;
     seeds.resize(1);
+    double current_spread = 0;
+    /// main
     for (int64 u : candidate) {
         seeds[0] = u;
-        if (!local_mg) Q.push(make_pair(FI_simulation_new(graph, seeds, A), std::make_pair(u, 0)));
-        else Q.push(make_pair(MG0[u], std::make_pair(u, 0)));
+        Q.push(make_pair(FI_simulation_new(graph, seeds, A), std::make_pair(u, 0)));
     }
-    double current_spread = 0;
     seeds.clear();
-    if (verbose_flag) printf("\tInitialization time = %.5f\n", time_by(cur));
-    while (seeds.size() < k) {
-        r++;
+    while (!Q.empty() && seeds.size() < k) {
         node0 u = Q.top();
         Q.pop();
         if (u.second.second == seeds.size()) {
-            if (verbose_flag) {
-                std::cout << "\tnode = " << u.second.first << "\tround = " << r << "\ttime = " << time_by(cur) << std::endl;
-            }
             seeds.emplace_back(u.second.first);
             current_spread += u.first;
         } else {
@@ -61,7 +50,6 @@ void CELF(Graph &graph, int64 k, std::vector<int64> &candidate, std::vector<int6
             Q.push(u);
         }
     }
-    if (verbose_flag) printf("CELF done. total time = %.3f\n", time_by(cur));
 }
 
 /*!
@@ -119,8 +107,39 @@ void pgrank_method(Graph &graph, int64 k, std::vector<int64> &A, std::vector<int
             seeds_reorder.insert(pg_rank[i].second);
     }
     for (int64 w : seeds_reorder) seeds.emplace_back(w);
-    seeds_reorder.clear();
-    pg_rank.clear();
+}
+
+/*!
+ * @brief Encapsulated operations for Option 2 using IM solver : CELF
+ * @param graph : the graph
+ * @param k : the number in the problem definition
+ * @param A : the active participant set A
+ * @param seeds : returns the seed set S = {S_1, S_2, ..., S_n}
+ */
+double method_local_PageRank(Graph &graph, int64 k, std::vector<int64> &A, std::vector<bi_node> &seeds) {
+    std::vector<double> pi(graph.n, 0);
+    std::vector<std::pair<double, int64> > pg_rank;
+    std::set<int64> seeds_reorder, A_ordered(A.begin(), A.end());
+
+    double cur = clock();
+    power_iteration(graph, pi, 0.2);
+    for (int64 u : A) {
+        pg_rank.clear();
+        for (auto &edge : graph.g[u]) {
+            if (A_ordered.find(edge.v) == A_ordered.end()) {
+                pg_rank.emplace_back(std::make_pair(pi[edge.v], edge.v));
+            }
+        }
+        sort(pg_rank.begin(), pg_rank.end(), std::greater<>());
+        for (int64 i = 0; i < k && i < pg_rank.size(); i++) {
+            int64 w = pg_rank[i].second;
+            if(seeds_reorder.find(w) == seeds_reorder.end()) {
+                seeds_reorder.insert(w);
+                seeds.emplace_back(w, u);
+            }
+        }
+    }
+    return time_by(cur);
 }
 
 /*!
@@ -146,8 +165,30 @@ void degree_method(Graph &graph, int64 k, std::vector<int64> &A, std::vector<int
             seeds_reorder.insert(degree_rank[i].second);
     }
     for (int64 w : seeds_reorder) seeds.emplace_back(w);
-    seeds_reorder.clear();
-    degree_rank.clear();
+}
+
+double method_local_Degree(Graph &graph, int64 k, std::vector<int64> &A, std::vector<bi_node> &seeds) {
+    std::vector<std::pair<double, int64> > dg_rank;
+    std::set<int64> seeds_reorder, A_ordered(A.begin(), A.end());
+
+    double cur = clock();
+    for (int64 u : A) {
+        dg_rank.clear();
+        for (auto &edge : graph.g[u]) {
+            if (A_ordered.find(edge.v) == A_ordered.end()) {
+                dg_rank.emplace_back(std::make_pair(graph.deg_out[edge.v], edge.v));
+            }
+        }
+        sort(dg_rank.begin(), dg_rank.end(), std::greater<>());
+        for (int64 i = 0; i < k && i < dg_rank.size(); i++) {
+            int64 w = dg_rank[i].second;
+            if(seeds_reorder.find(w) == seeds_reorder.end()) {
+                seeds_reorder.insert(w);
+                seeds.emplace_back(w, u);
+            }
+        }
+    }
+    return time_by(cur);
 }
 
 /*!
@@ -167,22 +208,50 @@ void CELF_method(Graph &graph, int64 k, std::vector<int64> &A, std::vector<int64
                 neighbours.emplace_back(edge.v);
             }
         }
-        CELF(graph, k, neighbours, A, one_seed);
+        CELF_local(graph, k, neighbours, A, one_seed);
         for (int64 w : one_seed)
             seeds_reorder.insert(w);
     }
     for (int64 w : seeds_reorder) seeds.emplace_back(w);
-    seeds_reorder.clear();
     if (verbose_flag) printf("CELF method done. total time = %.3f\n", time_by(cur));
+}
+
+/*!
+ * @brief Encapsulated operations for Option 2 using IM solver : CELF
+ * @param graph : the graph
+ * @param k : the number in the problem definition
+ * @param A : the active participant set A
+ * @param seeds : returns the seed set S = {S_1, S_2, ..., S_n}
+ */
+double method_local_CELF(Graph &graph, int64 k, std::vector<int64> &A, std::vector<bi_node> &seeds) {
+    std::set<int64> seeds_reorder, A_ordered(A.begin(), A.end());
+
+    double cur = clock();
+    for (int64 u : A) {
+        std::vector<int64> neighbours, one_seed;
+        for (auto &edge : graph.g[u]) {
+            if (A_ordered.find(edge.v) == A_ordered.end()) {
+                neighbours.emplace_back(edge.v);
+            }
+        }
+        CELF_local(graph, k, neighbours, A, one_seed);
+        ASSERT(cur);
+        for (int64 w : one_seed)
+            if(seeds_reorder.find(w) == seeds_reorder.end()) {
+                seeds_reorder.insert(w);
+                seeds.emplace_back(w, u);
+            }
+    }
+    return time_by(cur);
 }
 
 /*!
  * @brief These global variables are used to assist the recursive functions.
  * No needs to be initialized.
  */
-int64 node_selected[MAX_NODE_SIZE];
-int64 neighbour_selected[MAX_NODE_SIZE];
-int64 stack_kS[MAX_NODE_SIZE], stack_kS_top;
+int64 node_selected_enum[MAX_NODE_SIZE];
+int64 neighbour_selected_enum[MAX_NODE_SIZE];
+int64 stack_kS_enum[MAX_NODE_SIZE], stack_kS_top_enum;
 
 /*!
  * @brief A recursive method for enumerating all possible S.
@@ -200,39 +269,39 @@ void select_neighbours(Graph &graph, std::vector<int64> &S, std::vector<std::vec
                        bool is_new) {
     if (it == S.end()) {
         std::vector<int64> set_tmp;
-        for (int64 i = 1; i <= stack_kS_top; i++) set_tmp.emplace_back(stack_kS[i]);
+        for (int64 i = 1; i <= stack_kS_top_enum; i++) set_tmp.emplace_back(stack_kS_enum[i]);
         V_n.emplace_back(set_tmp);
         return;
     }
     int u = *it;
     if (is_new) {
         if (it == S.begin())
-            for (auto w : S) node_selected[w] = 2;
-        neighbour_selected[u] = 0;
+            for (auto w : S) node_selected_enum[w] = 2;
+        neighbour_selected_enum[u] = 0;
         for (int64 i = 0; i < graph.g[u].size(); i++) {
             int64 v = graph.g[u][i].v;
-            if (node_selected[v] == 1) neighbour_selected[u]++;
+            if (node_selected_enum[v] == 1) neighbour_selected_enum[u]++;
         }
     }
-    if (k_now == k0 || neighbour_selected[u] == graph.g[u].size()) {
+    if (k_now == k0 || neighbour_selected_enum[u] == graph.g[u].size()) {
         select_neighbours(graph, S, V_n, k0, 0, 0, ++it, true);
     } else {
         for (int64 i = i_now; i < graph.g[u].size(); i++) {
             int v = graph.g[u][i].v;
-            if (!node_selected[v]) {
-                node_selected[v] = 1;
+            if (!node_selected_enum[v]) {
+                node_selected_enum[v] = 1;
                 k_now++;
-                neighbour_selected[u]++;
-                stack_kS[++stack_kS_top] = v;
+                neighbour_selected_enum[u]++;
+                stack_kS_enum[++stack_kS_top_enum] = v;
                 select_neighbours(graph, S, V_n, k0, k_now, i + 1, it, false);
-                node_selected[v] = 0;
+                node_selected_enum[v] = 0;
                 k_now--;
-                neighbour_selected[u]--;
-                --stack_kS_top;
+                neighbour_selected_enum[u]--;
+                --stack_kS_top_enum;
             }
         }
     }
-    if (is_new && it == S.begin()) for (int w : S) node_selected[w] = 0;
+    if (is_new && it == S.begin()) for (int w : S) node_selected_enum[w] = 0;
 }
 
 /*!
@@ -284,7 +353,7 @@ void advanced_pgrank_method(Graph &graph, int64 k, std::vector<int64> &A, std::v
 }
 
 /*!
- * @brief Encapsulated operations for advanced version of IM solver : degree
+ * @brief Encapsulated operations for advanced version of IM solver : pagerank
  * @param graph : the graph
  * @param k : the number in the problem definition
  * @param A : the active participant set A
@@ -294,7 +363,7 @@ void advanced_degree_method(Graph &graph, int64 k, std::vector<int64> &A, std::v
     std::vector<std::pair<double, int64> > S_ordered;
     CandidateNeigh candidate(graph, A, k);
     for (int64 w : candidate.N) S_ordered.emplace_back(std::make_pair(graph.deg_out[w], w));
-    //S_ordered is ordered by degree
+    //S_ordered is ordered by pageRank
     sort(S_ordered.begin(), S_ordered.end(), std::greater<>());
     for (auto & i : S_ordered) {
         int64 v = i.second;
@@ -304,6 +373,44 @@ void advanced_degree_method(Graph &graph, int64 k, std::vector<int64> &A, std::v
         seeds.emplace_back(v);
     }
     seedAvgDegree = candidate.avgDegree();
+}
+
+double method_greedy_PageRank(Graph &graph, int64 k, std::vector<int64> &A, std::vector<bi_node> &seeds) {
+    std::vector<double> pi(graph.n, 0);
+    std::vector<std::pair<double, int64> > S_ordered;
+    CandidateNeigh candidate(graph, A, k);
+
+    double cur = clock();
+    power_iteration(graph, pi, 0.2);
+    for (int64 w : candidate.N) S_ordered.emplace_back(std::make_pair(pi[w], w));
+    //S_ordered is ordered by pageRank
+    sort(S_ordered.begin(), S_ordered.end(), std::greater<>());
+    for (auto & i : S_ordered) {
+        int64 v = i.second;
+        int64 u = candidate.source_participant(v);
+        if (u == -1) continue;
+        candidate.choose(u);
+        seeds.emplace_back(v, u);
+    }
+    return time_by(cur);
+}
+
+double method_greedy_Degree(Graph &graph, int64 k, std::vector<int64> &A, std::vector<bi_node> &seeds) {
+    std::vector<std::pair<double, int64> > S_ordered;
+    CandidateNeigh candidate(graph, A, k);
+
+    double cur = clock();
+    for (int64 w : candidate.N) S_ordered.emplace_back(std::make_pair(graph.deg_out[w], w));
+    //S_ordered is ordered by pageRank
+    sort(S_ordered.begin(), S_ordered.end(), std::greater<>());
+    for (auto & i : S_ordered) {
+        int64 v = i.second;
+        int64 u = candidate.source_participant(v);
+        if (u == -1) continue;
+        candidate.choose(u);
+        seeds.emplace_back(v, u);
+    }
+    return time_by(cur);
 }
 
 /*!
@@ -322,15 +429,12 @@ void advanced_CELF_method(Graph &graph, int64 k, std::vector<int64> &A, std::vec
     seeds.resize(1); //Add a temporary space
     for (int64 u : candidate.N) {
         seeds[0] = u;
-        if (!local_mg) {
-            Q.push(make_pair(FI_simulation_new(graph, seeds, A), std::make_pair(u, 0)));
-        } else {
-            Q.push(make_pair(MG0[u], std::make_pair(u, 0)));
-        }
+        Q.push(make_pair(FI_simulation_new(graph, seeds, A), std::make_pair(u, 0)));
     }
     double current_spread = 0;
     seeds.pop_back(); //Clear the temporary space
     if (verbose_flag) printf("\tInitialization time = %.5f\n", time_by(cur));
+    int ezcount = 0;
     while (!Q.empty()) {
         node0 Tp = Q.top();
         int64 v = Tp.second.first;
@@ -341,6 +445,7 @@ void advanced_CELF_method(Graph &graph, int64 k, std::vector<int64> &A, std::vec
         if (u == -1) continue;
         r++;
         if (it_round == seeds.size()) {
+
             candidate.choose(u);
             seeds.emplace_back(v);
             current_spread += mg;
@@ -348,6 +453,7 @@ void advanced_CELF_method(Graph &graph, int64 k, std::vector<int64> &A, std::vec
                 std::cout << "\tnode = " << v << "\tround = " << r << "\ttime = " << time_by(cur) << std::endl;
             }
         } else {
+            ezcount++;
             seeds.emplace_back(v);
             Tp.first = FI_simulation_new(graph, seeds, A) - current_spread;
             seeds.pop_back();
@@ -355,8 +461,183 @@ void advanced_CELF_method(Graph &graph, int64 k, std::vector<int64> &A, std::vec
             Q.push(Tp);
         }
     }
+    printf("CELF count = %d\n", ezcount);
     seedAvgDegree = candidate.avgDegree();
     if (verbose_flag) printf("CELF advanced done. total time = %.3f\n", time_by(cur));
+}
+
+/*!
+ * @brief Encapsulated operations for advanced version of IM solver : CELF
+ * @param graph : the graph
+ * @param k : the number in the problem definition
+ * @param A : the active participant set A
+ * @param seeds : returns the seed set S = {S_1, S_2, ..., S_n}
+ */
+double method_greedy_CELF(Graph &graph, int64 k, std::vector<int64> &A, std::vector<bi_node> &seeds) {
+    /// initialization
+    CandidateNeigh candidate(graph, A, k);
+    typedef std::pair<double, std::pair<int64, int64> > node0;
+    std::priority_queue<node0> Q;
+    std::vector<int64> seeds_calc(1); //Add a temporary space
+    double current_spread = 0;
+
+    /// main
+    double cur = clock();
+    for (int64 u : candidate.N) {
+        ASSERT(cur);
+        seeds_calc[0] = u;
+        Q.push(make_pair(FI_simulation_new(graph, seeds_calc, A), std::make_pair(u, 0)));
+    }
+    seeds_calc.clear(); //Clear the temporary space
+    while (!Q.empty()) {
+        ASSERT(cur);
+        node0 Tp = Q.top();
+        int64 v = Tp.second.first;
+        int64 it_round = Tp.second.second;
+        double mg = Tp.first;
+        Q.pop();
+        int64 u = candidate.source_participant(v);
+        if (u == -1) continue;
+        if (it_round == seeds.size()) {
+            candidate.choose(u);
+            seeds.emplace_back(v, u);
+            seeds_calc.emplace_back(v);
+            current_spread += mg;
+        } else {
+            seeds_calc.emplace_back(v);
+            Tp.first = FI_simulation_new(graph, seeds_calc, A) - current_spread;
+            seeds_calc.pop_back();
+            Tp.second.second = seeds.size();
+            Q.push(Tp);
+        }
+    }
+    return time_by(cur);
+}
+
+/*!
+ * @brief MC-simulation-based Threshold algorithm.
+ * @param graph : the graph
+ * @param k : the budget
+ * @param A : active participant vector
+ * @param seeds : Passing parameters, returns the seed set
+ * @param epsilon : decrement threshold per step
+ * @param seedAvgDegree
+ */
+double method_Threshold_CELF(Graph &graph, int64 k, std::vector<int64> &A, std::vector<bi_node> &seeds) {
+    double epsilon = 0.05;
+    std::vector<std::pair<double, int64>> mg(graph.n);
+    double W = 0;
+    CandidateNeigh candidate(graph, A, k);
+    std::vector<int64> seeds_calc(1); //Add a temporary space
+    double current_spread = 0;
+
+    /// main
+    double cur = clock();
+    for (auto u : candidate.N) {
+        ASSERT(cur);
+        seeds_calc[0] = u;
+        mg[u] = std::make_pair(FI_simulation_new(graph, seeds_calc, A), 0);
+        W = std::max(W, mg[u].first);
+    }
+    seeds_calc.clear();
+    for (int64 T = 1 - log(1.0 * A.size() * k / epsilon) / log(1.0 - epsilon); T > 0; T--) {
+        for (auto u : candidate.N) {
+            ASSERT(cur);
+            if (mg[u].second == -1) continue; //which means u was selected as seed
+            if (mg[u].first < W) continue; //if f(u|S)<w, then after recalculating it also satisfies.
+            int64 v = candidate.source_participant(u);
+            if (v == -1) {
+                mg[u].second = -1;
+                continue;
+            }
+            if (mg[u].second < seeds.size()) { //when f(u|S) is out-of-date, update it
+                seeds_calc.emplace_back(u);
+                mg[u] = std::make_pair(FI_simulation_new(graph, seeds_calc, A) - current_spread, seeds.size());
+                seeds_calc.pop_back();
+            }
+            if (mg[u].first >= W) {
+                seeds.emplace_back(u, v);
+                seeds_calc.emplace_back(u);
+                candidate.choose(v);
+                current_spread += mg[u].first;
+                mg[u].second = -1; //marked that u was selected
+            }
+        }
+        W *= 1.0 - epsilon;
+    }
+    return time_by(cur);
+}
+
+
+double method_DProb_CELF(Graph &graph, int64 k, std::vector<int64> &A, std::vector<bi_node> &seeds) {
+    ///initialization
+    typedef std::pair<double, std::pair<int64, int64> > node0;
+    std::priority_queue<node0> Q[A.size()];
+    std::map<int64, double> marginal_influence;
+    std::set<int64> A_reorder(A.begin(), A.end());
+    std::vector<int64> seeds_calc(1); //Add a temporary space
+    int64 current_influence = 0, N_empty = 0;
+    std::vector<int64> Ni_empty(A.size(), 0);
+    std::vector<bool> selected(graph.n, false);
+
+    /// main
+    double cur = clock();
+    for (int i = 0; i < A.size(); i++) {
+        for (auto e : graph.g[A[i]])
+            if (A_reorder.find(e.v) == A_reorder.end()) {
+                auto tmp_mg = marginal_influence[e.v];
+                if (tmp_mg != 0) {
+                    Q[i].push(std::make_pair(tmp_mg, std::make_pair(e.v, 0)));
+                }
+                else {
+                    seeds_calc[0] = e.v;
+                    tmp_mg = FI_simulation_new(graph, seeds_calc, A);
+                    ASSERT(cur);
+                    marginal_influence[e.v] = tmp_mg;
+                    Q[i].push(std::make_pair(tmp_mg, std::make_pair(e.v, 0)));
+                }
+            }
+    }
+    seeds_calc.clear(); //Clear the temporary space
+    while (N_empty < A.size()) {
+        for (int i = 0; i < A.size(); i++) { ///N_numbers[i] == k + 1 means that N[i] is full
+            ASSERT(cur);
+            if (Ni_empty[i] != k + 1 && Ni_empty[i] == k) {
+                Ni_empty[i] = k + 1;
+                N_empty++;
+            }
+            if (Ni_empty[i] == k + 1) continue;
+            /// skip all nodes that cannot be selected, since we must select one in this for-loop
+            while (!Q[i].empty() && (selected[Q[i].top().second.first] || Q[i].top().second.second != seeds.size())) {
+                node0 Tp = Q[i].top();
+                Q[i].pop();
+                if (selected[Tp.second.first]) continue;
+                if (Tp.second.second != seeds.size()) {
+                    seeds_calc.emplace_back(Tp.second.first);
+                    Tp.first = FI_simulation_new(graph, seeds_calc, A) - current_influence;
+                    ASSERT(cur);
+                    seeds_calc.pop_back();
+                    Tp.second.second = seeds.size();
+                    Q[i].push(Tp);
+                }
+            }
+            if (Ni_empty[i] != k + 1 && Q[i].empty()) {
+                Ni_empty[i] = k + 1;
+                N_empty++;
+            }
+            if (Ni_empty[i] == k + 1) continue;
+            int64 v = Q[i].top().second.first;
+            double mg = Q[i].top().first;
+            Q[i].pop();
+            ///choose v
+            seeds.emplace_back(v, A[i]);
+            seeds_calc.emplace_back(v);
+            current_influence += mg;
+            selected[v] = true;
+            Ni_empty[i]++;
+        }
+    }
+    return time_by(cur);
 }
 
 #endif //EXP_IMS_H

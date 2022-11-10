@@ -10,18 +10,17 @@
 /*!
  * @brief generate a random node set of graph.
  * @param graph : the graph
- * @param S : stores the node set. Suppose it is initialized as empty.
+ * @param A : stores the node set. Suppose it is initialized as empty.
  * @param size : the size of the node set
  */
-void generate_seed(Graph &graph, std::vector<int64> &S, int64 size = 1) {
-    S.clear();
-    auto *tmp = new int64[graph.n];
-    for (int64 i = 0; i < graph.n; i++) {
-        tmp[i] = i;
+void generate_seed(Graph &graph, std::vector<int64> &A, int64 size = 1) {
+    A.clear();
+    std::uniform_int_distribution<int64> uniformIntDistribution(0, graph.n - 1);
+    for (int64 i = 0; i < size; i++) {
+        int64 v = uniformIntDistribution(mt19937engine);
+        while (std::find(A.begin(), A.end(), v) != A.end()) v = uniformIntDistribution(mt19937engine);
+        A.emplace_back(v);
     }
-    shuffle(tmp, tmp + graph.n, std::mt19937(std::random_device()()));
-    for (int64 i = 0; i < size; i++) S.emplace_back(tmp[i]);
-    delete[] tmp;
 }
 
 /*!
@@ -134,40 +133,37 @@ double estimate_neighbor_overlap(Graph &graph, std::vector<int64> &seeds) {
 }
 
 /*!
- * @brief generate FI sketches to evaluate the influence spread.
- * @param graph : the graph that define propagation models(IC-M)
- * @param S : the seed set
- * @return the estimated value of influence spread
- */
-double FI_simulation(Graph &graph, std::vector<int64> &S) {
-    std::vector<int64> RR, emptyNode(0);
-    RRContainer RRI(graph, emptyNode, false);
-    double res = 0, cur = clock();
-    for (int i = 1; i <= MC_iteration_rounds; i++) {
-        RRI.RI_Gen(graph, S, RR);
-        res += (double) RR.size() / MC_iteration_rounds;
-    }
-    if (verbose_flag) printf("\t\tresult=%.3f time=%.3f\n", res, time_by(cur));
-    return res;
-}
-
-/*!
  * @brief New calculation of influence spread in BIM, in which the effect of ap is excluded
  * @param graph : the graph that define propagation models(IC-M)
  * @param S : the seed set
  * @param A : the active participant
  * @return the estimated value of influence spread
  */
-double FI_simulation_new(Graph &graph, std::vector<int64> &S, std::vector<int64> &A) {
+double FI_simulation_new(Graph &graph, std::vector<int64> &S, std::vector<int64> &A, int64 it_rounds = -1) {
     RRContainer RRI(graph, A, false);
     std::vector<int64> RR;
     double res = 0, cur = clock();
-    for (int i = 1; i <= MC_iteration_rounds; i++) {
+    int64 it_ = (it_rounds == -1) ? MC_iteration_rounds : it_rounds;
+    for (int i = 1; i <= it_; i++) {
         RRI.RI_Gen(graph, S, RR);
-        res += (double) RR.size() / MC_iteration_rounds;
+        res += RR.size();
     }
     if (verbose_flag) printf("\t\tresult=%.3f time=%.3f\n", res, time_by(cur));
-    return res;
+    return res / it_;
+}
+
+double FI_simulation_binode(Graph &graph, std::vector<bi_node> &S, std::vector<int64> &A, int64 it_rounds = -1) {
+    RRContainer RRI(graph, A, false);
+    std::vector<int64> RR, S_(S.size());
+    for(int i = 0; i < S.size(); i++) S_[i] = S[i].first;
+    double res = 0, cur = clock();
+    int64 it_ = (it_rounds == -1) ? MC_iteration_rounds : it_rounds;
+    for (int i = 1; i <= it_; i++) {
+        RRI.RI_Gen(graph, S_, RR);
+        res += RR.size();
+    }
+    if (verbose_flag) printf("\t\tresult=%.3f time=%.3f\n", res, time_by(cur));
+    return res / it_;
 }
 
 #endif //EXP_SIMULATION_H

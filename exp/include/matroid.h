@@ -8,123 +8,6 @@
 #include "simulation.h"
 
 /*!
- * @brief MC-simulation-based Threshold algorithm.
- * @param graph : the graph
- * @param k : the budget
- * @param A : active participant vector
- * @param seeds : Passing parameters, returns the seed set
- * @param epsilon : decrement threshold per step
- * @param seedAvgDegree
- */
-void Thresholding_CELF(Graph &graph, int64 k, std::vector<int64> &A, std::vector<int64> &seeds,
-                       double epsilon, double &seedAvgDegree) {
-    double cur = clock();
-    auto *mg = new std::pair<double, int64>[graph.n]();
-    double W = 0;
-    CandidateNeigh candidate(graph, A, k);
-    seeds.resize(1);
-    for (auto u : candidate.N) {
-        seeds[0] = u;
-        if (!local_mg) mg[u] = std::make_pair(FI_simulation_new(graph, seeds, A), 0);
-        else mg[u] = std::make_pair(MG0[u], 0);
-        W = std::max(W, mg[u].first);
-    }
-    seeds.clear();
-    double currentSpread = 0;
-
-    //main loop
-    int r = 0;
-    for (int64 T = 1 - log(1.0 * A.size() * k / epsilon) / log(1.0 - epsilon); T > 0; T--) {
-        r++;
-        if (verbose_flag) std::cout << "w : " << W << " round : " << r << std::endl;
-        for (auto u : candidate.N) {
-            if (mg[u].second == -1) continue; //which means u was selected as seed
-            if (mg[u].first < W) continue; //if f(u|S)<w, then after recalculating it also satisfies.
-            int64 v = candidate.source_participant(u);
-            if (v == -1) {
-                mg[u].second = -1;
-                continue;
-            }
-            if (mg[u].second < seeds.size()) { //when f(u|S) is out-of-date, update it
-                seeds.emplace_back(u);
-                mg[u] = std::make_pair(FI_simulation_new(graph, seeds, A) - currentSpread, seeds.size());
-                seeds.pop_back();
-            }
-            if (mg[u].first >= W) {
-                if (verbose_flag) std::cout << "\tnode = " << u << "\ttime = " << time_by(cur) << std::endl;
-                seeds.emplace_back(u);
-                candidate.choose(v);
-                currentSpread += mg[u].first;
-                mg[u].second = -1; //marked that u was selected
-            }
-        }
-        W *= 1.0 - epsilon;
-    }
-    if (verbose_flag) printf("Thresholding CELF1 done. total time = %.3f\n", time_by(cur));
-    delete[] mg;
-    seedAvgDegree = candidate.avgDegree();
-}
-
-
-void dprob_CELF(Graph &graph, int64 k, std::vector<int64> &A, std::vector<int64> &seeds) {
-    ///initialization
-    double sim_time = 0, cur;
-    typedef std::pair<double, std::pair<int64, int64> > node0;
-    std::priority_queue<node0> Q[A.size()];
-    seeds.resize(1);
-    for (int i = 0; i < A.size(); i++) {
-        for (auto e : graph.g[A[i]])
-            if (std::find(A.begin(), A.end(), e.v) == A.end()) {
-                seeds[0] = e.v;
-                cur = clock();
-                double xx = FI_simulation_new(graph, seeds, A);
-                sim_time += time_by(cur);
-                Q[i].push(make_pair(xx, std::make_pair(e.v, 0)));
-            }
-    }
-    seeds.clear(); //Clear the temporary space
-
-    int64 current_influence = 0, N_empty = 0;
-    std::vector<int64> Ni_empty(A.size(), 0);
-    std::vector<bool> selected(graph.n, false);
-    while (N_empty < A.size()) {
-        for (int i = 0; i < A.size(); i++) { ///N_numbers[i] == k + 1 means that N[i] is full
-            /// skip all nodes that cannot be selected, since we must select one in this for-loop
-            while (!Q[i].empty() && (selected[Q[i].top().second.first] || Q[i].top().second.second != seeds.size())) {
-                node0 Tp = Q[i].top();
-                Q[i].pop();
-                if (selected[Tp.second.first]) continue;
-                if (Tp.second.second != seeds.size()) {
-                    seeds.emplace_back(Tp.second.first);
-                    cur = clock();
-                    double xx = FI_simulation_new(graph, seeds, A);
-                    sim_time += time_by(cur);
-                    Tp.first = xx - current_influence;
-                    seeds.pop_back();
-                    Tp.second.second = seeds.size();
-                    Q[i].push(Tp);
-                }
-            }
-            if (Ni_empty[i] != k + 1 && (Ni_empty[i] == k || Q[i].empty())) {
-                Ni_empty[i] = k + 1;
-                N_empty++;
-            }
-            if (Ni_empty[i] == k + 1) continue;
-            int64 v = Q[i].top().second.first;
-            double mg = Q[i].top().first;
-            Q[i].pop();
-            ///choose v
-            seeds.emplace_back(v);
-            current_influence += mg;
-            selected[v] = true;
-            Ni_empty[i]++;
-        }
-    }
-    printf("sim time: %.3f\n", sim_time);
-}
-
-
-/*!
  * @brief given RR sets, the [greedy] algorithm select the seed set based on these RR sets.
  * @param graph : the graph
  * @param A : active participant vector
@@ -141,6 +24,7 @@ int64 IMMSelection(Graph &graph, std::vector<int64> &A, int64 k, std::vector<bi_
     double cur = clock(), time_rrset = 0, cur_rrset;
 
     std::vector<bool> RISetCovered(RRI.R.size(), false);
+    std::vector<bool> nodeRemain(graph.n, false);
     for (int64 i : candidate.N) nodeRemain[i] = true;
     auto *coveredNum_tmp = new int64[graph.n];
     memcpy(coveredNum_tmp, RRI.coveredNum, graph.n * sizeof(int64));
@@ -183,7 +67,6 @@ int64 IMMSelection(Graph &graph, std::vector<int64> &A, int64 k, std::vector<bi_
 //    stdFileOut << "IMM:\n";
 //    stdFileOut << "total time = " << time_by(cur) << " time select seed = " << time_rrset << std::endl;
 //    stdFileOut << "total = " << total << " selected = " << selected << " unselected = " << unselected << std::endl;
-    for (int64 i : candidate.N) nodeRemain[i] = false;
     delete[] coveredNum_tmp;
     return current_influence;
 }
@@ -206,6 +89,7 @@ int64 ThresholdSelection(Graph &graph, std::vector<int64> &A, int64 k, std::vect
     double cur = clock(), time_rrset = 0, cur_rrset;
     ///initialization
     std::vector<bool> RISetCovered(RRI.R.size(), false);
+    std::vector<bool> nodeRemain(graph.n, false);
     for (int64 i : candidate.N) nodeRemain[i] = true;
     auto *coveredNum_tmp = new int64[graph.n];
     memcpy(coveredNum_tmp, RRI.coveredNum, graph.n * sizeof(int64));
@@ -265,7 +149,6 @@ int64 ThresholdSelection(Graph &graph, std::vector<int64> &A, int64 k, std::vect
 //    stdFileOut << "total time = " << time_by(cur) << " time select seed = " << time_rrset << std::endl;
 //    stdFileOut << "total = " << total << " selected = " << selected << " unselected = " << unselected << std::endl;
 
-    for (int64 i : candidate.N) nodeRemain[i] = false;
     delete[] coveredNum_tmp;
     delete[] threshold;
     delete[] thresholdList;
@@ -304,6 +187,7 @@ int64 prob(Graph &graph, std::vector<int64> &A, int64 k, std::vector<bi_node> &b
     double cur = clock(), time_rrset = 0, cur_rrset;
     int64 total = 0, selected = 0, unselected = 0;
     std::set<int64> N_unselected;
+    std::vector<bool> nodeRemain(graph.n, false);
     ///initialization
     std::set<int64> N[A.size()];
     for (int i = 0; i < A.size(); i++) {
@@ -368,8 +252,6 @@ int64 prob(Graph &graph, std::vector<int64> &A, int64 k, std::vector<bi_node> &b
     }
     unselected = N_unselected.size();
 
-    for (long i : A)
-        for (auto e : graph.g[i]) nodeRemain[e.v] = false;
     delete[] coveredNum_tmp;
 
 //    stdFileOut << "total time = " << time_by(cur) << " time select seed = " << time_rrset << std::endl;
@@ -391,6 +273,7 @@ int64 prob_determined(Graph &graph, std::vector<int64> &A, int64 k, std::vector<
     double cur = clock(), time_rrset = 0, cur_rrset;
     int64 total = 0, selected = 0, unselected = 0;
     std::set<int64> N_unselected;
+    std::vector<bool> nodeRemain(graph.n, false);
     ///initialization
     std::set<int64> N[A.size()];
     for (int i = 0; i < A.size(); i++) {
@@ -448,8 +331,6 @@ int64 prob_determined(Graph &graph, std::vector<int64> &A, int64 k, std::vector<
 
     unselected = N_unselected.size();
 
-    for (long i : A)
-        for (auto e : graph.g[i]) nodeRemain[e.v] = false;
     delete[] coveredNum_tmp;
 
 //    stdFileOut << "total time = " << time_by(cur) << " time select seed = " << time_rrset << std::endl;

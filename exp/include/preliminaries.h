@@ -46,7 +46,7 @@
 #define CELF_THRESHOLD2 13
 
 typedef int64_t int64;
-typedef std::pair<int64, int64 > bi_node;
+typedef std::pair<int64, int64 > bi_node; //first: seed second: source AP
 
 const std::string solver_name[] = {"ENUMERATION", "DEGREE", "PAGERANK", "CELF", "DEGREE_ADVANCED", "PAGERANK_ADVANCED",
                                    "CELF_ADVANCED", "IMM_NORMAL", "IMM_ADVANCED", "OPIM_NORMAL", "OPIM_ADVANCED",
@@ -58,7 +58,7 @@ std::mt19937 mt19937engine(rd__());
 std::uniform_real_distribution<double> distrib(0.0, 1.0);
 
 std::ofstream stdFileOut;
-int8_t verbose_flag, local_mg;
+int8_t verbose_flag;
 int64_t MC_iteration_rounds = 10000;
 
 double logcnk(int n, int k) {

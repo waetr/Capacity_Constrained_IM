@@ -14,7 +14,6 @@
  * nodeRemain : check if an node is remained in the heap
  * covered_num_tmp : a copy of covered_num
  */
-bool nodeRemain[MAX_NODE_SIZE];
 
 /*!
  * @brief Selection phase of IMM : Select a set S of size k that covers the maximum RI sets in R
@@ -28,6 +27,7 @@ bool nodeRemain[MAX_NODE_SIZE];
 double IMMNodeSelection(Graph &graph, std::vector<int64> &candidate, int64 k, std::vector<int64> &S, RRContainer &RRI) {
     S.clear();
     std::vector<bool> RISetCovered(RRI.R.size(), false);
+    std::vector<bool> nodeRemain(graph.n, false);
     for (int64 i : candidate) nodeRemain[i] = true;
     auto *coveredNum_tmp = new int64[graph.n];
     memcpy(coveredNum_tmp, RRI.coveredNum, graph.n * sizeof(int64));
@@ -55,7 +55,6 @@ double IMMNodeSelection(Graph &graph, std::vector<int64> &candidate, int64 k, st
         }
     }
     delete[] coveredNum_tmp;
-    for (int64 i : candidate) nodeRemain[i] = false;
     return (double) influence / RRI.R.size();
 }
 
@@ -154,6 +153,7 @@ double IMMNodeSelection_advanced(Graph &graph, std::vector<int64> &A, int64 k, s
     S.clear();
     CandidateNeigh candidate(graph, A, k);
     std::vector<bool> RISetCovered(RRI.R.size(), false);
+    std::vector<bool> nodeRemain(graph.n, false);
     for (int64 i : candidate.N) nodeRemain[i] = true;
     auto *coveredNum_tmp = new int64[graph.n];
     memcpy(coveredNum_tmp, RRI.coveredNum, graph.n * sizeof(int64));
@@ -185,7 +185,6 @@ double IMMNodeSelection_advanced(Graph &graph, std::vector<int64> &A, int64 k, s
             RISetCovered[RIIndex] = true;
         }
     }
-    for (int64 i : candidate.N) nodeRemain[i] = false;
     delete[] coveredNum_tmp;
     return (double) influence / RRI.R.size();
 }

@@ -19,6 +19,7 @@
 int64 OPIMGreedy(Graph &graph, std::vector<int64> &candidate, int64 k, std::vector<int64> &S, RRContainer &RRI) {
     S.clear();
     std::vector<bool> RISetCovered(RRI.R.size(), false);
+    std::vector<bool> nodeRemain(graph.n, false);
     for (int64 i : candidate) nodeRemain[i] = true;
     auto *coveredNum_tmp = new int64[graph.n];
     memcpy(coveredNum_tmp, RRI.coveredNum, graph.n * sizeof(int64));
@@ -63,7 +64,6 @@ int64 OPIMGreedy(Graph &graph, std::vector<int64> &candidate, int64 k, std::vect
         A_u = std::min(A_u, A_u_i);
     }
     delete[] coveredNum_tmp;
-    for (int64 i : candidate) nodeRemain[i] = false;
     return A_u;
 }
 
@@ -143,6 +143,7 @@ int64 OPIMGreedy_G(Graph &graph, std::vector<int64> &A, int64 k, std::vector<int
     S.clear();
     CandidateNeigh candidate(graph, A, k);
     std::vector<bool> RISetCovered(RRI.R.size(), false);
+    std::vector<bool> nodeRemain(graph.n, false);
     for (int64 i : candidate.N) nodeRemain[i] = true;
     auto *coveredNum_tmp = new int64[graph.n];
     memcpy(coveredNum_tmp, RRI.coveredNum, graph.n * sizeof(int64));
@@ -193,7 +194,6 @@ int64 OPIMGreedy_G(Graph &graph, std::vector<int64> &A, int64 k, std::vector<int
         A_u = std::min(A_u, A_u_i);
     }
     delete[] coveredNum_tmp;
-    for (int64 i : candidate.N) nodeRemain[i] = false;
     return A_u;
 }
 

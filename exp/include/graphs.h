@@ -24,7 +24,7 @@ struct Edge {
     Edge(int64 v, double p, double m) : v(v), p(p), m(m) {}
 };
 
-const std::vector<Edge> gg;
+const std::vector<Edge> edgeList_instance;
 
 class Graph {
 public:
@@ -72,8 +72,8 @@ public:
     void add_edge(int64 source, int64 target, double weight = 1.0) {
         n = std::max(n, std::max(source, target) + 1);
         while (g.size() < n) {
-            g.emplace_back(gg);
-            gT.emplace_back(gg);
+            g.emplace_back(edgeList_instance);
+            gT.emplace_back(edgeList_instance);
             deg_in.emplace_back(0);
             deg_out.emplace_back(0);
         }
@@ -156,6 +156,12 @@ public:
 
     CandidateNeigh() = default;
 
+    /*!
+     * @brief create an instance.
+     * @param graph : graph
+     * @param A : set of active participant
+     * @param k0 : budget
+     */
     CandidateNeigh(Graph &graph, std::vector<int64> &A, int64 k0) {
         Ap = A;
         k = k0;
@@ -245,14 +251,13 @@ public:
 class RRContainer {
 private:
     ///@brief temporary array for RI_Gen
-///
-/// no need to initialize
     int64 *dist;
     bool *DijkstraVis;
     size_t _sizeOfRRsets = 0;
     bool RIFlag = false; //false : FI sets true: RI sets
     //set which is excluded from the spread propagation (bitwise representation)
     std::vector<bool> excludedNodes;
+
 
 public:
     ///collection of RI sets
@@ -373,9 +378,8 @@ public:
      * @brief Insert a random RR set into the container.
      * @param G
      */
-    void insertOneRandomRRset(Graph &G) {
+    void insertOneRandomRRset(Graph &G, std::uniform_int_distribution<int64> &uniformIntDistribution) {
         std::vector<int64> RR;
-        std::uniform_int_distribution<int64> uniformIntDistribution(0, G.n - 1);
         int64 v = uniformIntDistribution(mt19937engine);
         std::vector<int64> vStart = {v};
         RI_Gen(G, vStart, RR);
@@ -393,7 +397,8 @@ public:
      * @param size
      */
     void resize(Graph &G, size_t size) {
-        while (R.size() < size) insertOneRandomRRset(G);
+        std::uniform_int_distribution<int64> uniformIntDistribution(0, G.n - 1);
+        while (R.size() < size) insertOneRandomRRset(G, uniformIntDistribution);
     }
 
     /*!
@@ -408,6 +413,24 @@ public:
         for (auto seed : vecSeed) vecBoolSeed[seed] = true;
         for (auto seed : vecSeed) {
             for (auto node : covered[seed]) {
+                vecBoolVst[node] = true;
+            }
+        }
+        return std::count(vecBoolVst.begin(), vecBoolVst.end(), true);
+    }
+
+    /*!
+ * @brief calculate the coverage of vertex set S on these RR sets
+ * @param G : the graph
+ * @param vecSeed : vertex set S
+ * @return : the number of RR sets that are covered by S
+ */
+    int64 self_inf_cal(Graph &G, std::vector<bi_node> &vecSeed) const {
+        std::vector<bool> vecBoolVst = std::vector<bool>(R.size());
+        std::vector<bool> vecBoolSeed(G.n);
+        for (auto seed : vecSeed) vecBoolSeed[seed.first] = true;
+        for (auto seed : vecSeed) {
+            for (auto node : covered[seed.first]) {
                 vecBoolVst[node] = true;
             }
         }
