@@ -24,17 +24,6 @@ void printvec(vector<double> &a) {
     printf("]\n");
 }
 
-void __print_set(std::vector<bi_node> &S) {
-    std::vector<bi_node> S_ordered = S;
-    std::sort(S_ordered.begin(), S_ordered.end());
-    std::cout << "{";
-    for (int64 i = 0; i < S_ordered.size(); i++) {
-        std::cout << S_ordered[i].first;
-        if (i != S_ordered.size() - 1) std::cout << ",";
-    }
-    std::cout << "}[" << S_ordered.size() << "]\n";
-}
-
 int main(int argc, char const *argv[]) {
     init_commandLine(argc, argv);
     double init_cur = clock();
@@ -43,7 +32,7 @@ int main(int argc, char const *argv[]) {
     vector<int64> A[3];
     vector<bi_node> seeds;
     printf("open graph time = %.3f n = %ld m = %ld\n", time_by(init_cur), G.n, G.m);
-    vector<int64> apsize_ = {5, 10, 20}, k_ = {1, 2, 5};
+    vector<int64> apsize_ = {2, 5, 10, 20}, k_ = {1, 2, 5};
 
     for (auto apsize : apsize_) {
         for (auto k : k_) {
