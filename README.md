@@ -8,6 +8,9 @@
 | [com-DBLP](http://snap.stanford.edu/data/com-DBLP.html)      | Undirected | 317,080   | 1,049,866  |
 | [soc-LiveJournal1](http://snap.stanford.edu/data/soc-LiveJournal1.html) | Directed   | 4,847,571 | 68,993,773 |
 | [soc-Pokec](http://snap.stanford.edu/data/soc-Pokec.html)    | Directed   | 1,632,803 | 30,622,564 |
+| hepPh                                                        | Directed   | 12008     | 237010     |
+| facebook                                                     | Directed   | 4039      | 88234      |
+| viki-Vote                                                    | Directed   | 7115      | 103689     |
 
 ## 编译与运行
 
