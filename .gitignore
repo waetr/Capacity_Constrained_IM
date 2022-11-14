@@ -3,6 +3,8 @@ exp/cmake-build-debug-/
 exp/data/twitter-2010.txt.gz
 exp/data/soc-LiveJournal.txt
 exp/data/soc-pokec.txt
+exp/data/*.exe
+exp/data/*.cpp
 .git/
 .idea/
 results/

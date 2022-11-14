@@ -32,7 +32,7 @@ int main(int argc, char const *argv[]) {
     vector<int64> A[3];
     vector<bi_node> seeds;
     printf("open graph time = %.3f n = %ld m = %ld\n", time_by(init_cur), G.n, G.m);
-    vector<int64> apsize_ = {2, 5, 10, 20}, k_ = {1, 2, 5};
+    vector<int64> apsize_ = {2, 5, 10, 20}, k_ = {1, 2, 5, 10};
 
     for (auto apsize : apsize_) {
         for (auto k : k_) {

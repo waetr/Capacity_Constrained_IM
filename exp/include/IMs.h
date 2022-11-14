@@ -54,7 +54,7 @@ void CELF_local(Graph &graph, int64 k, std::vector<int64> &candidate, std::vecto
 
 /*!
  * @brief Use power iteration method to calculate pagerank values of nodes in graph.
- * @remarks Note that if there are isolated nodes in the graph, the iteration will not stop causing an error.
+ * @remarks Note that if there are isolated nodes in the graph, the iteration will not stop and will lead to an error.
  * @param graph : the graph
  * @param pi : returns a size-n vector, containing pagerank values of all nodes
  * @param alpha : initialized usually as 0.15 or 0.2
@@ -83,38 +83,11 @@ void power_iteration(Graph &graph, std::vector<double> &pi, double alpha, double
 }
 
 /*!
- * @brief Encapsulated operations for Option 2 using IM solver : pagerank
+ * @brief Encapsulated method using local-PageRank
  * @param graph : the graph
  * @param k : the number in the problem definition
  * @param A : the active participant set A
- * @param seeds : returns the seed set S = {S_1, S_2, ..., S_n}
- */
-void pgrank_method(Graph &graph, int64 k, std::vector<int64> &A, std::vector<int64> &seeds) {
-    std::vector<double> pi(graph.n, 0);
-    power_iteration(graph, pi, 0.2);
-    std::vector<std::pair<double, int64> > pg_rank;
-    std::set<int64> seeds_reorder;
-    for (int64 u : A) {
-        pg_rank.clear();
-        for (auto &edge : graph.g[u]) {
-            int64 v = edge.v;
-            if (find(A.begin(), A.end(), v) == A.end()) {
-                pg_rank.emplace_back(std::make_pair(pi[v], v));
-            }
-        }
-        sort(pg_rank.begin(), pg_rank.end(), std::greater<>());
-        for (int64 i = 0; i < k && i < pg_rank.size(); i++)
-            seeds_reorder.insert(pg_rank[i].second);
-    }
-    for (int64 w : seeds_reorder) seeds.emplace_back(w);
-}
-
-/*!
- * @brief Encapsulated operations for Option 2 using IM solver : CELF
- * @param graph : the graph
- * @param k : the number in the problem definition
- * @param A : the active participant set A
- * @param seeds : returns the seed set S = {S_1, S_2, ..., S_n}
+ * @param seeds : returns the seed set S (each element is a pair <node, AP>)
  */
 double method_local_PageRank(Graph &graph, int64 k, std::vector<int64> &A, std::vector<bi_node> &seeds) {
     std::vector<double> pi(graph.n, 0);
@@ -143,30 +116,12 @@ double method_local_PageRank(Graph &graph, int64 k, std::vector<int64> &A, std::
 }
 
 /*!
- * @brief Encapsulated operations for Option 2 using IM solver : degree
+ * @brief Encapsulated method using local-degree
  * @param graph : the graph
  * @param k : the number in the problem definition
  * @param A : the active participant set A
- * @param seeds : returns the seed set S = {S_1, S_2, ..., S_n}
+ * @param seeds : returns the seed set S (each element is a pair <node, AP>)
  */
-void degree_method(Graph &graph, int64 k, std::vector<int64> &A, std::vector<int64> &seeds) {
-    std::vector<std::pair<int64, int64> > degree_rank;
-    std::set<int64> seeds_reorder;
-    for (int64 u : A) {
-        degree_rank.clear();
-        for (auto &edge : graph.g[u]) {
-            int64 v = edge.v;
-            if (find(A.begin(), A.end(), v) == A.end()) {
-                degree_rank.emplace_back(std::make_pair(graph.deg_out[v], v));
-            }
-        }
-        sort(degree_rank.begin(), degree_rank.end(), std::greater<>());
-        for (int64 i = 0; i < k && i < degree_rank.size(); i++)
-            seeds_reorder.insert(degree_rank[i].second);
-    }
-    for (int64 w : seeds_reorder) seeds.emplace_back(w);
-}
-
 double method_local_Degree(Graph &graph, int64 k, std::vector<int64> &A, std::vector<bi_node> &seeds) {
     std::vector<std::pair<double, int64> > dg_rank;
     std::set<int64> seeds_reorder, A_ordered(A.begin(), A.end());
@@ -192,36 +147,11 @@ double method_local_Degree(Graph &graph, int64 k, std::vector<int64> &A, std::ve
 }
 
 /*!
- * @brief Encapsulated operations for Option 2 using IM solver : CELF
+ * @brief Encapsulated method using local-CELF
  * @param graph : the graph
  * @param k : the number in the problem definition
  * @param A : the active participant set A
- * @param seeds : returns the seed set S = {S_1, S_2, ..., S_n}
- */
-void CELF_method(Graph &graph, int64 k, std::vector<int64> &A, std::vector<int64> &seeds) {
-    double cur = clock();
-    std::set<int64> seeds_reorder;
-    for (int64 u : A) {
-        std::vector<int64> neighbours, one_seed;
-        for (auto &edge : graph.g[u]) {
-            if (find(A.begin(), A.end(), edge.v) == A.end()) {
-                neighbours.emplace_back(edge.v);
-            }
-        }
-        CELF_local(graph, k, neighbours, A, one_seed);
-        for (int64 w : one_seed)
-            seeds_reorder.insert(w);
-    }
-    for (int64 w : seeds_reorder) seeds.emplace_back(w);
-    if (verbose_flag) printf("CELF method done. total time = %.3f\n", time_by(cur));
-}
-
-/*!
- * @brief Encapsulated operations for Option 2 using IM solver : CELF
- * @param graph : the graph
- * @param k : the number in the problem definition
- * @param A : the active participant set A
- * @param seeds : returns the seed set S = {S_1, S_2, ..., S_n}
+ * @param seeds : returns the seed set S (each element is a pair <node, AP>)
  */
 double method_local_CELF(Graph &graph, int64 k, std::vector<int64> &A, std::vector<bi_node> &seeds) {
     std::set<int64> seeds_reorder, A_ordered(A.begin(), A.end());
@@ -328,53 +258,12 @@ void enumeration_method(Graph &graph, int64 k, std::vector<int64> &A, std::vecto
 }
 
 /*!
- * @brief Encapsulated operations for advanced version of IM solver : pagerank
+ * @brief Encapsulated method using greedy-PageRank
  * @param graph : the graph
  * @param k : the number in the problem definition
  * @param A : the active participant set A
- * @param seeds : returns the seed set S = {S_1, S_2, ..., S_n}
+ * @param seeds : returns the seed set S (each element is a pair <node, AP>)
  */
-void advanced_pgrank_method(Graph &graph, int64 k, std::vector<int64> &A, std::vector<int64> &seeds, double &seedAvgDegree) {
-    std::vector<double> pi(graph.n, 0);
-    power_iteration(graph, pi, 0.2);
-    std::vector<std::pair<double, int64> > S_ordered;
-    CandidateNeigh candidate(graph, A, k);
-    for (int64 w : candidate.N) S_ordered.emplace_back(std::make_pair(pi[w], w));
-    //S_ordered is ordered by pageRank
-    sort(S_ordered.begin(), S_ordered.end(), std::greater<>());
-    for (auto & i : S_ordered) {
-        int64 v = i.second;
-        int64 u = candidate.source_participant(v);
-        if (u == -1) continue;
-        candidate.choose(u);
-        seeds.emplace_back(v);
-    }
-    seedAvgDegree = candidate.avgDegree();
-}
-
-/*!
- * @brief Encapsulated operations for advanced version of IM solver : pagerank
- * @param graph : the graph
- * @param k : the number in the problem definition
- * @param A : the active participant set A
- * @param seeds : returns the seed set S = {S_1, S_2, ..., S_n}
- */
-void advanced_degree_method(Graph &graph, int64 k, std::vector<int64> &A, std::vector<int64> &seeds, double &seedAvgDegree) {
-    std::vector<std::pair<double, int64> > S_ordered;
-    CandidateNeigh candidate(graph, A, k);
-    for (int64 w : candidate.N) S_ordered.emplace_back(std::make_pair(graph.deg_out[w], w));
-    //S_ordered is ordered by pageRank
-    sort(S_ordered.begin(), S_ordered.end(), std::greater<>());
-    for (auto & i : S_ordered) {
-        int64 v = i.second;
-        int64 u = candidate.source_participant(v);
-        if (u == -1) continue;
-        candidate.choose(u);
-        seeds.emplace_back(v);
-    }
-    seedAvgDegree = candidate.avgDegree();
-}
-
 double method_greedy_PageRank(Graph &graph, int64 k, std::vector<int64> &A, std::vector<bi_node> &seeds) {
     std::vector<double> pi(graph.n, 0);
     std::vector<std::pair<double, int64> > S_ordered;
@@ -395,6 +284,13 @@ double method_greedy_PageRank(Graph &graph, int64 k, std::vector<int64> &A, std:
     return time_by(cur);
 }
 
+/*!
+ * @brief Encapsulated method using greedy-degree
+ * @param graph : the graph
+ * @param k : the number in the problem definition
+ * @param A : the active participant set A
+ * @param seeds : returns the seed set S (each element is a pair <node, AP>)
+ */
 double method_greedy_Degree(Graph &graph, int64 k, std::vector<int64> &A, std::vector<bi_node> &seeds) {
     std::vector<std::pair<double, int64> > S_ordered;
     CandidateNeigh candidate(graph, A, k);
@@ -414,64 +310,11 @@ double method_greedy_Degree(Graph &graph, int64 k, std::vector<int64> &A, std::v
 }
 
 /*!
- * @brief Encapsulated operations for advanced version of IM solver : CELF
+ * @brief Encapsulated method using greedy-CELF
  * @param graph : the graph
  * @param k : the number in the problem definition
  * @param A : the active participant set A
- * @param seeds : returns the seed set S = {S_1, S_2, ..., S_n}
- */
-void advanced_CELF_method(Graph &graph, int64 k, std::vector<int64> &A, std::vector<int64> &seeds, double &seedAvgDegree) {
-    double cur = clock();
-    int64 r = 0;
-    CandidateNeigh candidate(graph, A, k);
-    typedef std::pair<double, std::pair<int64, int64> > node0;
-    std::priority_queue<node0> Q;
-    seeds.resize(1); //Add a temporary space
-    for (int64 u : candidate.N) {
-        seeds[0] = u;
-        Q.push(make_pair(FI_simulation_new(graph, seeds, A), std::make_pair(u, 0)));
-    }
-    double current_spread = 0;
-    seeds.pop_back(); //Clear the temporary space
-    if (verbose_flag) printf("\tInitialization time = %.5f\n", time_by(cur));
-    int ezcount = 0;
-    while (!Q.empty()) {
-        node0 Tp = Q.top();
-        int64 v = Tp.second.first;
-        int64 it_round = Tp.second.second;
-        double mg = Tp.first;
-        Q.pop();
-        int64 u = candidate.source_participant(v);
-        if (u == -1) continue;
-        r++;
-        if (it_round == seeds.size()) {
-
-            candidate.choose(u);
-            seeds.emplace_back(v);
-            current_spread += mg;
-            if (verbose_flag) {
-                std::cout << "\tnode = " << v << "\tround = " << r << "\ttime = " << time_by(cur) << std::endl;
-            }
-        } else {
-            ezcount++;
-            seeds.emplace_back(v);
-            Tp.first = FI_simulation_new(graph, seeds, A) - current_spread;
-            seeds.pop_back();
-            Tp.second.second = seeds.size();
-            Q.push(Tp);
-        }
-    }
-    printf("CELF count = %d\n", ezcount);
-    seedAvgDegree = candidate.avgDegree();
-    if (verbose_flag) printf("CELF advanced done. total time = %.3f\n", time_by(cur));
-}
-
-/*!
- * @brief Encapsulated operations for advanced version of IM solver : CELF
- * @param graph : the graph
- * @param k : the number in the problem definition
- * @param A : the active participant set A
- * @param seeds : returns the seed set S = {S_1, S_2, ..., S_n}
+ * @param seeds : returns the seed set S (each element is a pair <node, AP>)
  */
 double method_greedy_CELF(Graph &graph, int64 k, std::vector<int64> &A, std::vector<bi_node> &seeds) {
     /// initialization
@@ -515,13 +358,11 @@ double method_greedy_CELF(Graph &graph, int64 k, std::vector<int64> &A, std::vec
 }
 
 /*!
- * @brief MC-simulation-based Threshold algorithm.
+ * @brief Encapsulated method using Threshold_CELF
  * @param graph : the graph
- * @param k : the budget
- * @param A : active participant vector
- * @param seeds : Passing parameters, returns the seed set
- * @param epsilon : decrement threshold per step
- * @param seedAvgDegree
+ * @param k : the number in the problem definition
+ * @param A : the active participant set A
+ * @param seeds : returns the seed set S (each element is a pair <node, AP>)
  */
 double method_Threshold_CELF(Graph &graph, int64 k, std::vector<int64> &A, std::vector<bi_node> &seeds) {
     double epsilon = 0.05;
@@ -568,7 +409,13 @@ double method_Threshold_CELF(Graph &graph, int64 k, std::vector<int64> &A, std::
     return time_by(cur);
 }
 
-
+/*!
+ * @brief Encapsulated method using DProb_CELF
+ * @param graph : the graph
+ * @param k : the number in the problem definition
+ * @param A : the active participant set A
+ * @param seeds : returns the seed set S (each element is a pair <node, AP>)
+ */
 double method_DProb_CELF(Graph &graph, int64 k, std::vector<int64> &A, std::vector<bi_node> &seeds) {
     ///initialization
     typedef std::pair<double, std::pair<int64, int64> > node0;
