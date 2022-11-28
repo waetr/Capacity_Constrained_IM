@@ -30,7 +30,7 @@ int main(int argc, char const *argv[]) {
     vector<int64> A;
     vector<bi_node> seeds;
 
-    vector<int64> apsize_ = {100}, k_ = {5, 10, 20}, rrsize_ = {100000};
+    vector<int64> apsize_ = {50, 100, 200}, k_ = {10}, rrsize_ = {200000, 1000000};
 
     int count = 0;
     for (auto rrsize : rrsize_) {
@@ -40,7 +40,7 @@ int main(int argc, char const *argv[]) {
                 double sRatio[5]{}, res[5]{}, sizes[5]{};
                 for (int i = 0; i < 3; i++) {
                     cout << "count: " << ++count << "\n";
-                    generate_seed(G, A, apsize);
+                    generate_ap_by_degree(G, A, apsize);
                     CandidateNeigh candidate_source(G, A, k);
                     CandidateNeigh candidate;
 
@@ -51,31 +51,21 @@ int main(int argc, char const *argv[]) {
                     R.resize(G, rrsize);
                     RRGenTime += time_by(cur) / 3.0, RRGenSize += R.sizeOfRRsets() / 3.0;
 
-//                    candidate.assign(G.n, candidate_source);
-//                    auto x = 1.0 * IMMSelection(G, A, k, seeds, candidate, R) * G.n / R.numOfRRsets();
-//                    sRatio[0] += estimate_seeds(G, A, k, seeds) / 3.0;
-//                    res[0] += x / 3.0, sizes[0] += seeds.size() / 3.0;
-//                    seeds.clear();
-//
-//                    candidate.assign(G.n, candidate_source);
-//                    x = 1.0 * ThresholdSelection(G, A, k, seeds, candidate, 0.05, R) * G.n / R.numOfRRsets();
-//                    sRatio[1] += estimate_seeds(G, A, k, seeds) / 3.0;
-//                    res[1] += x / 3.0, sizes[1] += seeds.size() / 3.0;
-//                    seeds.clear();
-
-                    auto x = 1.0 * prob_determined(G, A, k, seeds, R) * G.n / R.numOfRRsets();
-                    sRatio[2] += estimate_seeds(G, A, k, seeds) / 3.0;
-                    res[2] += x / 3.0, sizes[2] += seeds.size() / 3.0;
+                    candidate.assign(G.n, candidate_source);
+                    auto x = 1.0 * IMMSelection(G, A, k, seeds, candidate, R) * G.n / R.numOfRRsets();
+                    sRatio[0] += estimate_seeds(G, A, k, seeds) / 3.0;
+                    res[0] += x / 3.0, sizes[0] += seeds.size() / 3.0;
                     seeds.clear();
 
-                    vector<pair<int64, int64> > A_deg;
-                    for (auto a : A) A_deg.emplace_back(G.deg_out[a], a);
-                    sort(A_deg.begin(), A_deg.end());
-                    for(int j = 0; j < A.size(); j++) A[j] = A_deg[j].second;
+                    candidate.assign(G.n, candidate_source);
+                    x = 1.0 * ThresholdSelection(G, A, k, seeds, candidate, 0.05, R) * G.n / R.numOfRRsets();
+                    sRatio[1] += estimate_seeds(G, A, k, seeds) / 3.0;
+                    res[1] += x / 3.0, sizes[1] += seeds.size() / 3.0;
+                    seeds.clear();
 
                     x = 1.0 * prob_determined(G, A, k, seeds, R) * G.n / R.numOfRRsets();
-                    sRatio[3] += estimate_seeds(G, A, k, seeds) / 3.0;
-                    res[3] += x / 3.0, sizes[3] += seeds.size() / 3.0;
+                    sRatio[2] += estimate_seeds(G, A, k, seeds) / 3.0;
+                    res[2] += x / 3.0, sizes[2] += seeds.size() / 3.0;
                     seeds.clear();
 
 //                    x = 1.0 * prob(G, A, k, seeds, 1.0, R) * G.n / R.numOfRRsets();
@@ -92,21 +82,17 @@ int main(int argc, char const *argv[]) {
                 stdFileOut << "RR set generation time = " << RRGenTime << " total size = " << RRGenSize
                            << endl << endl;
 
-//                stdFileOut << "IMM             = " << fixed << setprecision(2) << res[0] << "\tsize = " << fixed
-//                           << setprecision(2) << sizes[0];
-//                stdFileOut << "\tsquander ratio = " << sRatio[0] << endl;
-//
-//                stdFileOut << "Threshold       = " << fixed << setprecision(2) << res[1] << "\tsize = " << fixed
-//                           << setprecision(2) << sizes[1];
-//                stdFileOut << "\tsquander ratio = " << sRatio[1] << endl;
+                stdFileOut << "IMM             = " << fixed << setprecision(2) << res[0] << "\tsize = " << fixed
+                           << setprecision(2) << sizes[0];
+                stdFileOut << "\tsquander ratio = " << sRatio[0] << endl;
+
+                stdFileOut << "Threshold       = " << fixed << setprecision(2) << res[1] << "\tsize = " << fixed
+                           << setprecision(2) << sizes[1];
+                stdFileOut << "\tsquander ratio = " << sRatio[1] << endl;
 
                 stdFileOut << "determined prob = " << fixed << setprecision(2) << res[2] << "\tsize = " << fixed
                            << setprecision(2) << sizes[2];
                 stdFileOut << "\tsquander ratio = " << sRatio[2] << endl;
-
-                stdFileOut << "prob            = " << fixed << setprecision(2) << res[3] << "\tsize = " << fixed
-                           << setprecision(2) << sizes[3];
-                stdFileOut << "\tsquander ratio = " << sRatio[3] << endl;
 
                 cout << "apsize = " << apsize << " k = " << k << " rrsize = " << rrsize << " done!\n";
                 stdFileOut << endl;

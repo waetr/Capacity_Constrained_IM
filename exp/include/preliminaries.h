@@ -62,15 +62,11 @@ int8_t verbose_flag;
 int64_t MC_iteration_rounds = 10000;
 
 double logcnk(int n, int k) {
-    k = std::min(n, k);
-    double ans = 0;
-    for (int i = n - k + 1; i <= n; i++) {
-        ans += log(i);
-    }
-    for (int i = 1; i <= k; i++) {
-        ans -= log(i);
-    }
-    return std::max(ans, 0.0);
+    if(k >= n) return 0;
+    k = k < n - k ? k : n - k;
+    double res = 0;
+    for (auto i = 1; i <= k; i++) res += log(double(n - k + i) / i);
+    return res;
 }
 
 template<class T>

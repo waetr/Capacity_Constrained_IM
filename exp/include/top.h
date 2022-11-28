@@ -8,7 +8,8 @@
 #include "IMs.h"
 #include "argparse.h"
 #include "IMM.h"
-#include "OPIM.h"
+#include "OPIM_old.h"
+#include "OPIM_new.h"
 #include "matroid.h"
 
 static std::string graphFilePath;

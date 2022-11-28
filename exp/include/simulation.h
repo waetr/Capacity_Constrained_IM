@@ -13,12 +13,29 @@
  * @param A : stores the node set. Suppose it is initialized as empty.
  * @param size : the size of the node set
  */
-void generate_seed(Graph &graph, std::vector<int64> &A, int64 size = 1) {
+void generate_ap(Graph &graph, std::vector<int64> &A, int64 size = 1) {
     A.clear();
     std::uniform_int_distribution<int64> uniformIntDistribution(0, graph.n - 1);
     for (int64 i = 0; i < size; i++) {
         int64 v = uniformIntDistribution(mt19937engine);
         while (std::find(A.begin(), A.end(), v) != A.end()) v = uniformIntDistribution(mt19937engine);
+        A.emplace_back(v);
+    }
+}
+
+/*!
+ * @brief generate a random node set of graph.
+ * @param graph : the graph
+ * @param A : stores the node set. Suppose it is initialized as empty.
+ * @param size : the size of the node set
+ */
+void generate_ap_by_degree(Graph &graph, std::vector<int64> &A, int64 size = 1) {
+    A.clear();
+    std::uniform_int_distribution<int64> uniformIntDistribution(0, graph.n - 1);
+    for (int64 i = 0; i < size; i++) {
+        int64 v = uniformIntDistribution(mt19937engine);
+        while (graph.deg_out[v] <= graph.m / graph.n || std::find(A.begin(), A.end(), v) != A.end())
+            v = uniformIntDistribution(mt19937engine);
         A.emplace_back(v);
     }
 }
@@ -38,7 +55,7 @@ double MC_simulation(Graph &graph, std::vector<int64> &S, std::vector<int64> &Ap
     std::vector<int64> new_active, A, new_ones;
     std::vector<Edge> meet_nodes, meet_nodes_tmp;
     std::vector<bool> Ap_bitwise(graph.n, false);
-    for(auto u : Ap) Ap_bitwise[u] = true;
+    for (auto u : Ap) Ap_bitwise[u] = true;
     double res = 0;
     for (int64 i = 1; i <= MC_iteration_rounds; i++) {
         if (graph.diff_model == IC) {
@@ -49,7 +66,7 @@ double MC_simulation(Graph &graph, std::vector<int64> &S, std::vector<int64> &Ap
                 for (int64 u : new_active) {
                     for (auto &edge : graph.g[u]) {
                         int64 v = edge.v;
-                        if(Ap_bitwise[v]) continue;
+                        if (Ap_bitwise[v]) continue;
                         if (active[v]) continue;
                         bool success = (random_real() < edge.p);
                         if (success) new_ones.emplace_back(v), active[v] = true, meet_time++;
@@ -69,7 +86,7 @@ double MC_simulation(Graph &graph, std::vector<int64> &S, std::vector<int64> &Ap
             for (int64 spread_rounds = 0; spread_rounds < graph.deadline; spread_rounds++) {
                 for (int64 u : new_active) {
                     for (auto &edge : graph.g[u]) {
-                        if(Ap_bitwise[edge.v]) continue;
+                        if (Ap_bitwise[edge.v]) continue;
                         if (active[edge.v]) continue;
                         meet_nodes.emplace_back(edge);
                     }
@@ -102,7 +119,7 @@ double MC_simulation(Graph &graph, std::vector<int64> &S, std::vector<int64> &Ap
         }
     }
     if (verbose_flag) {
-        std::cout << "\t\tresult="  << res << " time=" << time_by(cur) << " meet time=" << meet_time << std::endl;
+        std::cout << "\t\tresult=" << res << " time=" << time_by(cur) << " meet time=" << meet_time << std::endl;
     }
     delete[] active;
     return res;
@@ -155,7 +172,7 @@ double FI_simulation_new(Graph &graph, std::vector<int64> &S, std::vector<int64>
 double FI_simulation_binode(Graph &graph, std::vector<bi_node> &S, std::vector<int64> &A, int64 it_rounds = -1) {
     RRContainer RRI(graph, A, false);
     std::vector<int64> RR, S_(S.size());
-    for(int i = 0; i < S.size(); i++) S_[i] = S[i].first;
+    for (int i = 0; i < S.size(); i++) S_[i] = S[i].first;
     double res = 0, cur = clock();
     int64 it_ = (it_rounds == -1) ? MC_iteration_rounds : it_rounds;
     for (int i = 1; i <= it_; i++) {

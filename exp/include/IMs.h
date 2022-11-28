@@ -7,11 +7,27 @@
 
 #include "simulation.h"
 #include <map>
+
 #define ASSERT(X) \
 do {              \
     if(time_by(X) > 86400.0) return -1; \
 } while(false)
 
+
+double method_random(Graph &graph, int64 k, std::vector<int64> &A, std::vector<bi_node> &seeds) {
+    CandidateNeigh candidate(graph, A, k);
+    std::vector<int64> set0 = candidate.N;
+    double cur = clock();
+    //S_ordered is ordered by pageRank
+    std::shuffle(set0.begin(), set0.end(), std::mt19937(std::random_device()()));
+    for (auto v : set0) {
+        int64 u = candidate.source_participant(v);
+        if (u == -1) continue;
+        candidate.choose(u);
+        seeds.emplace_back(v, u);
+    }
+    return time_by(cur);
+}
 
 /*!
  * @brief CELF algorithm is used to select k most influential nodes at a given candidate.
@@ -21,7 +37,8 @@ do {              \
  * @param A : the active participant set A
  * @param seeds : returns the most influential nodes set
  */
-void CELF_local(Graph &graph, int64 k, std::vector<int64> &candidate, std::vector<int64> &A, std::vector<int64> &seeds){
+void
+CELF_local(Graph &graph, int64 k, std::vector<int64> &candidate, std::vector<int64> &A, std::vector<int64> &seeds) {
     /// first double : magimal influence
     /// first node : index
     /// second int64 : iteration round
@@ -106,7 +123,7 @@ double method_local_PageRank(Graph &graph, int64 k, std::vector<int64> &A, std::
         sort(pg_rank.begin(), pg_rank.end(), std::greater<>());
         for (int64 i = 0; i < k && i < pg_rank.size(); i++) {
             int64 w = pg_rank[i].second;
-            if(seeds_reorder.find(w) == seeds_reorder.end()) {
+            if (seeds_reorder.find(w) == seeds_reorder.end()) {
                 seeds_reorder.insert(w);
                 seeds.emplace_back(w, u);
             }
@@ -137,7 +154,7 @@ double method_local_Degree(Graph &graph, int64 k, std::vector<int64> &A, std::ve
         sort(dg_rank.begin(), dg_rank.end(), std::greater<>());
         for (int64 i = 0; i < k && i < dg_rank.size(); i++) {
             int64 w = dg_rank[i].second;
-            if(seeds_reorder.find(w) == seeds_reorder.end()) {
+            if (seeds_reorder.find(w) == seeds_reorder.end()) {
                 seeds_reorder.insert(w);
                 seeds.emplace_back(w, u);
             }
@@ -167,7 +184,7 @@ double method_local_CELF(Graph &graph, int64 k, std::vector<int64> &A, std::vect
         CELF_local(graph, k, neighbours, A, one_seed);
         ASSERT(cur);
         for (int64 w : one_seed)
-            if(seeds_reorder.find(w) == seeds_reorder.end()) {
+            if (seeds_reorder.find(w) == seeds_reorder.end()) {
                 seeds_reorder.insert(w);
                 seeds.emplace_back(w, u);
             }
@@ -194,9 +211,11 @@ int64 stack_kS_enum[MAX_NODE_SIZE], stack_kS_top_enum;
  * @param it : Iterator internal parameters, should initialize as S.begin()
  * @param is_new : Boolean internal parameters, should initialize as true
  */
-void select_neighbours(Graph &graph, std::vector<int64> &S, std::vector<std::vector<int64> > &V_n, int64 k0, int64 k_now, int64 i_now,
-                       std::vector<int64>::iterator it,
-                       bool is_new) {
+void
+select_neighbours(Graph &graph, std::vector<int64> &S, std::vector<std::vector<int64> > &V_n, int64 k0, int64 k_now,
+                  int64 i_now,
+                  std::vector<int64>::iterator it,
+                  bool is_new) {
     if (it == S.end()) {
         std::vector<int64> set_tmp;
         for (int64 i = 1; i <= stack_kS_top_enum; i++) set_tmp.emplace_back(stack_kS_enum[i]);
@@ -274,7 +293,7 @@ double method_greedy_PageRank(Graph &graph, int64 k, std::vector<int64> &A, std:
     for (int64 w : candidate.N) S_ordered.emplace_back(std::make_pair(pi[w], w));
     //S_ordered is ordered by pageRank
     sort(S_ordered.begin(), S_ordered.end(), std::greater<>());
-    for (auto & i : S_ordered) {
+    for (auto &i : S_ordered) {
         int64 v = i.second;
         int64 u = candidate.source_participant(v);
         if (u == -1) continue;
@@ -299,7 +318,7 @@ double method_greedy_Degree(Graph &graph, int64 k, std::vector<int64> &A, std::v
     for (int64 w : candidate.N) S_ordered.emplace_back(std::make_pair(graph.deg_out[w], w));
     //S_ordered is ordered by pageRank
     sort(S_ordered.begin(), S_ordered.end(), std::greater<>());
-    for (auto & i : S_ordered) {
+    for (auto &i : S_ordered) {
         int64 v = i.second;
         int64 u = candidate.source_participant(v);
         if (u == -1) continue;
@@ -410,6 +429,110 @@ double method_Threshold_CELF(Graph &graph, int64 k, std::vector<int64> &A, std::
 }
 
 /*!
+ * @brief Encapsulated method using greedy-vanilla
+ * @param graph : the graph
+ * @param k : the number in the problem definition
+ * @param A : the active participant set A
+ * @param seeds : returns the seed set S (each element is a pair <node, AP>)
+ */
+double method_greedy_vanilla(Graph &graph, int64 k, std::vector<int64> &A, std::vector<bi_node> &seeds) {
+    /// initialization
+    CandidateNeigh candidate(graph, A, k);
+    std::vector<bool> node_selected(graph.n, false);
+    std::vector<int64> seeds_calc(0); //Add a temporary space
+    double current_spread = 0;
+    int r1 = 0;
+    /// main
+    double cur = clock();
+    while (true) {
+        int64 u, v;
+        double mg = -1;
+        for (auto w: candidate.N) {
+            ASSERT(cur);
+            if(node_selected[w]) continue;
+            int64 u0 = candidate.source_participant(w);
+            if (u0 == -1) {
+                node_selected[w] = true;
+                continue;
+            }
+            seeds_calc.emplace_back(w);
+            double mg0 = FI_simulation_new(graph, seeds_calc, A) - current_spread;
+            r1++;
+            if (mg0 > mg) v = w, u = u0, mg = mg0;
+            seeds_calc.pop_back();
+        }
+        if (mg < 0) break;
+
+        candidate.choose(u);
+        node_selected[v] = true;
+        seeds.emplace_back(v, u);
+        seeds_calc.emplace_back(v);
+        current_spread += mg;
+    }
+    //printf("thr: %d\n", r1);
+    return time_by(cur);
+}
+
+/*!
+ * @brief Encapsulated method using Threshold_vanilla
+ * @param graph : the graph
+ * @param k : the number in the problem definition
+ * @param A : the active participant set A
+ * @param seeds : returns the seed set S (each element is a pair <node, AP>)
+ */
+double method_Threshold_vanilla(Graph &graph, int64 k, std::vector<int64> &A, std::vector<bi_node> &seeds, double epsilon = 0.05) {
+    double W = 0;
+    CandidateNeigh candidate(graph, A, k);
+    std::vector<bool> node_selected(graph.n, false);
+    std::vector<double> single_mg(graph.n, -1);
+    std::vector<int64> seeds_calc(1); //Add a temporary space
+    double current_spread = 0;
+
+    int r0 = 0, r1 = 0;
+    /// main
+    double cur = clock();
+    for (auto u : candidate.N) {
+        ASSERT(cur);
+        seeds_calc[0] = u;
+        single_mg[u] = FI_simulation_new(graph, seeds_calc, A);
+        W = std::max(W, single_mg[u]);
+        r0++;
+    }
+    seeds_calc.clear();
+    for (int64 T = 1 - log(1.0 * A.size() * k / epsilon) / log(1.0 - epsilon); T > 0; T--) {
+        for (auto u : candidate.N) {
+            ASSERT(cur);
+            if (node_selected[u]) continue; //which means u was selected as seed
+            int64 v = candidate.source_participant(u);
+            if (v == -1) {
+                node_selected[u] = true;
+                continue;
+            }
+            double mg;
+            if(single_mg[u] > 0) {
+                mg = single_mg[u];
+                single_mg[u] = -1;
+            } else {
+                seeds_calc.emplace_back(u);
+                mg = FI_simulation_new(graph, seeds_calc, A) - current_spread;
+                seeds_calc.pop_back();
+            }
+
+            if (mg >= W) {
+                seeds.emplace_back(u, v);
+                seeds_calc.emplace_back(u);
+                candidate.choose(v);
+                current_spread += mg;
+                node_selected[u] = true;
+            }
+        }
+        W *= 1.0 - epsilon;
+    }
+    //printf("thr: %d %d\n", r0, r1);
+    return time_by(cur);
+}
+
+/*!
  * @brief Encapsulated method using DProb_CELF
  * @param graph : the graph
  * @param k : the number in the problem definition
@@ -435,8 +558,84 @@ double method_DProb_CELF(Graph &graph, int64 k, std::vector<int64> &A, std::vect
                 auto tmp_mg = marginal_influence[e.v];
                 if (tmp_mg != 0) {
                     Q[i].push(std::make_pair(tmp_mg, std::make_pair(e.v, 0)));
+                } else {
+                    seeds_calc[0] = e.v;
+                    tmp_mg = FI_simulation_new(graph, seeds_calc, A);
+                    ASSERT(cur);
+                    marginal_influence[e.v] = tmp_mg;
+                    Q[i].push(std::make_pair(tmp_mg, std::make_pair(e.v, 0)));
                 }
-                else {
+            }
+    }
+    seeds_calc.clear(); //Clear the temporary space
+    while (N_empty < A.size()) {
+        for (int i = 0; i < A.size(); i++) { ///N_numbers[i] == k + 1 means that N[i] is full
+            ASSERT(cur);
+            if (Ni_empty[i] != k + 1 && Ni_empty[i] == k) {
+                Ni_empty[i] = k + 1;
+                N_empty++;
+            }
+            if (Ni_empty[i] == k + 1) continue;
+            /// skip all nodes that cannot be selected, since we must select one in this for-loop
+            while (!Q[i].empty() && (selected[Q[i].top().second.first] || Q[i].top().second.second != seeds.size())) {
+                node0 Tp = Q[i].top();
+                Q[i].pop();
+                if (selected[Tp.second.first]) continue;
+                if (Tp.second.second != seeds.size()) {
+                    seeds_calc.emplace_back(Tp.second.first);
+                    Tp.first = FI_simulation_new(graph, seeds_calc, A) - current_influence;
+                    ASSERT(cur);
+                    seeds_calc.pop_back();
+                    Tp.second.second = seeds.size();
+                    Q[i].push(Tp);
+                }
+            }
+            if (Ni_empty[i] != k + 1 && Q[i].empty()) {
+                Ni_empty[i] = k + 1;
+                N_empty++;
+            }
+            if (Ni_empty[i] == k + 1) continue;
+            int64 v = Q[i].top().second.first;
+            double mg = Q[i].top().first;
+            Q[i].pop();
+            ///choose v
+            seeds.emplace_back(v, A[i]);
+            seeds_calc.emplace_back(v);
+            current_influence += mg;
+            selected[v] = true;
+            Ni_empty[i]++;
+        }
+    }
+    return time_by(cur);
+}
+
+/*!
+ * @brief Encapsulated method using DProb_CELF++
+ * @param graph : the graph
+ * @param k : the number in the problem definition
+ * @param A : the active participant set A
+ * @param seeds : returns the seed set S (each element is a pair <node, AP>)
+ */
+double method_DProb_CELF_plus(Graph &graph, int64 k, std::vector<int64> &A, std::vector<bi_node> &seeds) {
+    ///initialization
+    typedef std::pair<double, std::pair<int64, int64> > node0;
+    std::priority_queue<node0> Q[A.size()];
+    std::map<int64, double> marginal_influence;
+    std::set<int64> A_reorder(A.begin(), A.end());
+    std::vector<int64> seeds_calc(1); //Add a temporary space
+    int64 current_influence = 0, N_empty = 0;
+    std::vector<int64> Ni_empty(A.size(), 0);
+    std::vector<bool> selected(graph.n, false);
+
+    /// main
+    double cur = clock();
+    for (int i = 0; i < A.size(); i++) {
+        for (auto e : graph.g[A[i]])
+            if (A_reorder.find(e.v) == A_reorder.end()) {
+                auto tmp_mg = marginal_influence[e.v];
+                if (tmp_mg != 0) {
+                    Q[i].push(std::make_pair(tmp_mg, std::make_pair(e.v, 0)));
+                } else {
                     seeds_calc[0] = e.v;
                     tmp_mg = FI_simulation_new(graph, seeds_calc, A);
                     ASSERT(cur);
