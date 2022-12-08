@@ -151,14 +151,30 @@ inline int64 fast_read(std::ifstream &inFile) {
     return x;
 }
 
-void convert_binode_into_node(std::vector<bi_node> &source, std::vector<int64> &target) {
-    target.clear();
-    for(auto e : source) target.emplace_back(e.first);
+void ASSERT_SEED(std::vector<bi_node> &seeds) {
+    std::set<int64> unique_;
+    for(auto &e:seeds) {
+        if(unique_.find(e.first) != unique_.end()) {
+            printf("FATAL: SEED GET INTO RUIN!\n");
+            return;
+        }
+        unique_.insert(e.first);
+    }
 }
 
-void convert_node_into_binode(std::vector<int64> &source, std::vector<bi_node> &target) {
-    target.clear();
-    for(auto e : source) target.emplace_back(e, -1);
+size_t choose_from_distributionP(std::vector<double> &p) {
+    std::uniform_real_distribution<double> dist(0, p[p.size() - 1]);
+    double x = dist(mt19937engine);
+    return std::lower_bound(p.begin(), p.end(), x) - p.begin();
+}
+
+double intPower(double a, int64 b) {
+    double res = 1;
+    for (; b; b >>= 1) {
+        if (b & 1) res *= a;
+        a *= a;
+    }
+    return res;
 }
 
 #endif //EXP_MODELS_H

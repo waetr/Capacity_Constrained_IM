@@ -488,7 +488,6 @@ double method_Threshold_vanilla(Graph &graph, int64 k, std::vector<int64> &A, st
     std::vector<int64> seeds_calc(1); //Add a temporary space
     double current_spread = 0;
 
-    int r0 = 0, r1 = 0;
     /// main
     double cur = clock();
     for (auto u : candidate.N) {
@@ -496,7 +495,6 @@ double method_Threshold_vanilla(Graph &graph, int64 k, std::vector<int64> &A, st
         seeds_calc[0] = u;
         single_mg[u] = FI_simulation_new(graph, seeds_calc, A);
         W = std::max(W, single_mg[u]);
-        r0++;
     }
     seeds_calc.clear();
     for (int64 T = 1 - log(1.0 * A.size() * k / epsilon) / log(1.0 - epsilon); T > 0; T--) {
@@ -528,7 +526,6 @@ double method_Threshold_vanilla(Graph &graph, int64 k, std::vector<int64> &A, st
         }
         W *= 1.0 - epsilon;
     }
-    //printf("thr: %d %d\n", r0, r1);
     return time_by(cur);
 }
 
@@ -540,83 +537,6 @@ double method_Threshold_vanilla(Graph &graph, int64 k, std::vector<int64> &A, st
  * @param seeds : returns the seed set S (each element is a pair <node, AP>)
  */
 double method_DProb_CELF(Graph &graph, int64 k, std::vector<int64> &A, std::vector<bi_node> &seeds) {
-    ///initialization
-    typedef std::pair<double, std::pair<int64, int64> > node0;
-    std::priority_queue<node0> Q[A.size()];
-    std::map<int64, double> marginal_influence;
-    std::set<int64> A_reorder(A.begin(), A.end());
-    std::vector<int64> seeds_calc(1); //Add a temporary space
-    int64 current_influence = 0, N_empty = 0;
-    std::vector<int64> Ni_empty(A.size(), 0);
-    std::vector<bool> selected(graph.n, false);
-
-    /// main
-    double cur = clock();
-    for (int i = 0; i < A.size(); i++) {
-        for (auto e : graph.g[A[i]])
-            if (A_reorder.find(e.v) == A_reorder.end()) {
-                auto tmp_mg = marginal_influence[e.v];
-                if (tmp_mg != 0) {
-                    Q[i].push(std::make_pair(tmp_mg, std::make_pair(e.v, 0)));
-                } else {
-                    seeds_calc[0] = e.v;
-                    tmp_mg = FI_simulation_new(graph, seeds_calc, A);
-                    ASSERT(cur);
-                    marginal_influence[e.v] = tmp_mg;
-                    Q[i].push(std::make_pair(tmp_mg, std::make_pair(e.v, 0)));
-                }
-            }
-    }
-    seeds_calc.clear(); //Clear the temporary space
-    while (N_empty < A.size()) {
-        for (int i = 0; i < A.size(); i++) { ///N_numbers[i] == k + 1 means that N[i] is full
-            ASSERT(cur);
-            if (Ni_empty[i] != k + 1 && Ni_empty[i] == k) {
-                Ni_empty[i] = k + 1;
-                N_empty++;
-            }
-            if (Ni_empty[i] == k + 1) continue;
-            /// skip all nodes that cannot be selected, since we must select one in this for-loop
-            while (!Q[i].empty() && (selected[Q[i].top().second.first] || Q[i].top().second.second != seeds.size())) {
-                node0 Tp = Q[i].top();
-                Q[i].pop();
-                if (selected[Tp.second.first]) continue;
-                if (Tp.second.second != seeds.size()) {
-                    seeds_calc.emplace_back(Tp.second.first);
-                    Tp.first = FI_simulation_new(graph, seeds_calc, A) - current_influence;
-                    ASSERT(cur);
-                    seeds_calc.pop_back();
-                    Tp.second.second = seeds.size();
-                    Q[i].push(Tp);
-                }
-            }
-            if (Ni_empty[i] != k + 1 && Q[i].empty()) {
-                Ni_empty[i] = k + 1;
-                N_empty++;
-            }
-            if (Ni_empty[i] == k + 1) continue;
-            int64 v = Q[i].top().second.first;
-            double mg = Q[i].top().first;
-            Q[i].pop();
-            ///choose v
-            seeds.emplace_back(v, A[i]);
-            seeds_calc.emplace_back(v);
-            current_influence += mg;
-            selected[v] = true;
-            Ni_empty[i]++;
-        }
-    }
-    return time_by(cur);
-}
-
-/*!
- * @brief Encapsulated method using DProb_CELF++
- * @param graph : the graph
- * @param k : the number in the problem definition
- * @param A : the active participant set A
- * @param seeds : returns the seed set S (each element is a pair <node, AP>)
- */
-double method_DProb_CELF_plus(Graph &graph, int64 k, std::vector<int64> &A, std::vector<bi_node> &seeds) {
     ///initialization
     typedef std::pair<double, std::pair<int64, int64> > node0;
     std::priority_queue<node0> Q[A.size()];

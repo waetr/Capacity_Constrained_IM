@@ -32,7 +32,7 @@ int main(int argc, char const *argv[]) {
     vector<int64> A[3];
     vector<bi_node> seeds;
     printf("open graph time = %.3f n = %ld m = %ld\n", time_by(init_cur), G.n, G.m);
-    vector<int64> apsize_ = {1, 2, 5, 10}, k_ = {5};
+    vector<int64> apsize_ = {1,2, 5,10}, k_ = {5};
     for (auto apsize : apsize_) {
         for (auto k : k_) {
             printf("**********\nd = %ld, k = %ld\n", apsize, k);
@@ -110,7 +110,7 @@ int main(int argc, char const *argv[]) {
 
             times.clear(), res.clear(), sizes.clear();
             for (int i = 0; i < exp_round; i++) {
-                auto x = method_greedy_vanilla(G, k, A[i], seeds);
+                auto x = method_greedy_CELF(G, k, A[i], seeds);
                 if (x < 0) break;
                 times.emplace_back(x);
                 res.emplace_back(FI_simulation_binode(G, seeds, A[i], 10000));
@@ -126,7 +126,7 @@ int main(int argc, char const *argv[]) {
 
             times.clear(), res.clear(), sizes.clear();
             for (int i = 0; i < exp_round; i++) {
-                auto x = method_Threshold_vanilla(G, k, A[i], seeds, 0.2);
+                auto x = method_Threshold_CELF(G, k, A[i], seeds);
                 if (x < 0) break;
                 times.emplace_back(x);
                 res.emplace_back(FI_simulation_binode(G, seeds, A[i], 10000));

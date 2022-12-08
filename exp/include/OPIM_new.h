@@ -36,18 +36,21 @@ RR_OPIM_Selection(Graph &graph, std::vector<int64> &A, int64 k, std::vector<bi_n
 
     std::vector<int64> Ni_empty(A.size(), 0);
     while (N_empty < A.size()) {
-        int64 shit = 0;
-        std::vector<int64> shitty;
+        int64 tight_mg = 0;
+        std::vector<int64> tight_list;
         for (int i = 0; i < A.size(); i++) {
-            shitty.clear();
-            for (auto e : graph.g[A[i]])
-                if (nodeRemain[e.v]) shitty.push_back(coveredNum_tmp[e.v]);
-            std::sort(shitty.begin(), shitty.end(), std::greater<>());
-            for (int j = 0; j < std::min((int64) shitty.size(), k); j++) {
-                shit += shitty[j];
+            tight_list.clear();
+            for (auto e : graph.g[A[i]]) {
+                if (coveredNum_tmp[e.v] > 0)
+                    tight_list.emplace_back(coveredNum_tmp[e.v]);
+            }
+            int64 k_max = std::min((int64) tight_list.size(), k);
+            std::nth_element(tight_list.begin(), tight_list.begin() + k_max - 1, tight_list.end(), std::greater<>());
+            for (int j = 0; j < k_max; j++) {
+                tight_mg += tight_list[j];
             }
         }
-        xx = std::min(xx, current_influence + shit);
+        xx = std::min(xx, current_influence + tight_mg);
         for (int i = 0; i < A.size(); i++) { ///N_numbers[i] == k + 1 means that N[i] is full
             if (Ni_empty[i] != k + 1 && Ni_empty[i] == k) {
                 Ni_empty[i] = k + 1;
@@ -72,7 +75,7 @@ RR_OPIM_Selection(Graph &graph, std::vector<int64> &A, int64 k, std::vector<bi_n
             for (int64 RIIndex : RRI.covered[v]) {
                 if (RISetCovered[RIIndex]) continue;
                 for (int64 u : RRI.R[RIIndex]) {
-                    if (nodeRemain[u]) coveredNum_tmp[u]--;
+                    coveredNum_tmp[u]--;
                 }
                 RISetCovered[RIIndex] = true;
             }
@@ -107,6 +110,7 @@ RR_OPIM_Main(Graph &graph, std::vector<int64> &A, int64 k, double eps, double de
     auto i_max = (int64) (log2(1.0 * graph.n / eps / eps / k / A.size()) + 1);
     double d0 = log(3.0 * i_max / delta);
     for (int64 i = 1; i <= i_max; i++) {
+        bi_seeds.clear();
         cur = clock();
         auto upperC = is_tightened ? 1.0 * RR_OPIM_Selection(graph, A, k, bi_seeds, R1).first :
                       2.0 * RR_OPIM_Selection(graph, A, k, bi_seeds, R1).second;
@@ -146,6 +150,7 @@ Greedy_OPIM_Selection(Graph &graph, std::vector<int64> &A, int64 k, std::vector<
 
         int64 u0 = candidate.source_participant(maxInd);
         if (u0 == -1) {
+            nodeRemain[maxInd] = false;
             continue;
         }
 
@@ -153,18 +158,19 @@ Greedy_OPIM_Selection(Graph &graph, std::vector<int64> &A, int64 k, std::vector<
             Q.push(std::make_pair(coveredNum_tmp[maxInd], maxInd));
             continue;
         }
-        int64 shit = 0;
-        std::vector<int64> shitty;
+        int64 tight_mg = 0;
+        std::vector<int64> tight_list;
         for (auto item : candidate.N) {
-            if (nodeRemain[item]) {
-                shitty.push_back(coveredNum_tmp[item]);
-            }
+            if (coveredNum_tmp[item] > 0)
+                tight_list.emplace_back(coveredNum_tmp[item]);
         }
-        std::sort(shitty.begin(), shitty.end(), std::greater<>());
-        for (int j = 0; j < std::min(shitty.size(), k * A.size()); j++) {
-            shit += shitty[j];
+        int64 k_max = std::min(tight_list.size(), k * A.size());
+        std::nth_element(tight_list.begin(), tight_list.begin() + k_max - 1, tight_list.end(), std::greater<>());
+        //std::sort(tight_list.begin(), tight_list.end(), std::greater<>());
+        for (int j = 0; j < k_max; j++) {
+            tight_mg += tight_list[j];
         }
-        xx = std::min(xx, shit + current_influence);
+        xx = std::min(xx, tight_mg + current_influence);
         //select
         bi_seeds.emplace_back(maxInd, u0);
         current_influence += coveredNum_tmp[maxInd];
@@ -173,7 +179,7 @@ Greedy_OPIM_Selection(Graph &graph, std::vector<int64> &A, int64 k, std::vector<
         for (int64 RIIndex : RRI.covered[maxInd]) {
             if (RISetCovered[RIIndex]) continue;
             for (int64 u : RRI.R[RIIndex]) {
-                if (nodeRemain[u]) coveredNum_tmp[u]--;
+                coveredNum_tmp[u]--;
             }
             RISetCovered[RIIndex] = true;
         }
@@ -198,6 +204,7 @@ Greedy_OPIM_Main(Graph &graph, std::vector<int64> &A, int64 k, double eps, doubl
     auto i_max = (int64) (log2(1.0 * graph.n / eps / eps / k / A.size()) + 1);
     double d0 = log(3.0 * i_max / delta);
     for (int64 i = 1; i <= i_max; i++) {
+        bi_seeds.clear();
         cur = clock();
         auto upperC = is_tightened ? 1.0 * Greedy_OPIM_Selection(graph, A, k, bi_seeds, R1).first :
                       2.0 * Greedy_OPIM_Selection(graph, A, k, bi_seeds, R1).second;

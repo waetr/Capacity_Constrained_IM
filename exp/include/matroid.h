@@ -155,22 +155,6 @@ int64 ThresholdSelection(Graph &graph, std::vector<int64> &A, int64 k, std::vect
     return current_influence;
 }
 
-
-size_t choose_from_distributionP(std::vector<double> &p) {
-    std::uniform_real_distribution<double> dist(0, p[p.size() - 1]);
-    double x = dist(mt19937engine);
-    return std::lower_bound(p.begin(), p.end(), x) - p.begin();
-}
-
-double intPower(double a, int64 b) {
-    double res = 1;
-    for (; b; b >>= 1) {
-        if (b & 1) res *= a;
-        a *= a;
-    }
-    return res;
-}
-
 /*!
  * @brief given RR sets, the [prob] algorithm select the seed set based on these RR sets.
  * @param graph : the graph
