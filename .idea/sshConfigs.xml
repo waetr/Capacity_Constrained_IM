@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SshConfigs">
+    <configs>
+      <sshConfig authType="PASSWORD" host="172.18.36.147" id="f429eb78-421f-4e58-a600-78ef76e24fc8" port="22222" customName="SERVER0" nameFormat="CUSTOM" username="yiqian">
+        <option name="customName" value="SERVER0" />
+      </sshConfig>
+      <sshConfig authType="PASSWORD" host="sigx2.d2.comp.nus.edu.sg" id="49a29ed7-a7b6-4895-adc0-ab9721aeff37" port="22" nameFormat="DESCRIPTIVE" username="zhangsq" />
+    </configs>
+  </component>
+</project>

@@ -14,8 +14,9 @@
  * @param RRI : container of RR sets
  * @return the coverage of S
  */
-std::pair<int64, int64>
-RR_OPIM_Selection(Graph &graph, std::vector<int64> &A, int64 k, std::vector<bi_node> &bi_seeds, RRContainer &RRI) {
+int64
+RR_OPIM_Selection(Graph &graph, std::vector<int64> &A, int64 k, std::vector<bi_node> &bi_seeds, RRContainer &RRI,
+                  bool is_tightened) {
     ///temporary varible
     std::vector<bool> nodeRemain(graph.n, false);
     ///initialization
@@ -36,21 +37,24 @@ RR_OPIM_Selection(Graph &graph, std::vector<int64> &A, int64 k, std::vector<bi_n
 
     std::vector<int64> Ni_empty(A.size(), 0);
     while (N_empty < A.size()) {
-        int64 tight_mg = 0;
-        std::vector<int64> tight_list;
-        for (int i = 0; i < A.size(); i++) {
-            tight_list.clear();
-            for (auto e : graph.g[A[i]]) {
-                if (coveredNum_tmp[e.v] > 0)
-                    tight_list.emplace_back(coveredNum_tmp[e.v]);
+        if (is_tightened) {
+            int64 tight_mg = 0;
+            std::vector<int64> tight_list;
+            for (int i = 0; i < A.size(); i++) {
+                tight_list.clear();
+                for (auto e : graph.g[A[i]]) {
+                    if (coveredNum_tmp[e.v] > 0)
+                        tight_list.emplace_back(coveredNum_tmp[e.v]);
+                }
+                int64 k_max = std::min((int64) tight_list.size(), k);
+                std::nth_element(tight_list.begin(), tight_list.begin() + k_max - 1, tight_list.end(),
+                                 std::greater<>());
+                for (int j = 0; j < k_max; j++) {
+                    tight_mg += tight_list[j];
+                }
             }
-            int64 k_max = std::min((int64) tight_list.size(), k);
-            std::nth_element(tight_list.begin(), tight_list.begin() + k_max - 1, tight_list.end(), std::greater<>());
-            for (int j = 0; j < k_max; j++) {
-                tight_mg += tight_list[j];
-            }
+            xx = std::min(xx, current_influence + tight_mg);
         }
-        xx = std::min(xx, current_influence + tight_mg);
         for (int i = 0; i < A.size(); i++) { ///N_numbers[i] == k + 1 means that N[i] is full
             if (Ni_empty[i] != k + 1 && Ni_empty[i] == k) {
                 Ni_empty[i] = k + 1;
@@ -82,7 +86,7 @@ RR_OPIM_Selection(Graph &graph, std::vector<int64> &A, int64 k, std::vector<bi_n
         }
     }
     delete[] coveredNum_tmp;
-    return std::make_pair(xx, current_influence);
+    return is_tightened ? xx : current_influence;
 }
 
 /*!
@@ -112,9 +116,9 @@ RR_OPIM_Main(Graph &graph, std::vector<int64> &A, int64 k, double eps, double de
     for (int64 i = 1; i <= i_max; i++) {
         bi_seeds.clear();
         cur = clock();
-        auto upperC = is_tightened ? 1.0 * RR_OPIM_Selection(graph, A, k, bi_seeds, R1).first :
-                      2.0 * RR_OPIM_Selection(graph, A, k, bi_seeds, R1).second;
+        auto upperC = (is_tightened ? 1.0 : 2.0) * RR_OPIM_Selection(graph, A, k, bi_seeds, R1, is_tightened);
         auto lowerC = (double) R2.self_inf_cal(graph, bi_seeds);
+        //printf("upper: %.3f lower: %.3f\n", upperC, lowerC);
         timer0 += time_by(cur);
         double lower = sqr(sqrt(lowerC + 2.0 * d0 / 9.0) - sqrt(d0 / 2.0)) - d0 / 18.0;
         double upper = sqr(sqrt(upperC + d0 / 2.0) + sqrt(d0 / 2.0));
@@ -125,11 +129,60 @@ RR_OPIM_Main(Graph &graph, std::vector<int64> &A, int64 k, double eps, double de
         R2.resize(graph, R2.R.size() * 2ll);
         timer += time_by(cur);
     }
+    //printf("number of sets: %ld time = %.3f time0 = %.3f\n", R1.numOfRRsets() * 2, timer, timer0);
+}
+
+/// @brief OPIM with IIS.
+/// \param graph
+/// \param A
+/// \param k
+/// \param eps
+/// \param delta
+/// \param bi_seeds
+/// \param is_tightened
+void
+RR_OPIM_Main_plus(Graph &graph, std::vector<int64> &A, int64 k, double eps, double delta,
+                  std::vector<bi_node> &bi_seeds,
+                  bool is_tightened = false) {
+    double timer = 0, timer0 = 0, cur;
+    double sum_log = 0;
+    for (auto ap:A) sum_log += logcnk(graph.deg_out[ap], k);
+    double C_0 = 2.0 * sqr(
+            0.5 * sqrt(log(6.0 / delta)) + sqrt(0.5 * (sum_log + log(6.0 / delta))));
+    RRContainer R1(graph, A, true), R2(graph, A, true);
+    cur = clock();
+    R1.resize_with_IIS(graph, (size_t) C_0);
+    R2.resize_with_IIS(graph, (size_t) C_0);
+    timer += time_by(cur);
+    auto i_max = (int64) (log2(1.0 * graph.n / eps / eps / k / A.size()) + 1);
+    double d0 = log(3.0 * i_max / delta);
+    for (int64 i = 1; i <= i_max; i++) {
+        bi_seeds.clear();
+        cur = clock();
+        auto upperC = (is_tightened ? 1.0 : 2.0) * RR_OPIM_Selection(graph, A, k, bi_seeds, R1, is_tightened);
+        auto lowerC = (double) R2.self_inf_cal(graph, bi_seeds);
+        double c0 = 0;
+        for (auto seed : bi_seeds) c0 += 1.0 - graph.non_single_p[seed.first];
+        upperC = (upperC / R1.R.size() * graph.sum_non_single_p + c0) / graph.n * R1.R.size();
+        lowerC = (lowerC / R2.R.size() * graph.sum_non_single_p + c0) / graph.n * R1.R.size();
+        //printf("upper: %.3f lower: %.3f\n", upperC, lowerC);
+        timer0 += time_by(cur);
+        double lower = sqr(sqrt(lowerC + 2.0 * d0 / 9.0) - sqrt(d0 / 2.0)) - d0 / 18.0;
+        double upper = sqr(sqrt(upperC + d0 / 2.0) + sqrt(d0 / 2.0));
+        double a0 = lower / upper;
+        if (a0 > 0.5 - eps || i == i_max) break;
+        cur = clock();
+        R1.resize_with_IIS(graph, R1.R.size() * 2ll);
+        R2.resize_with_IIS(graph, R2.R.size() * 2ll);
+        timer += time_by(cur);
+    }
     printf("number of sets: %ld time = %.3f time0 = %.3f\n", R1.numOfRRsets() * 2, timer, timer0);
 }
 
-std::pair<int64, int64>
-Greedy_OPIM_Selection(Graph &graph, std::vector<int64> &A, int64 k, std::vector<bi_node> &bi_seeds, RRContainer &RRI) {
+
+int64
+Greedy_OPIM_Selection(Graph &graph, std::vector<int64> &A, int64 k, std::vector<bi_node> &bi_seeds, RRContainer &RRI,
+                      bool is_tightened) {
     ///temporary varible
     CandidateNeigh candidate(graph, A, k);
     std::vector<bool> RISetCovered(RRI.R.size(), false);
@@ -158,19 +211,21 @@ Greedy_OPIM_Selection(Graph &graph, std::vector<int64> &A, int64 k, std::vector<
             Q.push(std::make_pair(coveredNum_tmp[maxInd], maxInd));
             continue;
         }
-        int64 tight_mg = 0;
-        std::vector<int64> tight_list;
-        for (auto item : candidate.N) {
-            if (coveredNum_tmp[item] > 0)
-                tight_list.emplace_back(coveredNum_tmp[item]);
+        if (is_tightened) {
+            int64 tight_mg = 0;
+            std::vector<int64> tight_list;
+            for (auto item : candidate.N) {
+                if (coveredNum_tmp[item] > 0)
+                    tight_list.emplace_back(coveredNum_tmp[item]);
+            }
+            int64 k_max = std::min(tight_list.size(), k * A.size());
+            std::nth_element(tight_list.begin(), tight_list.begin() + k_max - 1, tight_list.end(), std::greater<>());
+            //std::sort(tight_list.begin(), tight_list.end(), std::greater<>());
+            for (int j = 0; j < k_max; j++) {
+                tight_mg += tight_list[j];
+            }
+            xx = std::min(xx, tight_mg + current_influence);
         }
-        int64 k_max = std::min(tight_list.size(), k * A.size());
-        std::nth_element(tight_list.begin(), tight_list.begin() + k_max - 1, tight_list.end(), std::greater<>());
-        //std::sort(tight_list.begin(), tight_list.end(), std::greater<>());
-        for (int j = 0; j < k_max; j++) {
-            tight_mg += tight_list[j];
-        }
-        xx = std::min(xx, tight_mg + current_influence);
         //select
         bi_seeds.emplace_back(maxInd, u0);
         current_influence += coveredNum_tmp[maxInd];
@@ -185,7 +240,7 @@ Greedy_OPIM_Selection(Graph &graph, std::vector<int64> &A, int64 k, std::vector<
         }
     }
     delete[] coveredNum_tmp;
-    return std::make_pair(xx, current_influence);
+    return is_tightened ? xx : current_influence;
 }
 
 void
@@ -206,13 +261,13 @@ Greedy_OPIM_Main(Graph &graph, std::vector<int64> &A, int64 k, double eps, doubl
     for (int64 i = 1; i <= i_max; i++) {
         bi_seeds.clear();
         cur = clock();
-        auto upperC = is_tightened ? 1.0 * Greedy_OPIM_Selection(graph, A, k, bi_seeds, R1).first :
-                      2.0 * Greedy_OPIM_Selection(graph, A, k, bi_seeds, R1).second;
+        auto upperC = (is_tightened ? 1.0 : 2.0) * Greedy_OPIM_Selection(graph, A, k, bi_seeds, R1, is_tightened);
         auto lowerC = (double) R2.self_inf_cal(graph, bi_seeds);
         timer0 += time_by(cur);
         double lower = sqr(sqrt(lowerC + 2.0 * d0 / 9.0) - sqrt(d0 / 2.0)) - d0 / 18.0;
         double upper = sqr(sqrt(upperC + d0 / 2.0) + sqrt(d0 / 2.0));
         double a0 = lower / upper;
+        //printf("upper: %.3f lower: %.3f\n", upperC, lowerC);
         if (a0 > 0.5 - eps || i == i_max) break;
         cur = clock();
         R1.resize(graph, R1.R.size() * 2ll);
@@ -221,6 +276,48 @@ Greedy_OPIM_Main(Graph &graph, std::vector<int64> &A, int64 k, double eps, doubl
     }
 
     printf("number of sets: %ld time = %.3f time0 = %.3f\n", R1.numOfRRsets() * 2, timer, timer0);
+}
+
+/*!
+ * @brief Encapsulated method using local OPIM
+ * @param graph : the graph
+ * @param k : the number in the problem definition
+ * @param A : the active participant set A
+ * @param seeds : returns the seed set S (each element is a pair <node, AP>)
+ */
+double method_local_OPIM(Graph &graph, int64 k, std::vector<int64> &A, std::vector<bi_node> &seeds) {
+    double cur = clock(), eps = 0.1, delta = 1.0 / graph.n, approx = 1.0 - 1.0 / exp(1);
+    std::set<int64> seeds_unique;
+    for(auto ap : A) {
+        std::vector<int64> ap_vec = {ap};
+        std::vector<bi_node> bi_seeds;
+        double C_0 = 2.0 * sqr(
+                approx * sqrt(log(6.0 / delta)) + sqrt(approx * (logcnk(graph.deg_out[ap], k) + log(6.0 / delta))));
+        RRContainer R1(graph, A, true), R2(graph, A, true);
+        R1.resize(graph, (size_t) C_0);
+        R2.resize(graph, (size_t) C_0);
+        auto i_max = (int64) (log2(1.0 * graph.n / eps / eps / k) + 1);
+        double d0 = log(3.0 * i_max / delta);
+        for (int64 i = 1; i <= i_max; i++) {
+            bi_seeds.clear();
+            auto upperC = Greedy_OPIM_Selection(graph, ap_vec, k, bi_seeds, R1, true);
+            auto lowerC = (double) R2.self_inf_cal(graph, bi_seeds);
+            double lower = sqr(sqrt(lowerC + 2.0 * d0 / 9.0) - sqrt(d0 / 2.0)) - d0 / 18.0;
+            double upper = sqr(sqrt(upperC + d0 / 2.0) + sqrt(d0 / 2.0));
+            double a0 = lower / upper;
+            //printf("%.3f %ld\n", a0, R1.numOfRRsets());
+            if (a0 > approx - eps || i == i_max) break;
+            R1.resize(graph, R1.R.size() * 2ll);
+            R2.resize(graph, R2.R.size() * 2ll);
+        }
+        for (auto u : bi_seeds) {
+            if (seeds_unique.find(u.first) == seeds_unique.end()) {
+                seeds_unique.insert(u.first);
+                seeds.emplace_back(u);
+            }
+        }
+    }
+    return time_by(cur);
 }
 
 #endif //EXP_OPIM_NEW_H

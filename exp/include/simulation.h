@@ -179,7 +179,6 @@ double FI_simulation_binode(Graph &graph, std::vector<bi_node> &S, std::vector<i
         RRI.RI_Gen(graph, S_, RR);
         res += RR.size();
     }
-    printf("\t\tresult=%.3f time=%.3f\n", res, time_by(cur));
     return res / it_;
 }
 

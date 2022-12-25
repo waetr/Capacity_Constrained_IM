@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="8c190b00-3279-4728-bda5-305a99879f26" name="SERVER0">
+        <fileTransfer rootFolder="/home/yiqian" accessType="SFTP" host="172.18.36.147" port="22222" sshConfigId="f429eb78-421f-4e58-a600-78ef76e24fc8" sshConfig="SERVER0">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+      <webServer id="ef56c9b9-34fc-431d-942e-d9f44690b8eb" name="NUS">
+        <fileTransfer rootFolder="/home/zhangsq" accessType="SFTP" host="sigx2.d2.comp.nus.edu.sg" port="22" sshConfigId="49a29ed7-a7b6-4895-adc0-ab9721aeff37" sshConfig="zhangsq@sigx2.d2.comp.nus.edu.sg:22 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

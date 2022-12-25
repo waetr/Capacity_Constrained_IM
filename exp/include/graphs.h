@@ -37,6 +37,8 @@ public:
     int64 m{}, deadline{};
     std::vector<std::vector<Edge> > g, gT;
     std::vector<int64> deg_in, deg_out;
+    std::vector<double> non_single_p;
+    double sum_non_single_p{};
     model_type diff_model{};
 
     /*!
@@ -48,20 +50,6 @@ public:
      * @brief A destructor for graph.
     */
     ~Graph() = default;
-
-    /*!
-     * @brief Copy constructor.
-     */
-    Graph(Graph &g) {
-        n = g.n;
-        m = g.m;
-        deadline = g.deadline;
-        diff_model = g.diff_model;
-        this->g = g.g;
-        this->gT = g.gT;
-        this->deg_in = g.deg_in;
-        this->deg_out = g.deg_out;
-    }
 
     /*!
      * @brief add an weighted edge into graph.
@@ -76,6 +64,7 @@ public:
             gT.emplace_back(edgeList_instance);
             deg_in.emplace_back(0);
             deg_out.emplace_back(0);
+            non_single_p.emplace_back(0);
         }
         m++;
         deg_in[target]++;
@@ -116,6 +105,7 @@ public:
      */
     void set_diffusion_model(model_type new_type, int64 new_deadline = 0) {
         diff_model = new_type;
+        sum_non_single_p = 0;
         double sum_m = 0, sum_p = 0;
         int64 num_edges = 0;
         for (int64 i = 0; i < n; i++) {
@@ -128,10 +118,14 @@ public:
             }
         }
         for (int64 i = 0; i < n; i++) {
+            non_single_p[i] = 1.0;
             for (int64 j = 0; j < gT[i].size(); j++) {
                 gT[i][j].p = 1.0 / deg_in[i];
                 gT[i][j].m = 5.0 / (5.0 + deg_out[gT[i][j].v]);
+                non_single_p[i] *= 1.0 - gT[i][j].p;
             }
+            non_single_p[i] = 1.0 - non_single_p[i];
+            sum_non_single_p += non_single_p[i];
         }
         deadline = new_deadline;
         if (verbose_flag) {
@@ -374,6 +368,7 @@ public:
         }
     }
 
+
     /*!
      * @brief Insert a random RR set into the container.
      * @param G
@@ -383,6 +378,62 @@ public:
         int64 v = uniformIntDistribution(mt19937engine);
         std::vector<int64> vStart = {v};
         RI_Gen(G, vStart, RR);
+        R.emplace_back(RR);
+        _sizeOfRRsets += RR.size();
+        for (int64 u : RR) {
+            covered[u].emplace_back(R.size() - 1);
+            coveredNum[u]++;
+        }
+    }
+
+    /*!
+ * @brief Insert a IIS into the container.
+ * @param G
+ */
+    void insertOneIIS(Graph &G, int64 v) {
+        std::vector<int64> RR;
+        if (excludedNodes[v]) {
+            R.emplace_back(RR);
+            return;
+        }
+        RR.emplace_back(v);
+        DijkstraVis[v] = true;
+        std::vector<double> p_ui(G.gT[v].size());
+        double w_i = 1;
+        for (int i = 0; i < G.gT[v].size(); i++) {
+                p_ui[i] = excludedNodes[G.gT[v][i].v] ? 0 : w_i * G.gT[v][i].p;
+                w_i *= 1.0 - G.gT[v][i].p;
+        }
+        std::discrete_distribution<size_t> p_d(p_ui.begin(), p_ui.end());
+        int u_first_index = p_d(mt19937engine);
+        int64 u_first = G.gT[v][u_first_index].v;
+        if (!excludedNodes[u_first]) {
+            std::queue<int64> Q;
+            Q.push(u_first);
+            DijkstraVis[u_first] = true;
+            for (int i = u_first_index + 1; i < G.gT[v].size(); i++) {
+                if (excludedNodes[G.gT[v][i].v] || DijkstraVis[G.gT[v][i].v]) continue;
+                if (random_real() < G.gT[v][i].p) {
+                    DijkstraVis[G.gT[v][i].v] = true;
+                    Q.push(G.gT[v][i].v);
+                }
+            }
+            while (!Q.empty()) {
+                int64 u = Q.front();
+                Q.pop();
+                RR.emplace_back(u);
+                for (auto &edgeT : G.gT[u]) {
+                    if (excludedNodes[edgeT.v] || DijkstraVis[edgeT.v]) continue;
+                    if (random_real() < edgeT.p) {
+                        DijkstraVis[edgeT.v] = true;
+                        Q.push(edgeT.v);
+                    }
+                }
+            }
+        }
+        for (int64 u : RR) {
+            DijkstraVis[u] = false;
+        }
         R.emplace_back(RR);
         _sizeOfRRsets += RR.size();
         for (int64 u : RR) {
@@ -402,6 +453,21 @@ public:
     }
 
     /*!
+ * @brief While the required size is larger than the current size, add random RR sets
+ * @param G
+ * @param size
+ */
+    double resize_with_IIS(Graph &G, size_t size) {
+        std::discrete_distribution<size_t> p_d(G.non_single_p.begin(), G.non_single_p.end());
+        int cur = clock();
+        while (R.size() < size) {
+            int64 v = p_d(mt19937engine);
+            insertOneIIS(G, v);
+        }
+        return time_by(cur);
+    }
+
+    /*!
      * @brief calculate the coverage of vertex set S on these RR sets
      * @param G : the graph
      * @param vecSeed : vertex set S
@@ -409,8 +475,6 @@ public:
      */
     int64 self_inf_cal(Graph &G, std::vector<int64> &vecSeed) const {
         std::vector<bool> vecBoolVst = std::vector<bool>(R.size());
-        std::vector<bool> vecBoolSeed(G.n);
-        for (auto seed : vecSeed) vecBoolSeed[seed] = true;
         for (auto seed : vecSeed) {
             for (auto node : covered[seed]) {
                 vecBoolVst[node] = true;
@@ -433,6 +497,24 @@ public:
             }
         }
         return std::count(vecBoolVst.begin(), vecBoolVst.end(), true);
+    }
+
+    /*!
+ * @brief calculate the coverage of vertex set S on these RR sets
+ * @param G : the graph
+ * @param vecSeed : vertex set S
+ * @return : the number of RR sets that are covered by S
+ */
+    double influence_IIS(Graph &G, std::vector<int64> &vecSeed) const {
+        std::vector<bool> vecBoolVst = std::vector<bool>(R.size());
+        double c = 0;
+        for (auto seed : vecSeed) c += 1.0 - G.non_single_p[seed];
+        for (auto seed : vecSeed) {
+            for (auto node : covered[seed]) {
+                vecBoolVst[node] = true;
+            }
+        }
+        return G.sum_non_single_p * std::count(vecBoolVst.begin(), vecBoolVst.end(), true) / R.size() + c;
     }
 };
 
