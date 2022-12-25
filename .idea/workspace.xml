@@ -12,22 +12,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a3e53838-ddb2-47b2-91c3-64f97736ff46" name="默认变更列表" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/.name" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/BIM-project.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/deployment.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/sshConfigs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/webServers.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/exp/data/Japanese_macaques.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/exp/data/com-dblp.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/exp/data/metabolic.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/exp/data/physicians.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/exp/src/small.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/exp/src/small.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -84,16 +69,6 @@
     </key>
   </component>
   <component name="RunManager">
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="exp" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="dnc-corecipient.txt -r 10" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="exp" TARGET_NAME="exp" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="exp" RUN_TARGET_NAME="exp">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -275,7 +250,11 @@
       <workItem from="1671897600746" duration="943000" />
       <workItem from="1671900346764" duration="197000" />
       <workItem from="1671948756458" duration="436000" />
-      <workItem from="1671951277214" duration="1191000" />
+      <workItem from="1671951277214" duration="2894000" />
+      <workItem from="1671956989768" duration="636000" />
+      <workItem from="1671957677496" duration="788000" />
+      <workItem from="1671961204995" duration="848000" />
+      <workItem from="1671965223994" duration="9000" />
     </task>
     <servers />
   </component>
@@ -327,6 +306,7 @@
         <entry key="1" value="TOOL_WINDOW" />
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>
