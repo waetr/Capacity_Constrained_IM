@@ -5,4 +5,11 @@ MATH(EXPR stack_size "1024*1024*1024")
 set(CMAKE_EXE_LINKER_FLAGS "-O3,-Wl,--stack,${stack_size}")
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-add_executable(exp src/small.cpp)
+FIND_PACKAGE(OpenMP REQUIRED)
+if (OPENMP_FOUND)
+    message("OPENMP FOUND")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+endif ()
+
+add_executable(exp src/exp_query_set.cpp)

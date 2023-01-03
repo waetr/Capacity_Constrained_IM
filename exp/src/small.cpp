@@ -32,7 +32,7 @@ int main(int argc, char const *argv[]) {
     vector<int64> A[3];
     vector<bi_node> seeds;
     printf("open graph time = %.3f n = %ld m = %ld\n", time_by(init_cur), G.n, G.m);
-    vector<int64> apsize_ = {5,10,20,50}, k_ = {10};
+    vector<int64> apsize_ = {200}, k_ = {2,5,10,20};
     for (auto apsize : apsize_) {
         for (auto k : k_) {
             printf("**********\nd = %ld, k = %ld\n", apsize, k);
@@ -51,7 +51,7 @@ int main(int argc, char const *argv[]) {
                 x = time_by(x);
                 if (x < 0) break;
                 times.emplace_back(x);
-                res.emplace_back(FI_simulation_binode(G, seeds, A[i], 10000));
+                res.emplace_back(effic_inf(G, seeds, A[i]));
                 sizes.emplace_back(seeds.size());
                 seeds.clear();
             }
@@ -69,7 +69,7 @@ int main(int argc, char const *argv[]) {
                 x = time_by(x);
                 if (x < 0) break;
                 times.emplace_back(x);
-                res.emplace_back(FI_simulation_binode(G, seeds, A[i], 10000));
+                res.emplace_back(effic_inf(G, seeds, A[i]));
                 sizes.emplace_back(seeds.size());
                 seeds.clear();
             }
@@ -83,11 +83,47 @@ int main(int argc, char const *argv[]) {
             times.clear(), res.clear(), sizes.clear();
             for (int i = 0; i < exp_round; i++) {
                 double x = clock();
+                Greedy_OPIM_Main(G, A[i], k, 0.1, 1.0 / G.n, seeds, false);
+                x = time_by(x);
+                if (x < 0) break;
+                times.emplace_back(x);
+                res.emplace_back(effic_inf(G, seeds, A[i]));
+                sizes.emplace_back(seeds.size());
+                seeds.clear();
+            }
+            printf("M-FOPIM:\n\toverall spread: %.3f (SD: %.3f) ", average(res), SD(res));
+            printvec(res);
+            printf("\tsize: %.3f (SD: %.3f) ", average(sizes), SD(sizes));
+            printvec(sizes);
+            printf("\ttime: %.3f (SD: %.3f) ", average(times), SD(times));
+            printvec(times);
+
+            times.clear(), res.clear(), sizes.clear();
+            for (int i = 0; i < exp_round; i++) {
+                double x = clock();
+                Greedy_OPIM_Main(G, A[i], k, 0.1, 1.0 / G.n, seeds, true);
+                x = time_by(x);
+                if (x < 0) break;
+                times.emplace_back(x);
+                res.emplace_back(effic_inf(G, seeds, A[i]));
+                sizes.emplace_back(seeds.size());
+                seeds.clear();
+            }
+            printf("M-FOPIM tight:\n\toverall spread: %.3f (SD: %.3f) ", average(res), SD(res));
+            printvec(res);
+            printf("\tsize: %.3f (SD: %.3f) ", average(sizes), SD(sizes));
+            printvec(sizes);
+            printf("\ttime: %.3f (SD: %.3f) ", average(times), SD(times));
+            printvec(times);
+
+            times.clear(), res.clear(), sizes.clear();
+            for (int i = 0; i < exp_round; i++) {
+                double x = clock();
                 method_local_OPIM(G, k, A[i], seeds);
                 x = time_by(x);
                 if (x < 0) break;
                 times.emplace_back(x);
-                res.emplace_back(FI_simulation_binode(G, seeds, A[i], 10000));
+                res.emplace_back(effic_inf(G, seeds, A[i]));
                 sizes.emplace_back(seeds.size());
                 seeds.clear();
             }
@@ -103,7 +139,7 @@ int main(int argc, char const *argv[]) {
                 auto x = method_local_Degree(G, k, A[i], seeds);
                 if (x < 0) break;
                 times.emplace_back(x);
-                res.emplace_back(FI_simulation_binode(G, seeds, A[i], 10000));
+                res.emplace_back(effic_inf(G, seeds, A[i]));
                 sizes.emplace_back(seeds.size());
                 seeds.clear();
             }
@@ -119,7 +155,7 @@ int main(int argc, char const *argv[]) {
                 auto x = method_local_PageRank(G, k, A[i], seeds);
                 if (x < 0) break;
                 times.emplace_back(x);
-                res.emplace_back(FI_simulation_binode(G, seeds, A[i], 10000));
+                res.emplace_back(effic_inf(G, seeds, A[i]));
                 sizes.emplace_back(seeds.size());
                 seeds.clear();
             }
@@ -129,55 +165,6 @@ int main(int argc, char const *argv[]) {
             printvec(sizes);
             printf("\ttime: %.3f (SD: %.3f) ", average(times), SD(times));
             printvec(times);
-
-            times.clear(), res.clear(), sizes.clear();
-            for (int i = 0; i < exp_round; i++) {
-                auto x = method_greedy_CELF(G, k, A[i], seeds);
-                if (x < 0) break;
-                times.emplace_back(x);
-                res.emplace_back(FI_simulation_binode(G, seeds, A[i], 10000));
-                sizes.emplace_back(seeds.size());
-                seeds.clear();
-            }
-            printf("M-Greedy:\n\toverall spread: %.3f (SD: %.3f) ", average(res), SD(res));
-            printvec(res);
-            printf("\tsize: %.3f (SD: %.3f) ", average(sizes), SD(sizes));
-            printvec(sizes);
-            printf("\ttime: %.3f (SD: %.3f) ", average(times), SD(times));
-            printvec(times);
-
-            times.clear(), res.clear(), sizes.clear();
-            for (int i = 0; i < exp_round; i++) {
-                auto x = method_Threshold_CELF(G, k, A[i], seeds);
-                if (x < 0) break;
-                times.emplace_back(x);
-                res.emplace_back(FI_simulation_binode(G, seeds, A[i], 10000));
-                sizes.emplace_back(seeds.size());
-                seeds.clear();
-            }
-            printf("T-Greedy:\n\toverall spread: %.3f (SD: %.3f) ", average(res), SD(res));
-            printvec(res);
-            printf("\tsize: %.3f (SD: %.3f) ", average(sizes), SD(sizes));
-            printvec(sizes);
-            printf("\ttime: %.3f (SD: %.3f) ", average(times), SD(times));
-            printvec(times);
-
-            times.clear(), res.clear(), sizes.clear();
-            for (int i = 0; i < exp_round; i++) {
-                auto x = method_DProb_CELF(G, k, A[i], seeds);
-                if (x < 0) break;
-                times.emplace_back(x);
-                res.emplace_back(FI_simulation_binode(G, seeds, A[i], 10000));
-                sizes.emplace_back(seeds.size());
-                seeds.clear();
-            }
-            printf("RR-Greedy:\n\toverall spread: %.3f (SD: %.3f) ", average(res), SD(res));
-            printvec(res);
-            printf("\tsize: %.3f (SD: %.3f) ", average(sizes), SD(sizes));
-            printvec(sizes);
-            printf("\ttime: %.3f (SD: %.3f) ", average(times), SD(times));
-            printvec(times);
-
         }
     }
     return 0;

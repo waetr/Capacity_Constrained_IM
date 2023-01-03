@@ -234,12 +234,6 @@ public:
         }
         num_neighbours[u]++;
     }
-
-    double avgDegree() {
-        double res = 0;
-        for (auto u : Ap) res += num_neighbours[u];
-        return res / Ap.size();
-    }
 };
 
 class RRContainer {
@@ -386,61 +380,6 @@ public:
         }
     }
 
-    /*!
- * @brief Insert a IIS into the container.
- * @param G
- */
-    void insertOneIIS(Graph &G, int64 v) {
-        std::vector<int64> RR;
-        if (excludedNodes[v]) {
-            R.emplace_back(RR);
-            return;
-        }
-        RR.emplace_back(v);
-        DijkstraVis[v] = true;
-        std::vector<double> p_ui(G.gT[v].size());
-        double w_i = 1;
-        for (int i = 0; i < G.gT[v].size(); i++) {
-                p_ui[i] = excludedNodes[G.gT[v][i].v] ? 0 : w_i * G.gT[v][i].p;
-                w_i *= 1.0 - G.gT[v][i].p;
-        }
-        std::discrete_distribution<size_t> p_d(p_ui.begin(), p_ui.end());
-        int u_first_index = p_d(mt19937engine);
-        int64 u_first = G.gT[v][u_first_index].v;
-        if (!excludedNodes[u_first]) {
-            std::queue<int64> Q;
-            Q.push(u_first);
-            DijkstraVis[u_first] = true;
-            for (int i = u_first_index + 1; i < G.gT[v].size(); i++) {
-                if (excludedNodes[G.gT[v][i].v] || DijkstraVis[G.gT[v][i].v]) continue;
-                if (random_real() < G.gT[v][i].p) {
-                    DijkstraVis[G.gT[v][i].v] = true;
-                    Q.push(G.gT[v][i].v);
-                }
-            }
-            while (!Q.empty()) {
-                int64 u = Q.front();
-                Q.pop();
-                RR.emplace_back(u);
-                for (auto &edgeT : G.gT[u]) {
-                    if (excludedNodes[edgeT.v] || DijkstraVis[edgeT.v]) continue;
-                    if (random_real() < edgeT.p) {
-                        DijkstraVis[edgeT.v] = true;
-                        Q.push(edgeT.v);
-                    }
-                }
-            }
-        }
-        for (int64 u : RR) {
-            DijkstraVis[u] = false;
-        }
-        R.emplace_back(RR);
-        _sizeOfRRsets += RR.size();
-        for (int64 u : RR) {
-            covered[u].emplace_back(R.size() - 1);
-            coveredNum[u]++;
-        }
-    }
 
     /*!
      * @brief While the required size is larger than the current size, add random RR sets
@@ -450,21 +389,6 @@ public:
     void resize(Graph &G, size_t size) {
         std::uniform_int_distribution<int64> uniformIntDistribution(0, G.n - 1);
         while (R.size() < size) insertOneRandomRRset(G, uniformIntDistribution);
-    }
-
-    /*!
- * @brief While the required size is larger than the current size, add random RR sets
- * @param G
- * @param size
- */
-    double resize_with_IIS(Graph &G, size_t size) {
-        std::discrete_distribution<size_t> p_d(G.non_single_p.begin(), G.non_single_p.end());
-        int cur = clock();
-        while (R.size() < size) {
-            int64 v = p_d(mt19937engine);
-            insertOneIIS(G, v);
-        }
-        return time_by(cur);
     }
 
     /*!
@@ -497,24 +421,6 @@ public:
             }
         }
         return std::count(vecBoolVst.begin(), vecBoolVst.end(), true);
-    }
-
-    /*!
- * @brief calculate the coverage of vertex set S on these RR sets
- * @param G : the graph
- * @param vecSeed : vertex set S
- * @return : the number of RR sets that are covered by S
- */
-    double influence_IIS(Graph &G, std::vector<int64> &vecSeed) const {
-        std::vector<bool> vecBoolVst = std::vector<bool>(R.size());
-        double c = 0;
-        for (auto seed : vecSeed) c += 1.0 - G.non_single_p[seed];
-        for (auto seed : vecSeed) {
-            for (auto node : covered[seed]) {
-                vecBoolVst[node] = true;
-            }
-        }
-        return G.sum_non_single_p * std::count(vecBoolVst.begin(), vecBoolVst.end(), true) / R.size() + c;
     }
 };
 

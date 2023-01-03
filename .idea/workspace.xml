@@ -12,7 +12,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a3e53838-ddb2-47b2-91c3-64f97736ff46" name="默认变更列表" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/exp/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/exp/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/exp/include/OPIM_new.h" beforeDir="false" afterPath="$PROJECT_DIR$/exp/include/OPIM_new.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/exp/include/OPIM_old.h" beforeDir="false" afterPath="$PROJECT_DIR$/exp/include/OPIM_old.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/exp/include/graphs.h" beforeDir="false" afterPath="$PROJECT_DIR$/exp/include/graphs.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/exp/include/preliminaries.h" beforeDir="false" afterPath="$PROJECT_DIR$/exp/include/preliminaries.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/exp/include/simulation.h" beforeDir="false" afterPath="$PROJECT_DIR$/exp/include/simulation.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/exp/include/top.h" beforeDir="false" afterPath="$PROJECT_DIR$/exp/include/top.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/exp/src/large.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/exp/src/large.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/exp/src/small.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/exp/src/small.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/exp/src/test2.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/exp/src/test2.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,25 +65,30 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="cf.first.check.clang-format" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/exp" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/exp/data" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
     <property name="settings.editor.selected.configurable" value="web.server" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\BIM-project\BIM-project\exp\data" />
       <recent name="D:\BIM-project\BIM-project" />
       <recent name="D:\BIM-project\BIM-project\exp" />
-      <recent name="D:\BIM-project\BIM-project\exp\data" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\BIM-project\BIM-project\exp" />
     </key>
   </component>
   <component name="RunManager">
-    <configuration name="exp" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="dnc-corecipient.txt -r 10" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="exp" TARGET_NAME="exp" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="exp" RUN_TARGET_NAME="exp">
+    <configuration name="exp" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="blog-catalog" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="exp" TARGET_NAME="exp" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="exp" RUN_TARGET_NAME="exp">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
   </component>
@@ -255,6 +272,50 @@
       <workItem from="1671957677496" duration="788000" />
       <workItem from="1671961204995" duration="848000" />
       <workItem from="1671965223994" duration="9000" />
+      <workItem from="1671965396403" duration="1260000" />
+      <workItem from="1672018865195" duration="2407000" />
+      <workItem from="1672047129119" duration="2076000" />
+      <workItem from="1672050053748" duration="14000" />
+      <workItem from="1672111029810" duration="411000" />
+      <workItem from="1672111772980" duration="453000" />
+      <workItem from="1672112630672" duration="6299000" />
+      <workItem from="1672125290487" duration="363000" />
+      <workItem from="1672126217755" duration="10000" />
+      <workItem from="1672145449586" duration="9000" />
+      <workItem from="1672147632617" duration="3463000" />
+      <workItem from="1672151922929" duration="302000" />
+      <workItem from="1672153967859" duration="2369000" />
+      <workItem from="1672156594906" duration="155000" />
+      <workItem from="1672156979929" duration="772000" />
+      <workItem from="1672158975897" duration="206000" />
+      <workItem from="1672196381169" duration="4231000" />
+      <workItem from="1672202231648" duration="4121000" />
+      <workItem from="1672226957060" duration="596000" />
+      <workItem from="1672282022554" duration="723000" />
+      <workItem from="1672282940911" duration="87000" />
+      <workItem from="1672326058404" duration="1000" />
+      <workItem from="1672385314169" duration="203000" />
+      <workItem from="1672386499309" duration="3682000" />
+      <workItem from="1672455052745" duration="601000" />
+      <workItem from="1672455971020" duration="968000" />
+      <workItem from="1672457111269" duration="944000" />
+      <workItem from="1672471838464" duration="5674000" />
+      <workItem from="1672564905108" duration="9061000" />
+      <workItem from="1672624970726" duration="4938000" />
+      <workItem from="1672629948437" duration="563000" />
+      <workItem from="1672647292129" duration="1537000" />
+      <workItem from="1672648846407" duration="539000" />
+      <workItem from="1672649396619" duration="1130000" />
+      <workItem from="1672675295514" duration="950000" />
+      <workItem from="1672677991387" duration="203000" />
+      <workItem from="1672678670875" duration="71000" />
+      <workItem from="1672680516513" duration="126000" />
+      <workItem from="1672716784550" duration="3109000" />
+      <workItem from="1672721083305" duration="265000" />
+      <workItem from="1672721359394" duration="478000" />
+      <workItem from="1672721850258" duration="2731000" />
+      <workItem from="1672724613964" duration="3248000" />
+      <workItem from="1672727937770" duration="627000" />
     </task>
     <servers />
   </component>

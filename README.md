@@ -10,6 +10,7 @@
 | [soc-LiveJournal1](https://snap.stanford.edu/data/soc-LiveJournal1.html) | Directed   | 4,847,571 | 68,993,773  |
 | [com-Orkut](https://snap.stanford.edu/data/com-Orkut.html)   | Undirected | 3,072,441 | 117,185,083 |
 | [DNC-corecipient](http://konect.cc/networks/dnc-corecipient/) | Undirected | 906       | 12,085      |
+| Friendster-small                                             | Undirected | 7,944,949 | 447,219,610 |
 
 No isolated nodes
 
@@ -36,3 +37,9 @@ Run
 xxx.txt is the graph file in /data/;
 
 -r is followed by the number of MC simulations.
+
+## Experiments
+
+**exp_query_set.cpp**: Randomly generate one query set.
+
+**exp_gamma.cpp**: Calculate $\gamma$ for a graph and a query set.

@@ -8,40 +8,35 @@ int main(int argc, char const *argv[]) {
     init_commandLine(argc, argv);
     Graph G(graphFilePath, DIRECTED_G);
     G.set_diffusion_model(IC, 15);
-    printf("(eps = 0.05) read time = %.3f n=%ld m=%ld\n", time_by(cur), G.n, G.m);
+    printf("(eps = 0.1) read time = %.3f n=%ld m=%ld\n", time_by(cur), G.n, G.m);
     vector<int64> A;
     vector<bi_node> seeds;
 
     int64 k = 10;
 
-    vector<int64> A_size = {5000, 10000};
-    for (auto apsize: A_size) {
-        printf("d = %ld ", apsize);
-        cur = clock();
-        generate_ap_by_degree(G, A, apsize);
+    vector<int64> AP_size = {50,100,200,500};
+    for (auto apsize: AP_size) {
+        generate_ap(G, A, apsize);
         printf("overlap: %.3f\n", estimate_neighbor_overlap(G, A));
-        RRContainer R(G, A, true);
-        R.resize(G, 1000000);
-        printf("generate time = %.3f\n", time_by(cur));
 
         RR_OPIM_Main(G, A, k, 0.1, 1.0 / G.n, seeds, false);
-        printf("vanilla D-Prob quality = %.3f size = %zu\n", 1.0 * R.self_inf_cal(G, seeds) / R.numOfRRsets() * G.n,
+        printf("vanilla D-Prob quality = %.3f size = %zu\n", effic_inf(G, seeds, A),
                seeds.size());
         ASSERT_SEED(seeds);
         seeds.clear();
         RR_OPIM_Main(G, A, k, 0.1, 1.0 / G.n, seeds, true);
-        printf("tighten D-Prob quality = %.3f size = %zu\n", 1.0 * R.self_inf_cal(G, seeds) / R.numOfRRsets() * G.n,
+        printf("tighten D-Prob quality = %.3f size = %zu\n", effic_inf(G, seeds, A),
                seeds.size());
         ASSERT_SEED(seeds);
         seeds.clear();
 
         Greedy_OPIM_Main(G, A, k, 0.1, 1.0 / G.n, seeds, false);
-        printf("vanilla Greedy quality = %.3f size = %zu\n", 1.0 * R.self_inf_cal(G, seeds) / R.numOfRRsets() * G.n,
+        printf("vanilla Greedy quality = %.3f size = %zu\n", effic_inf(G, seeds, A),
                seeds.size());
         ASSERT_SEED(seeds);
         seeds.clear();
         Greedy_OPIM_Main(G, A, k, 0.1, 1.0 / G.n, seeds, true);
-        printf("tighten Greedy quality = %.3f size = %zu\n", 1.0 * R.self_inf_cal(G, seeds) / R.numOfRRsets() * G.n,
+        printf("tighten Greedy quality = %.3f size = %zu\n", effic_inf(G, seeds, A),
                seeds.size());
         ASSERT_SEED(seeds);
         seeds.clear();
@@ -49,23 +44,23 @@ int main(int argc, char const *argv[]) {
         cur = clock();
         method_local_Degree(G, k, A, seeds);
         printf("time = %.3f\nDegree quality = %.3f size = %zu\n", time_by(cur),
-               1.0 * R.self_inf_cal(G, seeds) / R.numOfRRsets() * G.n, seeds.size());
+               effic_inf(G, seeds, A), seeds.size());
         ASSERT_SEED(seeds);
         seeds.clear();
 
         cur = clock();
         method_local_PageRank(G, k, A, seeds);
         printf("time = %.3f\nPGrank quality = %.3f size = %zu\n", time_by(cur),
-               1.0 * R.self_inf_cal(G, seeds) / R.numOfRRsets() * G.n, seeds.size());
+               effic_inf(G, seeds, A), seeds.size());
         ASSERT_SEED(seeds);
         seeds.clear();
 
-        cur = clock();
-        method_random(G, k, A, seeds);
-        printf("time = %.3f\nRandom quality = %.3f size = %zu\n", time_by(cur),
-               1.0 * R.self_inf_cal(G, seeds) / R.numOfRRsets() * G.n, seeds.size());
-        ASSERT_SEED(seeds);
-        seeds.clear();
+//        cur = clock();
+//        method_random(G, k, A, seeds);
+//        printf("time = %.3f\nRandom quality = %.3f size = %zu\n", time_by(cur),
+//               effic_inf(G, seeds, A), seeds.size());
+//        ASSERT_SEED(seeds);
+//        seeds.clear();
     }
     return 0;
 }

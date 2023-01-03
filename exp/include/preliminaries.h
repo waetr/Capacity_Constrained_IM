@@ -177,4 +177,23 @@ double intPower(double a, int64 b) {
     return res;
 }
 
+double average(std::vector<double> &a) {
+    double res = 0;
+    for (double e : a) res += e;
+    return res / a.size();
+}
+
+double SD(std::vector<double> &a) {
+    double res = 0;
+    double mean = average(a);
+    for (double e : a) res += (e - mean) * (e - mean);
+    return sqrt(res / (a.size() - 1.0));
+}
+
+void printvec(std::vector<double> &a) {
+    printf("[");
+    for (double e : a) printf("%.3f,", e);
+    printf("]\n");
+}
+
 #endif //EXP_MODELS_H

@@ -45,14 +45,14 @@ int64 OPIMGreedy_G(Graph &graph, int64 k, std::vector<int64> &S, RRContainer &RR
         }
         //find the max-k nodes with maximum marginal coverage
         int64 A_u_i = coverage;
-        std::sort(coveredNum_maxK.begin(), coveredNum_maxK.end(), std::greater<>());
+        std::nth_element(coveredNum_maxK.begin(), coveredNum_maxK.begin() + k - 1, coveredNum_maxK.end(),
+                         std::greater<>());
         for (int64 j = 0; j < std::min((int64) coveredNum_maxK.size(), k); j++) {
             A_u_i += coveredNum_maxK[j];
         }
         A_u = std::min(A_u, A_u_i);
     }
     delete[] coveredNum_tmp;
-    printf("A_U: %ld %ld\n", A_u, coverage);
     return A_u;
 }
 
@@ -67,16 +67,17 @@ int64 OPIMGreedy_G(Graph &graph, int64 k, std::vector<int64> &S, RRContainer &RR
 void OPIM_G(Graph &graph, int64 k, int64 numOfRRSets, double delta, std::vector<int64> &S) {
     std::vector<int64> empty_set(0);
     RRContainer R1(graph, empty_set, true), R2(graph, empty_set, true);
+    double cur = clock();
     R1.resize(graph, numOfRRSets / 2);
     R2.resize(graph, numOfRRSets / 2);
-    std::cout << "RR set done!\n";
+    std::cout << "RR set done! time = " << time_by(cur) << "\n";
     double d0 = log(2.0 / delta);
     auto upperC = (double) OPIMGreedy_G(graph, k, S, R1);
     auto lowerC = (double) R2.self_inf_cal(graph, S);
     double lower = sqr(sqrt(lowerC + 2.0 * d0 / 9.0) - sqrt(d0 / 2.0)) - d0 / 18.0;
     double upper = sqr(sqrt(upperC + d0 / 2.0) + sqrt(d0 / 2.0));
     double a0 = lower / upper;
-    std::cout << "a0 = " << a0 << std::endl;
+    std::cout << "a0 = " << a0 << " lower = " << lower << " upper = " << upper << std::endl;
 }
 
 /*!
@@ -88,28 +89,35 @@ void OPIM_G(Graph &graph, int64 k, int64 numOfRRSets, double delta, std::vector<
  * @param S : returns final S as a passed parameter
  */
 void OPIM_CG(Graph &graph, int64 k, double eps, double delta, std::vector<int64> &S) {
+    double timer = 0, timer0 = 0, cur;
     std::vector<int64> empty_set(0);
     double approx = 1.0 - 1.0 / exp(1);
     double C_0 = 2.0 * sqr(
             approx * sqrt(log(6.0 / delta)) + sqrt(approx * (logcnk(graph.n, k) + log(6.0 / delta))));
     RRContainer R1(graph, empty_set, true), R2(graph, empty_set, true);
+    cur = clock();
     R1.resize(graph, (size_t) C_0);
     R2.resize(graph, (size_t) C_0);
+    timer += time_by(cur);
     auto i_max = (int64) (log2(1.0 * graph.n / eps / eps / k) + 1 - 1e-9);
     double d0 = log(3.0 * i_max / delta);
     for (int64 i = 1; i <= i_max; i++) {
         S.clear();
+        cur = clock();
         auto upperC = (double) OPIMGreedy_G(graph, k, S, R1);
         auto lowerC = (double) R2.self_inf_cal(graph, S);
+        timer0 += time_by(cur);
         double lower = sqr(sqrt(lowerC + 2.0 * d0 / 9.0) - sqrt(d0 / 2.0)) - d0 / 18.0;
         double upper = sqr(sqrt(upperC + d0 / 2.0) + sqrt(d0 / 2.0));
         double a0 = lower / upper;
-        std::cout << "a0 = " << a0 << std::endl;
+        std::cout << "a0 = " << a0 << " rsize = " << R1.R.size()*2 << " lower = " << lower<< " upper = " << upper << std::endl;
         if (a0 > approx - eps || i == i_max) break;
+        cur = clock();
         R1.resize(graph, R1.R.size() * 2ll);
         R2.resize(graph, R2.R.size() * 2ll);
+        timer += time_by(cur);
     }
-    std::cout << "final RR sets = " << 2 * R1.R.size() << std::endl;
+    std::cout << "final RR sets = " << 2 * R1.R.size() << " time = " << timer << " time0 = " << timer0 << std::endl;
 }
 
 

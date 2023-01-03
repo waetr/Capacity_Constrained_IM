@@ -13,6 +13,7 @@
 #include "matroid.h"
 
 static std::string graphFilePath;
+static std::string ApFilePath;
 
 /*!
  * @brief Initialize the file path of the graph, verbose flag, etc. through command line arguments.
@@ -27,13 +28,36 @@ void init_commandLine(int argc, char const *argv[]) {
             .add_option("-v", "--verbose", "output verbose message or not")
             .add_option<int64>("-r", "--rounds", "number of MC simulation iterations per time, default is 10000", 10000)
             .parse(argc, argv);
-    graphFilePath = "../data/" + args.get_argument_string("input");
+    graphFilePath = "../data/" + args.get_argument_string("input") + ".txt";
+    ApFilePath = "../data/" + args.get_argument_string("input") + ".ap";
     if (args.has_option("--verbose")) {
         verbose_flag = 1;
         std::cout << "verbose flag set to 1\n";
     }
     MC_iteration_rounds = args.get_option_int64("--rounds");
     std::cout << "MC_iteration_rounds set to " << MC_iteration_rounds << std::endl;
+}
+
+std::vector<std::vector<int64>> AP_from_file(const std::string &filename) {
+    std::vector<std::vector<int64>> res;
+    std::ifstream inFile(filename, std::ios::in);
+    if (!inFile.is_open()) {
+        std::cerr << "(get error) AP file not found: " << filename << std::endl;
+        std::exit(-1);
+    }
+    std::string line, word;
+    std::istringstream sin;
+    std::vector<int64> one_AP;
+    while (getline(inFile, line)) {
+        sin.clear();
+        sin.str(line);
+        one_AP.clear();
+        while (std::getline(sin, word, ','))
+            one_AP.emplace_back(std::stoi(word));
+        res.emplace_back(one_AP);
+    }
+    inFile.close();
+    return res;
 }
 
 #endif //EXP_TOP_H

@@ -1,3 +1,5 @@
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "openmp-use-default-none"
 //
 // Created by lenovo on 2022/7/16.
 //
@@ -6,6 +8,7 @@
 #define EXP_SIMULATION_H
 
 #include "graphs.h"
+
 
 /*!
  * @brief generate a random node set of graph.
@@ -48,12 +51,8 @@ void generate_ap_by_degree(Graph &graph, std::vector<int64> &A, int64 size = 1) 
  * @return the estimated value of influence spread
  */
 double MC_simulation(Graph &graph, std::vector<int64> &S, std::vector<int64> &Ap) {
-    /// @brief Marks the point that was activated in the MC simulation
     bool *active = new bool[graph.n];
-    double cur = clock();
-    int64 meet_time = 0; //Too large for int32!
     std::vector<int64> new_active, A, new_ones;
-    std::vector<Edge> meet_nodes, meet_nodes_tmp;
     std::vector<bool> Ap_bitwise(graph.n, false);
     for (auto u : Ap) Ap_bitwise[u] = true;
     double res = 0;
@@ -69,7 +68,7 @@ double MC_simulation(Graph &graph, std::vector<int64> &S, std::vector<int64> &Ap
                         if (Ap_bitwise[v]) continue;
                         if (active[v]) continue;
                         bool success = (random_real() < edge.p);
-                        if (success) new_ones.emplace_back(v), active[v] = true, meet_time++;
+                        if (success) new_ones.emplace_back(v), active[v] = true;
                     }
                 }
                 new_active = new_ones;
@@ -79,47 +78,7 @@ double MC_simulation(Graph &graph, std::vector<int64> &S, std::vector<int64> &Ap
             for (int64 u : A) active[u] = false;
             res += (double) A.size() / MC_iteration_rounds;
             A.clear();
-        } else if (graph.diff_model == IC_M) {
-            meet_nodes.clear();
-            new_active = S;
-            for (int64 w : S) active[w] = true;
-            for (int64 spread_rounds = 0; spread_rounds < graph.deadline; spread_rounds++) {
-                for (int64 u : new_active) {
-                    for (auto &edge : graph.g[u]) {
-                        if (Ap_bitwise[edge.v]) continue;
-                        if (active[edge.v]) continue;
-                        meet_nodes.emplace_back(edge);
-                    }
-                }
-                for (int64 u : new_active) A.emplace_back(u);
-                new_active.clear();
-                if (meet_nodes.empty()) break;
-                meet_nodes_tmp.clear();
-                for (auto &edge : meet_nodes) {
-                    if (!active[edge.v]) {
-                        meet_time++;
-                        bool meet_success = (random_real() < edge.m);
-                        if (meet_success) {
-                            bool activate_success = (random_real() < edge.p);
-                            if (activate_success) {
-                                new_active.emplace_back(edge.v);
-                                active[edge.v] = true;
-                            }
-                        } else {
-                            meet_nodes_tmp.emplace_back(edge);
-                        }
-                    }
-                }
-                meet_nodes = meet_nodes_tmp;
-            }
-            for (int64 u : new_active) A.emplace_back(u);
-            for (int64 u : A) active[u] = false;
-            res += (double) A.size() / MC_iteration_rounds;
-            A.clear();
         }
-    }
-    if (verbose_flag) {
-        std::cout << "\t\tresult=" << res << " time=" << time_by(cur) << " meet time=" << meet_time << std::endl;
     }
     delete[] active;
     return res;
@@ -158,9 +117,9 @@ double estimate_neighbor_overlap(Graph &graph, std::vector<int64> &seeds) {
  */
 double FI_simulation_new(Graph &graph, std::vector<int64> &S, std::vector<int64> &A, int64 it_rounds = -1) {
     RRContainer RRI(graph, A, false);
-    std::vector<int64> RR;
     double res = 0, cur = clock();
     int64 it_ = (it_rounds == -1) ? MC_iteration_rounds : it_rounds;
+    std::vector<int64> RR;
     for (int i = 1; i <= it_; i++) {
         RRI.RI_Gen(graph, S, RR);
         res += RR.size();
@@ -169,17 +128,57 @@ double FI_simulation_new(Graph &graph, std::vector<int64> &S, std::vector<int64>
     return res / it_;
 }
 
-double FI_simulation_binode(Graph &graph, std::vector<bi_node> &S, std::vector<int64> &A, int64 it_rounds = -1) {
-    RRContainer RRI(graph, A, false);
-    std::vector<int64> RR, S_(S.size());
-    for (int i = 0; i < S.size(); i++) S_[i] = S[i].first;
-    double res = 0, cur = clock();
-    int64 it_ = (it_rounds == -1) ? MC_iteration_rounds : it_rounds;
-    for (int i = 1; i <= it_; i++) {
-        RRI.RI_Gen(graph, S_, RR);
-        res += RR.size();
+/// Efficiently estimate the influence spread with sampling error epsilon within probability 1-delta
+double effic_inf(Graph &graph, std::vector<bi_node> &S, std::vector<int64> &A) {
+    const double delta = 1e-3, eps = 0.01, c = 2.0 * (exp(1.0) - 2.0);
+    const double LambdaL = 1.0 + 2.0 * c * (1.0 + eps) * log(2.0 / delta) / (eps * eps);
+    size_t numHyperEdge = 0, numCoverd = 0;
+    std::vector<bool> vecBoolSeed(graph.n), exclusive(graph.n);
+    for (auto seed : S) vecBoolSeed[seed.first] = true;
+    for (auto ap : A) exclusive[ap] = true;
+    std::uniform_int_distribution<int64> uniformIntDistribution(0, graph.n - 1);
+    std::vector<int64> nodes;
+    std::queue<int64> Q;
+    while (numCoverd < LambdaL) {
+        numHyperEdge++;
+        const auto uStart = uniformIntDistribution(mt19937engine);
+        if (exclusive[uStart]) {
+            continue;
+        }
+        if (vecBoolSeed[uStart]) {
+            // Stop, this sample is covered
+            numCoverd++;
+            continue;
+        }
+        exclusive[uStart] = true;
+        Q.push(uStart);
+        nodes.emplace_back(uStart);
+        bool break_flag = false;
+        while (!Q.empty()) {
+            int64 u = Q.front();
+            Q.pop();
+            for (auto &edgeT : graph.gT[u]) {
+                if (exclusive[edgeT.v]) continue;
+                if (random_real() < edgeT.p) {
+                    if (vecBoolSeed[edgeT.v]) {
+                        numCoverd++;
+                        break_flag = true;
+                        break;
+                    }
+                    exclusive[edgeT.v] = true;
+                    Q.push(edgeT.v);
+                    nodes.emplace_back(edgeT.v);
+                }
+            }
+            if (break_flag) break;
+        }
+        for (auto e : nodes) exclusive[e] = false;
+        nodes.clear();
+        Q = std::queue<int64>(); // clear the queue
     }
-    return res / it_;
+    return 1.0 * numCoverd * graph.n / numHyperEdge;
 }
 
 #endif //EXP_SIMULATION_H
+
+#pragma clang diagnostic pop
