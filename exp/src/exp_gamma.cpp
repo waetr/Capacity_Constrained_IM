@@ -4,7 +4,6 @@
 
 using namespace std;
 
-const int MAX_THREADS = 128;
 const int exp_round = 3;
 
 int main(int argc, char const *argv[]) {
@@ -19,6 +18,8 @@ int main(int argc, char const *argv[]) {
     double candidate_exc_v[exp_round][G.n], one_v_[exp_round][G.n];
 
     for (auto &AP: A_batch) {
+        memset(candidate_exc_v, 0, sizeof candidate_exc_v);
+        memset(one_v_, 0, sizeof one_v_);
         set<int64> AP_set(AP.begin(), AP.end());
         set<int64> candidate_set;
         for (auto ap : AP) {

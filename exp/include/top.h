@@ -32,10 +32,10 @@ void init_commandLine(int argc, char const *argv[]) {
     ApFilePath = "../data/" + args.get_argument_string("input") + ".ap";
     if (args.has_option("--verbose")) {
         verbose_flag = 1;
-        std::cout << "verbose flag set to 1\n";
+        //std::cout << "verbose flag set to 1\n";
     }
     MC_iteration_rounds = args.get_option_int64("--rounds");
-    std::cout << "MC_iteration_rounds set to " << MC_iteration_rounds << std::endl;
+    //std::cout << "MC_iteration_rounds set to " << MC_iteration_rounds << std::endl;
 }
 
 std::vector<std::vector<int64>> AP_from_file(const std::string &filename) {
@@ -49,6 +49,7 @@ std::vector<std::vector<int64>> AP_from_file(const std::string &filename) {
     std::istringstream sin;
     std::vector<int64> one_AP;
     while (getline(inFile, line)) {
+        if (line.empty()) continue;
         sin.clear();
         sin.str(line);
         one_AP.clear();

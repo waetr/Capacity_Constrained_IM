@@ -5,19 +5,18 @@ using namespace std;
 
 int main(int argc, char const *argv[]) {
     double cur = clock();
+    freopen("../data/orkut.ap", "w", stdout);
     init_commandLine(argc, argv);
     Graph G(graphFilePath, DIRECTED_G);
     G.set_diffusion_model(IC, 15);
-    printf("(eps = 0.1) read time = %.3f n=%ld m=%ld\n", time_by(cur), G.n, G.m);
     vector<int64> A;
-    vector<int64> AP_size = {50, 100, 200, 500};
+    vector<int64> AP_size = {15000, 30000, 60000, 150000};
     generate_ap(G, A, AP_size[AP_size.size() - 1]);
     shuffle(A.begin(), A.end(), mt19937(random_device()()));
     for (auto apsize: AP_size) {
-        printf("\nd = %ld\n",apsize);
         vector<int64> A0;
-        for(int i = 0; i < apsize; i++) A0.emplace_back(A[i]);
-        print_set(A0);
+        for (int i = 0; i < apsize; i++) A0.emplace_back(A[i]);
+        for (int i = 0; i < A0.size(); i++) printf("%ld%c", A0[i], (i == A0.size() - 1) ? '\n' : ',');
     }
     return 0;
 }

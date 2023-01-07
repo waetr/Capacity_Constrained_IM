@@ -48,10 +48,6 @@
 typedef int64_t int64;
 typedef std::pair<int64, int64 > bi_node; //first: seed second: source AP
 
-const std::string solver_name[] = {"ENUMERATION", "DEGREE", "PAGERANK", "CELF", "DEGREE_ADVANCED", "PAGERANK_ADVANCED",
-                                   "CELF_ADVANCED", "IMM_NORMAL", "IMM_ADVANCED", "OPIM_NORMAL", "OPIM_ADVANCED",
-                                   "CELF_THRESHOLD", "CELF_THRESHOLD1", "CELF_THRESHOLD2"};
-
 std::random_device rd__;
 std::minstd_rand random_engine(rd__());
 std::mt19937 mt19937engine(rd__());

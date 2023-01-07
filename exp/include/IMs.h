@@ -8,16 +8,11 @@
 #include "simulation.h"
 #include <map>
 
-#define ASSERT(X) \
-do {              \
-    if(time_by(X) > 86400.0) return -1; \
-} while(false)
-
 
 double method_random(Graph &graph, int64 k, std::vector<int64> &A, std::vector<bi_node> &seeds) {
     CandidateNeigh candidate(graph, A, k);
     std::vector<int64> set0 = candidate.N;
-    double cur = clock();
+    auto start_time = std::chrono::high_resolution_clock::now();
     //S_ordered is ordered by pageRank
     std::shuffle(set0.begin(), set0.end(), std::mt19937(std::random_device()()));
     for (auto v : set0) {
@@ -26,8 +21,11 @@ double method_random(Graph &graph, int64 k, std::vector<int64> &A, std::vector<b
         candidate.choose(u);
         seeds.emplace_back(v, u);
     }
-    return time_by(cur);
+    auto end_time = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> elapsed = end_time - start_time;
+    return elapsed.count();
 }
+
 
 /*!
  * @brief CELF algorithm is used to select k most influential nodes at a given candidate.
@@ -111,7 +109,7 @@ double method_local_PageRank(Graph &graph, int64 k, std::vector<int64> &A, std::
     std::vector<std::pair<double, int64> > pg_rank;
     std::set<int64> seeds_reorder, A_ordered(A.begin(), A.end());
 
-    double cur = clock();
+    auto start_time = std::chrono::high_resolution_clock::now();
     power_iteration(graph, pi, 0.2);
     for (int64 u : A) {
         pg_rank.clear();
@@ -129,7 +127,9 @@ double method_local_PageRank(Graph &graph, int64 k, std::vector<int64> &A, std::
             }
         }
     }
-    return time_by(cur);
+    auto end_time = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> elapsed = end_time - start_time;
+    return elapsed.count();
 }
 
 /*!
@@ -143,7 +143,7 @@ double method_local_Degree(Graph &graph, int64 k, std::vector<int64> &A, std::ve
     std::vector<std::pair<double, int64> > dg_rank;
     std::set<int64> seeds_reorder, A_ordered(A.begin(), A.end());
 
-    double cur = clock();
+    auto start_time = std::chrono::high_resolution_clock::now();
     for (int64 u : A) {
         dg_rank.clear();
         for (auto &edge : graph.g[u]) {
@@ -160,7 +160,9 @@ double method_local_Degree(Graph &graph, int64 k, std::vector<int64> &A, std::ve
             }
         }
     }
-    return time_by(cur);
+    auto end_time = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> elapsed = end_time - start_time;
+    return elapsed.count();
 }
 
 /*!
@@ -173,7 +175,7 @@ double method_local_Degree(Graph &graph, int64 k, std::vector<int64> &A, std::ve
 double method_local_CELF(Graph &graph, int64 k, std::vector<int64> &A, std::vector<bi_node> &seeds) {
     std::set<int64> seeds_reorder, A_ordered(A.begin(), A.end());
 
-    double cur = clock();
+    auto start_time = std::chrono::high_resolution_clock::now();
     for (int64 u : A) {
         std::vector<int64> neighbours, one_seed;
         for (auto &edge : graph.g[u]) {
@@ -182,14 +184,15 @@ double method_local_CELF(Graph &graph, int64 k, std::vector<int64> &A, std::vect
             }
         }
         CELF_local(graph, k, neighbours, A, one_seed);
-        ASSERT(cur);
         for (int64 w : one_seed)
             if (seeds_reorder.find(w) == seeds_reorder.end()) {
                 seeds_reorder.insert(w);
                 seeds.emplace_back(w, u);
             }
     }
-    return time_by(cur);
+    auto end_time = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> elapsed = end_time - start_time;
+    return elapsed.count();
 }
 
 /*!
@@ -288,7 +291,7 @@ double method_greedy_PageRank(Graph &graph, int64 k, std::vector<int64> &A, std:
     std::vector<std::pair<double, int64> > S_ordered;
     CandidateNeigh candidate(graph, A, k);
 
-    double cur = clock();
+    auto start_time = std::chrono::high_resolution_clock::now();
     power_iteration(graph, pi, 0.2);
     for (int64 w : candidate.N) S_ordered.emplace_back(std::make_pair(pi[w], w));
     //S_ordered is ordered by pageRank
@@ -300,7 +303,9 @@ double method_greedy_PageRank(Graph &graph, int64 k, std::vector<int64> &A, std:
         candidate.choose(u);
         seeds.emplace_back(v, u);
     }
-    return time_by(cur);
+    auto end_time = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> elapsed = end_time - start_time;
+    return elapsed.count();
 }
 
 /*!
@@ -314,7 +319,7 @@ double method_greedy_Degree(Graph &graph, int64 k, std::vector<int64> &A, std::v
     std::vector<std::pair<double, int64> > S_ordered;
     CandidateNeigh candidate(graph, A, k);
 
-    double cur = clock();
+    auto start_time = std::chrono::high_resolution_clock::now();
     for (int64 w : candidate.N) S_ordered.emplace_back(std::make_pair(graph.deg_out[w], w));
     //S_ordered is ordered by pageRank
     sort(S_ordered.begin(), S_ordered.end(), std::greater<>());
@@ -325,7 +330,9 @@ double method_greedy_Degree(Graph &graph, int64 k, std::vector<int64> &A, std::v
         candidate.choose(u);
         seeds.emplace_back(v, u);
     }
-    return time_by(cur);
+    auto end_time = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> elapsed = end_time - start_time;
+    return elapsed.count();
 }
 
 /*!
@@ -344,15 +351,13 @@ double method_greedy_CELF(Graph &graph, int64 k, std::vector<int64> &A, std::vec
     double current_spread = 0;
 
     /// main
-    double cur = clock();
+    auto start_time = std::chrono::high_resolution_clock::now();
     for (int64 u : candidate.N) {
-        ASSERT(cur);
         seeds_calc[0] = u;
         Q.push(make_pair(FI_simulation_new(graph, seeds_calc, A), std::make_pair(u, 0)));
     }
     seeds_calc.clear(); //Clear the temporary space
     while (!Q.empty()) {
-        ASSERT(cur);
         node0 Tp = Q.top();
         int64 v = Tp.second.first;
         int64 it_round = Tp.second.second;
@@ -373,7 +378,9 @@ double method_greedy_CELF(Graph &graph, int64 k, std::vector<int64> &A, std::vec
             Q.push(Tp);
         }
     }
-    return time_by(cur);
+    auto end_time = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> elapsed = end_time - start_time;
+    return elapsed.count();
 }
 
 /*!
@@ -392,9 +399,8 @@ double method_Threshold_CELF(Graph &graph, int64 k, std::vector<int64> &A, std::
     double current_spread = 0;
 
     /// main
-    double cur = clock();
+    auto start_time = std::chrono::high_resolution_clock::now();
     for (auto u : candidate.N) {
-        ASSERT(cur);
         seeds_calc[0] = u;
         mg[u] = std::make_pair(FI_simulation_new(graph, seeds_calc, A), 0);
         W = std::max(W, mg[u].first);
@@ -402,7 +408,6 @@ double method_Threshold_CELF(Graph &graph, int64 k, std::vector<int64> &A, std::
     seeds_calc.clear();
     for (int64 T = 1 - log(1.0 * A.size() * k / epsilon) / log(1.0 - epsilon); T > 0; T--) {
         for (auto u : candidate.N) {
-            ASSERT(cur);
             if (mg[u].second == -1) continue; //which means u was selected as seed
             if (mg[u].first < W) continue; //if f(u|S)<w, then after recalculating it also satisfies.
             int64 v = candidate.source_participant(u);
@@ -425,7 +430,9 @@ double method_Threshold_CELF(Graph &graph, int64 k, std::vector<int64> &A, std::
         }
         W *= 1.0 - epsilon;
     }
-    return time_by(cur);
+    auto end_time = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> elapsed = end_time - start_time;
+    return elapsed.count();
 }
 
 /*!
@@ -443,12 +450,11 @@ double method_greedy_vanilla(Graph &graph, int64 k, std::vector<int64> &A, std::
     double current_spread = 0;
     int r1 = 0;
     /// main
-    double cur = clock();
+    auto start_time = std::chrono::high_resolution_clock::now();
     while (true) {
         int64 u, v;
         double mg = -1;
         for (auto w: candidate.N) {
-            ASSERT(cur);
             if(node_selected[w]) continue;
             int64 u0 = candidate.source_participant(w);
             if (u0 == -1) {
@@ -470,7 +476,9 @@ double method_greedy_vanilla(Graph &graph, int64 k, std::vector<int64> &A, std::
         current_spread += mg;
     }
     //printf("thr: %d\n", r1);
-    return time_by(cur);
+    auto end_time = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> elapsed = end_time - start_time;
+    return elapsed.count();
 }
 
 /*!
@@ -489,9 +497,8 @@ double method_Threshold_vanilla(Graph &graph, int64 k, std::vector<int64> &A, st
     double current_spread = 0;
 
     /// main
-    double cur = clock();
+    auto start_time = std::chrono::high_resolution_clock::now();
     for (auto u : candidate.N) {
-        ASSERT(cur);
         seeds_calc[0] = u;
         single_mg[u] = FI_simulation_new(graph, seeds_calc, A);
         W = std::max(W, single_mg[u]);
@@ -499,7 +506,6 @@ double method_Threshold_vanilla(Graph &graph, int64 k, std::vector<int64> &A, st
     seeds_calc.clear();
     for (int64 T = 1 - log(1.0 * A.size() * k / epsilon) / log(1.0 - epsilon); T > 0; T--) {
         for (auto u : candidate.N) {
-            ASSERT(cur);
             if (node_selected[u]) continue; //which means u was selected as seed
             int64 v = candidate.source_participant(u);
             if (v == -1) {
@@ -526,17 +532,19 @@ double method_Threshold_vanilla(Graph &graph, int64 k, std::vector<int64> &A, st
         }
         W *= 1.0 - epsilon;
     }
-    return time_by(cur);
+    auto end_time = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> elapsed = end_time - start_time;
+    return elapsed.count();
 }
 
 /*!
- * @brief Encapsulated method using DProb_CELF
+ * @brief Encapsulated method using RR_CELF
  * @param graph : the graph
  * @param k : the number in the problem definition
  * @param A : the active participant set A
  * @param seeds : returns the seed set S (each element is a pair <node, AP>)
  */
-double method_DProb_CELF(Graph &graph, int64 k, std::vector<int64> &A, std::vector<bi_node> &seeds) {
+double method_RR_CELF(Graph &graph, int64 k, std::vector<int64> &A, std::vector<bi_node> &seeds) {
     ///initialization
     typedef std::pair<double, std::pair<int64, int64> > node0;
     std::priority_queue<node0> Q[A.size()];
@@ -548,7 +556,7 @@ double method_DProb_CELF(Graph &graph, int64 k, std::vector<int64> &A, std::vect
     std::vector<bool> selected(graph.n, false);
 
     /// main
-    double cur = clock();
+    auto start_time = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < A.size(); i++) {
         for (auto e : graph.g[A[i]])
             if (A_reorder.find(e.v) == A_reorder.end()) {
@@ -558,7 +566,6 @@ double method_DProb_CELF(Graph &graph, int64 k, std::vector<int64> &A, std::vect
                 } else {
                     seeds_calc[0] = e.v;
                     tmp_mg = FI_simulation_new(graph, seeds_calc, A);
-                    ASSERT(cur);
                     marginal_influence[e.v] = tmp_mg;
                     Q[i].push(std::make_pair(tmp_mg, std::make_pair(e.v, 0)));
                 }
@@ -567,7 +574,6 @@ double method_DProb_CELF(Graph &graph, int64 k, std::vector<int64> &A, std::vect
     seeds_calc.clear(); //Clear the temporary space
     while (N_empty < A.size()) {
         for (int i = 0; i < A.size(); i++) { ///N_numbers[i] == k + 1 means that N[i] is full
-            ASSERT(cur);
             if (Ni_empty[i] != k + 1 && Ni_empty[i] == k) {
                 Ni_empty[i] = k + 1;
                 N_empty++;
@@ -581,7 +587,6 @@ double method_DProb_CELF(Graph &graph, int64 k, std::vector<int64> &A, std::vect
                 if (Tp.second.second != seeds.size()) {
                     seeds_calc.emplace_back(Tp.second.first);
                     Tp.first = FI_simulation_new(graph, seeds_calc, A) - current_influence;
-                    ASSERT(cur);
                     seeds_calc.pop_back();
                     Tp.second.second = seeds.size();
                     Q[i].push(Tp);
@@ -603,7 +608,9 @@ double method_DProb_CELF(Graph &graph, int64 k, std::vector<int64> &A, std::vect
             Ni_empty[i]++;
         }
     }
-    return time_by(cur);
+    auto end_time = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> elapsed = end_time - start_time;
+    return elapsed.count();
 }
 
 #endif //EXP_IMS_H

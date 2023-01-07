@@ -1,20 +1,24 @@
 #include <bits/stdc++.h>
 #include "top.h"
+#include <omp.h>
 
 using namespace std;
 
+
 int main(int argc, char const *argv[]) {
-    double cur = clock();
     init_commandLine(argc, argv);
     Graph G(graphFilePath, DIRECTED_G);
-    G.set_diffusion_model(IC, 15);
-    printf("(eps = 0.1) read time = %.3f n=%ld m=%ld\n", time_by(cur), G.n, G.m);
-    vector<int64> A, empty;
-    A = {261,1478,1511,2204,2778,3503,3703,4432,6543,7216};
+    G.set_diffusion_model(IC);
+    vector<bi_node> seeds;
 
-    double startTime = omp_get_wtime();
-    cout << MC_simulation_p(G, A, empty) << endl;
-    double endTime = omp_get_wtime();
-    printf("time without OpenMP: %.3f\n", endTime - startTime);
+    auto A_batch = AP_from_file(ApFilePath);
+    int k = 10;
+
+    for (auto &A : A_batch) {
+        printf("AP size :%zu\n", A.size());
+        printf("\ttime0: %.3f\n", method_random(G, k, A, seeds));
+        printf("\tseed0 size:%zu\n", seeds.size());
+        seeds.clear();
+    }
     return 0;
 }

@@ -12,18 +12,39 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a3e53838-ddb2-47b2-91c3-64f97736ff46" name="默认变更列表" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/exp/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/exp/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/exp/data/blog-catalog.ap" beforeDir="false" afterPath="$PROJECT_DIR$/exp/data/blog-catalog1.ap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/exp/include/IMs.h" beforeDir="false" afterPath="$PROJECT_DIR$/exp/include/IMs.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/exp/include/OPIM_new.h" beforeDir="false" afterPath="$PROJECT_DIR$/exp/include/OPIM_new.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/exp/include/OPIM_old.h" beforeDir="false" afterPath="$PROJECT_DIR$/exp/include/OPIM_old.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/exp/include/OPIM_old.h" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/exp/include/graphs.h" beforeDir="false" afterPath="$PROJECT_DIR$/exp/include/graphs.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/exp/include/preliminaries.h" beforeDir="false" afterPath="$PROJECT_DIR$/exp/include/preliminaries.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/exp/include/simulation.h" beforeDir="false" afterPath="$PROJECT_DIR$/exp/include/simulation.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/exp/include/top.h" beforeDir="false" afterPath="$PROJECT_DIR$/exp/include/top.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/exp/output/history.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/exp/output/log.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/exp/output/log0.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/exp/output/result.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/exp/output/result_.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/exp/output/result_0.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/exp/output/result__.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/exp/output/result__twitter2010.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/exp/output/result_jornal_1e7_maxcover.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/exp/output/result_jornal_1e7_maxcover_2.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/exp/output/result_prob_1e6_1e7.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/exp/output/result_prob_1e7_maxcover.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/exp/output/result_prob_1e7_maxcover_2.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/exp/output_rrset/1-blogC-ap.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/exp/output_rrset/1-blogC-k.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/exp/output_rrset/1-blogC-rr.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/exp/output_rrset/1-liveJ-ap.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/exp/output_rrset/1-liveJ-k.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/exp/output_rrset/1-liveJ-rr.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/exp/output_rrset/DBLP_ap.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/exp/output_rrset/DBLP_k.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/exp/src/exp_gamma.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/exp/src/exp_gamma.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/exp/src/exp_query_set.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/exp/src/exp_query_set.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/exp/src/large.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/exp/src/large.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/exp/src/small.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/exp/src/small.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/exp/src/test2.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/exp/src/test2.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -60,6 +81,7 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="ASKED_MARK_IGNORED_FILES_AS_EXCLUDED" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
@@ -81,7 +103,12 @@
     </key>
   </component>
   <component name="RunManager">
-    <configuration name="exp" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="blog-catalog" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="exp" TARGET_NAME="exp" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="exp" RUN_TARGET_NAME="exp">
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="exp" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="dnc-corecipient" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="exp" TARGET_NAME="exp" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="exp" RUN_TARGET_NAME="exp">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -315,7 +342,28 @@
       <workItem from="1672721359394" duration="478000" />
       <workItem from="1672721850258" duration="2731000" />
       <workItem from="1672724613964" duration="3248000" />
-      <workItem from="1672727937770" duration="953000" />
+      <workItem from="1672727937770" duration="1194000" />
+      <workItem from="1672736704783" duration="253000" />
+      <workItem from="1672736967624" duration="599000" />
+      <workItem from="1672737579843" duration="2537000" />
+      <workItem from="1672740303777" duration="101000" />
+      <workItem from="1672745663937" duration="8322000" />
+      <workItem from="1672756078823" duration="4933000" />
+      <workItem from="1672761255875" duration="9307000" />
+      <workItem from="1672806293528" duration="4099000" />
+      <workItem from="1672810917094" duration="13331000" />
+      <workItem from="1672850210931" duration="611000" />
+      <workItem from="1672888867697" duration="11568000" />
+      <workItem from="1672903780164" duration="5603000" />
+      <workItem from="1672916393293" duration="1066000" />
+      <workItem from="1672935386694" duration="3470000" />
+      <workItem from="1672971812191" duration="6215000" />
+      <workItem from="1672989061799" duration="1237000" />
+      <workItem from="1672990355214" duration="21000" />
+      <workItem from="1672991426624" duration="1509000" />
+      <workItem from="1673019281323" duration="105000" />
+      <workItem from="1673082715848" duration="1085000" />
+      <workItem from="1673100278573" duration="337000" />
     </task>
     <servers />
   </component>
@@ -370,9 +418,20 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/exp/src/large.cpp</url>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
     <watches-manager>
       <configuration name="CMakeRunConfiguration">
         <watch expression="R2.R.size()" language="ObjectiveC" />
+        <watch expression="N_unique.size()" language="ObjectiveC" />
+        <watch expression="A.size()" language="ObjectiveC" />
+        <watch expression="h[u]" language="ObjectiveC" />
       </configuration>
     </watches-manager>
   </component>

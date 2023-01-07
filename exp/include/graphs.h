@@ -139,6 +139,113 @@ public:
  * A data structure for the advanced option that supports access to each active participant's neighboring nodes,
  * and specifying the active participant to which each node belongs during the algorithm.
  */
+//class CandidateNeigh {
+//private:
+//    int64 k{};
+//    int64 *num_neighbours{};
+//    std::vector<int64> *f{};//f[v] means in-coming active participant of v
+//    std::unordered_map<int64, int64> nid;
+//public:
+//    std::vector<int64> N; //candidate neighbour set
+//
+//
+//    CandidateNeigh() = default;
+//
+//    /*!
+//     * @brief create an instance.
+//     * @param graph : graph
+//     * @param A : set of active participant
+//     * @param k0 : budget
+//     */
+//    CandidateNeigh(Graph &graph, std::vector<int64> &A, int64 k0) {
+//        nid.clear();
+//
+//        k = k0;
+//        double cur = clock();
+//        std::set<int64> N_unique, A_unique(A.begin(), A.end());
+//        for (int64 i = 0; i < A.size(); i++) {
+//            nid[A[i]] = i;
+//        }
+//        //read all candidates
+//        for (auto u : A) {
+//            for (auto &edge : graph.g[u]) {
+//                if (A_unique.find(edge.v) == A_unique.end()) {
+//                    N_unique.insert(edge.v);
+//                }
+//            }
+//        }
+//        N.assign(N_unique.begin(), N_unique.end());
+//        printf("cur-3: %.3f ", time_by(cur));
+//        //allocate memory
+//        num_neighbours = new int64[A.size()]{};
+//        f = new std::vector<int64>[N.size()]{};
+//
+//        for (int64 i = 0; i < N.size(); i++) {
+//            nid[N[i]] = i;
+//        }
+//        cur = clock();
+//        //Disrupt the f-vector to achieve random assignment
+//        for (int64 i = 0; i < A.size(); i++) {
+//            for (auto &edge : graph.g[A[i]]) {
+//                if (A_unique.find(edge.v) == A_unique.end()) {
+//                    f[nid[edge.v]].emplace_back(A[i]);
+//                }
+//            }
+//        }
+//        for (int64 i = 0; i < N.size(); i++) {
+//            std::shuffle(f[i].begin(), f[i].end(), std::mt19937(std::random_device()()));
+//        }
+//
+////        for (auto u : N) {
+////            nid[u] = cnt;
+////            int64 u_ = cnt;
+////            cnt += 1;
+////            for (auto &edge_T : graph.gT[u])
+////                if (A_unique.find(edge_T.v) != A_unique.end())
+////                    f[u_].emplace_back(edge_T.v);
+////            std::shuffle(f[u_].begin(), f[u_].end(), std::mt19937(std::random_device()()));
+////        }
+//        printf("cur-2: %.3f\n", time_by(cur));
+//    }
+//
+//    ~CandidateNeigh() {
+//        delete[] num_neighbours;
+//        delete[] f;
+//    }
+//
+//    /*!
+//     * @brief assign a source participant of candidate node v
+//     * @param v : node
+//     * @return if no AP can be chosen, return -1; otherwise return the index of the Ap
+//     */
+//    int64 source_participant(int64 v) {
+//        int64 v_ = nid[v];
+//        ///assignment strategy: random
+//        while (!f[v_].empty() && num_neighbours[nid[f[v_][f[v_].size() - 1]]] >= k) f[v_].pop_back();
+//        return f[v_].empty() ? -1 : f[v_][f[v_].size() - 1];
+//    }
+////    int64 source_participant(int64 v) {
+////        ///assignment strategy: Priority is given to the ap with the least number of candidates.
+////        int64 u = 0, v_ = nid[v];
+////        if(f[v_].empty()) return -1;
+////        for(int i = 1; i < f[v_].size(); i++) if(num_neighbours[nid[f[v_][i]]] < num_neighbours[nid[f[v_][u]]]) u = i;
+////        if(num_neighbours[nid[f[v_][u]]] >= k) return -1;
+////        return f[v_][u];
+////    }
+//
+//    /*!
+//     * @brief choose the chosen ap in source_participant(), modify the structure
+//     * @param u : the ap chosen by source_participant()
+//     */
+//    void choose(int64 u) {
+//        if (u == -1) {
+//            std::cerr << "error : choose -1\n";
+//            exit(-1);
+//        }
+//        num_neighbours[nid[u]]++;
+//    }
+//};
+
 class CandidateNeigh {
 private:
     int64 k{};
@@ -235,6 +342,7 @@ public:
         num_neighbours[u]++;
     }
 };
+
 
 class RRContainer {
 private:
