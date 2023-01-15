@@ -123,6 +123,7 @@ double FI_simulation_new(Graph &graph, std::vector<int64> &S, std::vector<int64>
     for (int i = 1; i <= it_; i++) {
         RRI.RI_Gen(graph, S, RR);
         res += RR.size();
+        RR.clear();
     }
     if (verbose_flag) printf("\t\tresult=%.3f time=%.3f\n", res, time_by(cur));
     return res / it_;

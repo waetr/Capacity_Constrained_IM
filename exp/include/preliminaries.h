@@ -6,6 +6,7 @@
 #define EXP_MODELS_H
 
 #include <vector>
+#include <cassert>
 #include <random>
 #include <iostream>
 #include <algorithm>
@@ -16,7 +17,7 @@
 #include <set>
 #include <queue>
 #include <stack>
-#include <bitset>
+#include<chrono>
 
 #define MAX_NODE_SIZE 50000000
 #define graph_type int8_t

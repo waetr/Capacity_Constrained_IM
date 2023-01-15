@@ -12,39 +12,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a3e53838-ddb2-47b2-91c3-64f97736ff46" name="默认变更列表" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/sshConfigs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sshConfigs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/webServers.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/webServers.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/exp/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/exp/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/exp/data/blog-catalog.ap" beforeDir="false" afterPath="$PROJECT_DIR$/exp/data/blog-catalog1.ap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/exp/data/blog-catalog.ap" beforeDir="false" afterPath="$PROJECT_DIR$/exp/data/blog-catalog.ap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/exp/data/blog-catalog1.ap" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/exp/data/dnc-corecipient.ap" beforeDir="false" afterPath="$PROJECT_DIR$/exp/data/dnc-corecipient.ap" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/exp/include/IMs.h" beforeDir="false" afterPath="$PROJECT_DIR$/exp/include/IMs.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/exp/include/OPIM_new.h" beforeDir="false" afterPath="$PROJECT_DIR$/exp/include/OPIM_new.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/exp/include/OPIM_old.h" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/exp/include/graphs.h" beforeDir="false" afterPath="$PROJECT_DIR$/exp/include/graphs.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/exp/include/preliminaries.h" beforeDir="false" afterPath="$PROJECT_DIR$/exp/include/preliminaries.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/exp/include/top.h" beforeDir="false" afterPath="$PROJECT_DIR$/exp/include/top.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/exp/output/history.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/exp/output/log.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/exp/output/log0.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/exp/output/result.out" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/exp/output/result_.out" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/exp/output/result_0.out" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/exp/output/result__.out" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/exp/output/result__twitter2010.out" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/exp/output/result_jornal_1e7_maxcover.out" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/exp/output/result_jornal_1e7_maxcover_2.out" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/exp/output/result_prob_1e6_1e7.out" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/exp/output/result_prob_1e7_maxcover.out" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/exp/output/result_prob_1e7_maxcover_2.out" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/exp/output_rrset/1-blogC-ap.out" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/exp/output_rrset/1-blogC-k.out" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/exp/output_rrset/1-blogC-rr.out" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/exp/output_rrset/1-liveJ-ap.out" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/exp/output_rrset/1-liveJ-k.out" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/exp/output_rrset/1-liveJ-rr.out" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/exp/output_rrset/DBLP_ap.out" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/exp/output_rrset/DBLP_k.out" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/exp/src/exp_gamma.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/exp/src/exp_gamma.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/exp/include/simulation.h" beforeDir="false" afterPath="$PROJECT_DIR$/exp/include/simulation.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/exp/src/exp_batch.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/exp/src/exp_batch.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/exp/src/exp_query_set.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/exp/src/exp_query_set.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/exp/src/large.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/exp/src/large.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/exp/src/test2.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/exp/src/test2.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -87,13 +67,14 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="cf.first.check.clang-format" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/exp/data" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/exp/data/ap" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
     <property name="settings.editor.selected.configurable" value="web.server" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\BIM-project\BIM-project\exp\data\ap" />
       <recent name="D:\BIM-project\BIM-project\exp\data" />
       <recent name="D:\BIM-project\BIM-project" />
       <recent name="D:\BIM-project\BIM-project\exp" />
@@ -108,14 +89,9 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="exp" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="dnc-corecipient" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="exp" TARGET_NAME="exp" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="exp" RUN_TARGET_NAME="exp">
+    <configuration name="exp" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="twitch" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="exp" TARGET_NAME="exp" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="exp" RUN_TARGET_NAME="exp">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
   </component>
@@ -363,7 +339,38 @@
       <workItem from="1672991426624" duration="1509000" />
       <workItem from="1673019281323" duration="105000" />
       <workItem from="1673082715848" duration="1085000" />
-      <workItem from="1673100278573" duration="337000" />
+      <workItem from="1673100278573" duration="806000" />
+      <workItem from="1673101435097" duration="2567000" />
+      <workItem from="1673105560486" duration="22000" />
+      <workItem from="1673110687640" duration="596000" />
+      <workItem from="1673153097934" duration="2613000" />
+      <workItem from="1673157497284" duration="421000" />
+      <workItem from="1673166560884" duration="2257000" />
+      <workItem from="1673195669083" duration="103000" />
+      <workItem from="1673195841601" duration="856000" />
+      <workItem from="1673235403124" duration="4592000" />
+      <workItem from="1673254677454" duration="186000" />
+      <workItem from="1673322861280" duration="6990000" />
+      <workItem from="1673342870928" duration="250000" />
+      <workItem from="1673349454443" duration="5273000" />
+      <workItem from="1673357253114" duration="177000" />
+      <workItem from="1673359395334" duration="58000" />
+      <workItem from="1673359516607" duration="39000" />
+      <workItem from="1673361001228" duration="3177000" />
+      <workItem from="1673364536245" duration="125000" />
+      <workItem from="1673412020922" duration="20000" />
+      <workItem from="1673430803085" duration="2572000" />
+      <workItem from="1673492359952" duration="5379000" />
+      <workItem from="1673524470697" duration="5584000" />
+      <workItem from="1673537404624" duration="278000" />
+      <workItem from="1673540034987" duration="133000" />
+      <workItem from="1673588565319" duration="30000" />
+      <workItem from="1673591556055" duration="1000" />
+      <workItem from="1673598282488" duration="1037000" />
+      <workItem from="1673619349638" duration="268000" />
+      <workItem from="1673619672655" duration="1337000" />
+      <workItem from="1673677621113" duration="18000" />
+      <workItem from="1673752476441" duration="641000" />
     </task>
     <servers />
   </component>

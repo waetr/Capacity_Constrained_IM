@@ -16,6 +16,7 @@ static bool *nodeRemain;
 int64
 RR_OPIM_Selection(Graph &graph, std::vector<int64> &A, int64 k, std::vector<bi_node> &bi_seeds, RRContainer &RRI,
                   bool is_tightened) {
+    assert(bi_seeds.empty());
     ///temporary varible
     ///initialization
     std::set<int64> A_reorder(A.begin(), A.end());
@@ -90,6 +91,7 @@ RR_OPIM_Selection(Graph &graph, std::vector<int64> &A, int64 k, std::vector<bi_n
 int64
 MG_OPIM_Selection(Graph &graph, std::vector<int64> &A, int64 k, std::vector<bi_node> &bi_seeds, RRContainer &RRI,
                   bool is_tightened) {
+    assert(bi_seeds.empty());
     ///temporary varible
     CandidateNeigh candidate(graph, A, k);
     std::vector<bool> RISetCovered(RRI.R.size(), false);
@@ -151,6 +153,7 @@ MG_OPIM_Selection(Graph &graph, std::vector<int64> &A, int64 k, std::vector<bi_n
 int64
 DT_OPIM_Selection(Graph &graph, std::vector<int64> &A, int64 k, std::vector<bi_node> &bi_seeds, RRContainer &RRI,
                   double xi) {
+    assert(bi_seeds.empty());
     ///temporary varible
     CandidateNeigh candidate(graph, A, k);
     std::vector<bool> RISetCovered(RRI.R.size(), false);
@@ -201,8 +204,10 @@ DT_OPIM_Selection(Graph &graph, std::vector<int64> &A, int64 k, std::vector<bi_n
  * @param S : returns final S as a passed parameter
  */
 double
-method_FOPIM(Graph &graph, int64 k, std::vector<int64> &A, std::vector<bi_node> &bi_seeds, std::string type) {
-    const double eps = 0.1, delta = 1.0 / graph.n, xi = 0.05;
+method_FOPIM(Graph &graph, int64 k, std::vector<int64> &A, std::vector<bi_node> &bi_seeds, double eps, std::string type) {
+    assert(bi_seeds.empty());
+    const double delta = 1.0 / graph.n, xi = 0.05;
+    const double approx = (type == "DT") ? sqr(1.0 - xi) / (2.0 - xi) : 0.5;
     std::vector<bi_node> pre_seeds;
     method_random(graph, k, A, pre_seeds);
     int64 opt_lower_bound = pre_seeds.size();
@@ -214,8 +219,8 @@ method_FOPIM(Graph &graph, int64 k, std::vector<int64> &A, std::vector<bi_node> 
     double sum_log = 0;
     for (auto ap:A) sum_log += logcnk(graph.deg_out[ap], k);
     double C_max = 2.0 * graph.n * sqr(
-            0.5 * sqrt(log(6.0 / delta)) + sqrt(0.5 * (sum_log + log(6.0 / delta)))) / eps / eps / opt_lower_bound;
-    double C_0 = 2.0 * sqr(0.5 * sqrt(log(6.0 / delta)) + sqrt(0.5 * (sum_log + log(6.0 / delta)))) / sqrt(opt_lower_bound);
+            approx * sqrt(log(6.0 / delta)) + sqrt(approx * (sum_log + log(6.0 / delta)))) / eps / eps / opt_lower_bound;
+    double C_0 = 2.0 * sqr(approx * sqrt(log(6.0 / delta)) + sqrt(approx * (sum_log + log(6.0 / delta)))) / sqrt(opt_lower_bound);
     cur = clock();
     R1.resize(graph, (size_t) C_0);
     R2.resize(graph, (size_t) C_0);
@@ -228,10 +233,10 @@ method_FOPIM(Graph &graph, int64 k, std::vector<int64> &A, std::vector<bi_node> 
         cur = clock();
         double upperC;
         if (type == "RR+") upperC = RR_OPIM_Selection(graph, A, k, bi_seeds, R1, true);
-        else if (type == "RR") upperC = RR_OPIM_Selection(graph, A, k, bi_seeds, R1, false) / 0.5;
+        else if (type == "RR") upperC = RR_OPIM_Selection(graph, A, k, bi_seeds, R1, false) / approx;
         else if (type == "MG+") upperC = MG_OPIM_Selection(graph, A, k, bi_seeds, R1, true);
-        else if (type == "MG") upperC = MG_OPIM_Selection(graph, A, k, bi_seeds, R1, false) / 0.5;
-        else if (type == "DT") upperC = DT_OPIM_Selection(graph, A, k, bi_seeds, R1, xi) / (sqr(1.0 - xi) / (2.0 - xi));
+        else if (type == "MG") upperC = MG_OPIM_Selection(graph, A, k, bi_seeds, R1, false) / approx;
+        else if (type == "DT") upperC = DT_OPIM_Selection(graph, A, k, bi_seeds, R1, xi) / approx;
         else {
             std::cerr << "error: invalid FOPIM type!\n";
             exit(1);
@@ -264,11 +269,12 @@ method_FOPIM(Graph &graph, int64 k, std::vector<int64> &A, std::vector<bi_node> 
  * @param A : the active participant set A
  * @param seeds : returns the seed set S (each element is a pair <node, AP>)
  */
-double method_local_OPIM(Graph &graph, int64 k, std::vector<int64> &A, std::vector<bi_node> &seeds) {
+double method_local_OPIM(Graph &graph, int64 k, std::vector<int64> &A, double eps, std::vector<bi_node> &seeds) {
+    assert(seeds.empty());
     coveredNum_tmp = new int64[graph.n];
     nodeRemain = new bool[graph.n];
     auto start_time = std::chrono::high_resolution_clock::now();
-    double eps = 0.1, delta = 1.0 / graph.n, approx = 1.0 - 1.0 / exp(1);
+    double delta = 1.0 / graph.n, approx = 1.0 - 1.0 / exp(1);
     std::set<int64> seeds_unique;
     for (auto ap : A) {
         std::vector<int64> ap_vec = {ap};

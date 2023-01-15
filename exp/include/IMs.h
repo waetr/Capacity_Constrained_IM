@@ -10,6 +10,7 @@
 
 
 double method_random(Graph &graph, int64 k, std::vector<int64> &A, std::vector<bi_node> &seeds) {
+    assert(seeds.empty());
     CandidateNeigh candidate(graph, A, k);
     std::vector<int64> set0 = candidate.N;
     auto start_time = std::chrono::high_resolution_clock::now();
@@ -105,6 +106,7 @@ void power_iteration(Graph &graph, std::vector<double> &pi, double alpha, double
  * @param seeds : returns the seed set S (each element is a pair <node, AP>)
  */
 double method_local_PageRank(Graph &graph, int64 k, std::vector<int64> &A, std::vector<bi_node> &seeds) {
+    assert(seeds.empty());
     std::vector<double> pi(graph.n, 0);
     std::vector<std::pair<double, int64> > pg_rank;
     std::set<int64> seeds_reorder, A_ordered(A.begin(), A.end());
@@ -140,6 +142,7 @@ double method_local_PageRank(Graph &graph, int64 k, std::vector<int64> &A, std::
  * @param seeds : returns the seed set S (each element is a pair <node, AP>)
  */
 double method_local_Degree(Graph &graph, int64 k, std::vector<int64> &A, std::vector<bi_node> &seeds) {
+    assert(seeds.empty());
     std::vector<std::pair<double, int64> > dg_rank;
     std::set<int64> seeds_reorder, A_ordered(A.begin(), A.end());
 
@@ -173,6 +176,7 @@ double method_local_Degree(Graph &graph, int64 k, std::vector<int64> &A, std::ve
  * @param seeds : returns the seed set S (each element is a pair <node, AP>)
  */
 double method_local_CELF(Graph &graph, int64 k, std::vector<int64> &A, std::vector<bi_node> &seeds) {
+    assert(seeds.empty());
     std::set<int64> seeds_reorder, A_ordered(A.begin(), A.end());
 
     auto start_time = std::chrono::high_resolution_clock::now();
@@ -287,6 +291,7 @@ void enumeration_method(Graph &graph, int64 k, std::vector<int64> &A, std::vecto
  * @param seeds : returns the seed set S (each element is a pair <node, AP>)
  */
 double method_greedy_PageRank(Graph &graph, int64 k, std::vector<int64> &A, std::vector<bi_node> &seeds) {
+    assert(seeds.empty());
     std::vector<double> pi(graph.n, 0);
     std::vector<std::pair<double, int64> > S_ordered;
     CandidateNeigh candidate(graph, A, k);
@@ -316,6 +321,7 @@ double method_greedy_PageRank(Graph &graph, int64 k, std::vector<int64> &A, std:
  * @param seeds : returns the seed set S (each element is a pair <node, AP>)
  */
 double method_greedy_Degree(Graph &graph, int64 k, std::vector<int64> &A, std::vector<bi_node> &seeds) {
+    assert(seeds.empty());
     std::vector<std::pair<double, int64> > S_ordered;
     CandidateNeigh candidate(graph, A, k);
 
@@ -343,6 +349,7 @@ double method_greedy_Degree(Graph &graph, int64 k, std::vector<int64> &A, std::v
  * @param seeds : returns the seed set S (each element is a pair <node, AP>)
  */
 double method_greedy_CELF(Graph &graph, int64 k, std::vector<int64> &A, std::vector<bi_node> &seeds) {
+    assert(seeds.empty());
     /// initialization
     CandidateNeigh candidate(graph, A, k);
     typedef std::pair<double, std::pair<int64, int64> > node0;
@@ -391,6 +398,7 @@ double method_greedy_CELF(Graph &graph, int64 k, std::vector<int64> &A, std::vec
  * @param seeds : returns the seed set S (each element is a pair <node, AP>)
  */
 double method_Threshold_CELF(Graph &graph, int64 k, std::vector<int64> &A, std::vector<bi_node> &seeds) {
+    assert(seeds.empty());
     double epsilon = 0.05;
     std::vector<std::pair<double, int64>> mg(graph.n);
     double W = 0;
@@ -443,6 +451,7 @@ double method_Threshold_CELF(Graph &graph, int64 k, std::vector<int64> &A, std::
  * @param seeds : returns the seed set S (each element is a pair <node, AP>)
  */
 double method_greedy_vanilla(Graph &graph, int64 k, std::vector<int64> &A, std::vector<bi_node> &seeds) {
+    assert(seeds.empty());
     /// initialization
     CandidateNeigh candidate(graph, A, k);
     std::vector<bool> node_selected(graph.n, false);
@@ -489,6 +498,7 @@ double method_greedy_vanilla(Graph &graph, int64 k, std::vector<int64> &A, std::
  * @param seeds : returns the seed set S (each element is a pair <node, AP>)
  */
 double method_Threshold_vanilla(Graph &graph, int64 k, std::vector<int64> &A, std::vector<bi_node> &seeds, double epsilon = 0.05) {
+    assert(seeds.empty());
     double W = 0;
     CandidateNeigh candidate(graph, A, k);
     std::vector<bool> node_selected(graph.n, false);
@@ -545,6 +555,7 @@ double method_Threshold_vanilla(Graph &graph, int64 k, std::vector<int64> &A, st
  * @param seeds : returns the seed set S (each element is a pair <node, AP>)
  */
 double method_RR_CELF(Graph &graph, int64 k, std::vector<int64> &A, std::vector<bi_node> &seeds) {
+    assert(seeds.empty());
     ///initialization
     typedef std::pair<double, std::pair<int64, int64> > node0;
     std::priority_queue<node0> Q[A.size()];
