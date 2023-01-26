@@ -1,6 +1,6 @@
 #pragma once
-#ifndef JSHL_ARGPARSE_HPP
-#define JSHL_ARGPARSE_HPP
+#ifndef ARGPARSE_HPP
+#define ARGPARSE_HPP
 
 #include <algorithm>
 #include <cstdint>
@@ -17,16 +17,6 @@
 
 namespace util
 {
-
-// 尽管使用编译器相关的 ABI 函数可以相对比较优雅的实现这个功能
-// 但是不同的编译器在某些类型下可能出现一些奇怪的行为
-// 最重要的是 std::string 还是免不了要模板特例化
-// 因此，不如在这里限定一些类型，免去不可控制的行为
-
-// 我们仅支持 bool, int, int64_t, double, std::string
-// 想要其他长度的类型，获取值之后自行转换
-// 当然，如果你愿意的话，自己定义模板特例化也不是不可以
-
     template <typename T>
     inline std::string type_string()
     {
@@ -700,6 +690,6 @@ namespace util
         }
     };
 
-}; // namespace util
+};
 
-#endif // JSHL_ARGPARSE_HPP
+#endif

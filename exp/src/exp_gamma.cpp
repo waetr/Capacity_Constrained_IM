@@ -10,7 +10,7 @@ int main(int argc, char const *argv[]) {
     double start_time = omp_get_wtime();
     double cur = clock();
     init_commandLine(argc, argv);
-    Graph G(graphFilePath, DIRECTED_G);
+    Graph G(graphFilePath);
     G.set_diffusion_model(IC);
     printf("read time = %.3f n = %ld m = %ld\n", time_by(cur), G.n, G.m);
 
@@ -40,15 +40,15 @@ int main(int argc, char const *argv[]) {
             candidate_exc_one.assign(candidate_exc_one_set.begin(), candidate_exc_one_set.end());
             vector<int64> one_v = {v};
             for (int i = 0; i < exp_round; i++) {
-                candidate_exc_v[i][v] = FI_simulation_new(G, candidate_exc_one, AP);
-                one_v_[i][v] = FI_simulation_new(G, one_v, AP);
+                candidate_exc_v[i][v] = MC_simulation(G, candidate_exc_one, AP);
+                one_v_[i][v] = MC_simulation(G, one_v, AP);
             }
             candidate_exc_one_set.insert(v);
         }
 
         vector<double> gamma(exp_round, 1.0);
         for (int i = 0; i < exp_round; i++) {
-            auto candidate_eval = FI_simulation_new(G, candidate, AP);
+            auto candidate_eval = MC_simulation(G, candidate, AP);
             for (auto v : candidate)
                 gamma[i] = min(gamma[i], (candidate_eval - candidate_exc_v[i][v]) / one_v_[i][v]);
             gamma[i] = 1.0 - gamma[i];

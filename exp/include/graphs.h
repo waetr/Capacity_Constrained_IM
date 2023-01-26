@@ -17,11 +17,11 @@
  */
 struct Edge {
     int64 v;
-    double p, m;
+    double p;
 
     Edge() = default;
 
-    Edge(int64 v, double p, double m) : v(v), p(p), m(m) {}
+    Edge(int64 v, double p) : v(v), p(p) {}
 };
 
 const std::vector<Edge> edgeList_instance;
@@ -34,11 +34,9 @@ public:
      * @param g : adjacency list
      */
     int64 n{};
-    int64 m{}, deadline{};
+    int64 m{};
     std::vector<std::vector<Edge> > g, gT;
     std::vector<int64> deg_in, deg_out;
-    std::vector<double> non_single_p;
-    double sum_non_single_p{};
     model_type diff_model{};
 
     /*!
@@ -57,20 +55,19 @@ public:
      * @param target : destination node
      * @param weight : weight of edge, 1.0 as default
      */
-    void add_edge(int64 source, int64 target, double weight = 1.0) {
+    void add_edge(int64 source, int64 target) {
         n = std::max(n, std::max(source, target) + 1);
         while (g.size() < n) {
             g.emplace_back(edgeList_instance);
             gT.emplace_back(edgeList_instance);
             deg_in.emplace_back(0);
             deg_out.emplace_back(0);
-            non_single_p.emplace_back(0);
         }
         m++;
         deg_in[target]++;
         deg_out[source]++;
-        g[source].emplace_back(Edge(target, weight, weight));
-        gT[target].emplace_back(Edge(source, weight, weight));
+        g[source].emplace_back(Edge(target, 0));
+        gT[target].emplace_back(Edge(source, 0));
     }
 
 /*!
@@ -78,7 +75,7 @@ public:
  * @param filename : the path of the file
  * @param type : detrmine the graph type is directed or undirected
  */
-    void open(const std::string &filename, graph_type type) {
+    void open(const std::string &filename) {
         std::ifstream inFile(filename, std::ios::in);
         if (!inFile.is_open()) {
             std::cerr << "(get error) graph file not found: " << filename << std::endl;
@@ -88,49 +85,31 @@ public:
         int64 y = fast_read(inFile);
         while (x != -1 || y != -1) {
             add_edge(x, y);
-            if (type == UNDIRECTED_G) add_edge(y, x);
             x = fast_read(inFile);
             y = fast_read(inFile);
         }
         inFile.close();
     }
 
-    Graph(const std::string &filename, graph_type type) : Graph() {
-        this->open(filename, type);
+    Graph(const std::string &filename) : Graph() {
+        this->open(filename);
     }
 
     /*!
-     * @brief Set the diffusion model to IC/LT. If you modify the graph later, you need to set it again.
+     * @brief Set the diffusion model to IC/LT. (Now only IC is supported.)
      * @param new_type : the name of the diffusion model.
      */
-    void set_diffusion_model(model_type new_type, int64 new_deadline = 0) {
+    void set_diffusion_model(model_type new_type) {
         diff_model = new_type;
-        sum_non_single_p = 0;
-        double sum_m = 0, sum_p = 0;
-        int64 num_edges = 0;
         for (int64 i = 0; i < n; i++) {
             for (int64 j = 0; j < g[i].size(); j++) {
                 g[i][j].p = 1.0 / deg_in[g[i][j].v];
-                g[i][j].m = 5.0 / (5.0 + deg_out[i]);
-                sum_m += g[i][j].m;
-                sum_p += g[i][j].p;
-                num_edges++;
             }
         }
         for (int64 i = 0; i < n; i++) {
-            non_single_p[i] = 1.0;
             for (int64 j = 0; j < gT[i].size(); j++) {
                 gT[i][j].p = 1.0 / deg_in[i];
-                gT[i][j].m = 5.0 / (5.0 + deg_out[gT[i][j].v]);
-                non_single_p[i] *= 1.0 - gT[i][j].p;
             }
-            non_single_p[i] = 1.0 - non_single_p[i];
-            sum_non_single_p += non_single_p[i];
-        }
-        deadline = new_deadline;
-        if (verbose_flag) {
-            std::cout << "average activate probability = " << sum_p / num_edges << std::endl;
-            std::cout << "average meeting probability = " << sum_m / num_edges << std::endl;
         }
     }
 };
@@ -303,37 +282,7 @@ public:
     void RI_Gen(Graph &graph, std::vector<int64> &uStart, std::vector<int64> &RR) {
         assert(RR.empty());
         auto *edge_list = RIFlag ? &graph.gT : &graph.g;
-        if (graph.diff_model == IC_M) {
-            for (int64 u : uStart)
-                dist[u] = 0;
-            std::priority_queue<std::pair<int64, int64>> Q;
-            for (int64 u : uStart)
-                if (!excludedNodes[u])
-                    Q.push(std::make_pair(0, u));
-            while (!Q.empty()) { //Dijkstra Algorithm
-                int64 u = Q.top().second;
-                Q.pop();
-                if (DijkstraVis[u]) continue;
-                DijkstraVis[u] = true;
-                RR.emplace_back(u);
-                for (auto &edgeT : (*edge_list)[u]) {
-                    if (excludedNodes[edgeT.v]) continue;
-                    bool activate_success = (random_real() < edgeT.p);
-                    if (activate_success) {
-                        std::geometric_distribution<int> distribution(edgeT.m);
-                        int randomWeight = distribution(random_engine) + 1;
-                        if ((dist[edgeT.v] == -1 || dist[edgeT.v] > dist[u] + randomWeight) &&
-                            dist[u] + randomWeight <= graph.deadline) {
-                            dist[edgeT.v] = dist[u] + randomWeight;
-                            Q.push(std::make_pair(-dist[edgeT.v], edgeT.v));
-                        }
-                    }
-                }
-            }
-            for (int64 u : RR) {
-                dist[u] = -1;
-            }
-        } else if (graph.diff_model == IC) {
+        if (graph.diff_model == IC) {
             std::deque<int64> Q;
             for (int64 u : uStart)
                 if (!excludedNodes[u]) {

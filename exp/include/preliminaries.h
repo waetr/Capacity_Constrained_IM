@@ -1,7 +1,3 @@
-//
-// Created by asuka on 2022/7/15.
-//
-
 #ifndef EXP_MODELS_H
 #define EXP_MODELS_H
 

@@ -1,9 +1,3 @@
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "openmp-use-default-none"
-//
-// Created by lenovo on 2022/7/16.
-//
-
 #ifndef EXP_SIMULATION_H
 #define EXP_SIMULATION_H
 
@@ -24,64 +18,6 @@ void generate_ap(Graph &graph, std::vector<int64> &A, int64 size = 1) {
         while (std::find(A.begin(), A.end(), v) != A.end()) v = uniformIntDistribution(mt19937engine);
         A.emplace_back(v);
     }
-}
-
-/*!
- * @brief generate a random node set of graph.
- * @param graph : the graph
- * @param A : stores the node set. Suppose it is initialized as empty.
- * @param size : the size of the node set
- */
-void generate_ap_by_degree(Graph &graph, std::vector<int64> &A, int64 size = 1) {
-    A.clear();
-    std::uniform_int_distribution<int64> uniformIntDistribution(0, graph.n - 1);
-    for (int64 i = 0; i < size; i++) {
-        int64 v = uniformIntDistribution(mt19937engine);
-        while (graph.deg_out[v] <= graph.m / graph.n || std::find(A.begin(), A.end(), v) != A.end())
-            v = uniformIntDistribution(mt19937engine);
-        A.emplace_back(v);
-    }
-}
-
-/*!
- * @brief run MC simulation to evaluate the influence spread.
- * @param graph : the graph that define propagation models(IC)
- * @param S : the seed set
- * @param Ap : the active participant
- * @return the estimated value of influence spread
- */
-double MC_simulation(Graph &graph, std::vector<int64> &S, std::vector<int64> &Ap) {
-    bool *active = new bool[graph.n];
-    std::vector<int64> new_active, A, new_ones;
-    std::vector<bool> Ap_bitwise(graph.n, false);
-    for (auto u : Ap) Ap_bitwise[u] = true;
-    double res = 0;
-    for (int64 i = 1; i <= MC_iteration_rounds; i++) {
-        if (graph.diff_model == IC) {
-            new_active = S, A = S;
-            for (int64 w : S) active[w] = true;
-            new_ones.clear();
-            while (!new_active.empty()) {
-                for (int64 u : new_active) {
-                    for (auto &edge : graph.g[u]) {
-                        int64 v = edge.v;
-                        if (Ap_bitwise[v]) continue;
-                        if (active[v]) continue;
-                        bool success = (random_real() < edge.p);
-                        if (success) new_ones.emplace_back(v), active[v] = true;
-                    }
-                }
-                new_active = new_ones;
-                for (int64 u : new_ones) A.emplace_back(u);
-                new_ones.clear();
-            }
-            for (int64 u : A) active[u] = false;
-            res += (double) A.size() / MC_iteration_rounds;
-            A.clear();
-        }
-    }
-    delete[] active;
-    return res;
 }
 
 /*!
@@ -115,9 +51,9 @@ double estimate_neighbor_overlap(Graph &graph, std::vector<int64> &seeds) {
  * @param A : the active participant
  * @return the estimated value of influence spread
  */
-double FI_simulation_new(Graph &graph, std::vector<int64> &S, std::vector<int64> &A, int64 it_rounds = -1) {
+double MC_simulation(Graph &graph, std::vector<int64> &S, std::vector<int64> &A, int64 it_rounds = -1) {
     RRContainer RRI(graph, A, false);
-    double res = 0, cur = clock();
+    double res = 0;
     int64 it_ = (it_rounds == -1) ? MC_iteration_rounds : it_rounds;
     std::vector<int64> RR;
     for (int i = 1; i <= it_; i++) {
@@ -125,7 +61,6 @@ double FI_simulation_new(Graph &graph, std::vector<int64> &S, std::vector<int64>
         res += RR.size();
         RR.clear();
     }
-    if (verbose_flag) printf("\t\tresult=%.3f time=%.3f\n", res, time_by(cur));
     return res / it_;
 }
 
@@ -181,5 +116,3 @@ double effic_inf(Graph &graph, std::vector<bi_node> &S, std::vector<int64> &A) {
 }
 
 #endif //EXP_SIMULATION_H
-
-#pragma clang diagnostic pop

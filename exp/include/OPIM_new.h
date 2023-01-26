@@ -150,50 +150,6 @@ MG_OPIM_Selection(Graph &graph, std::vector<int64> &A, int64 k, std::vector<bi_n
     return is_tightened ? xx : current_influence;
 }
 
-int64
-DT_OPIM_Selection(Graph &graph, std::vector<int64> &A, int64 k, std::vector<bi_node> &bi_seeds, RRContainer &RRI,
-                  double xi) {
-    assert(bi_seeds.empty());
-    ///temporary varible
-    CandidateNeigh candidate(graph, A, k);
-    std::vector<bool> RISetCovered(RRI.R.size(), false);
-    for (int64 i : candidate.N) nodeRemain[i] = true;
-    memcpy(coveredNum_tmp, RRI.coveredNum, graph.n * sizeof(int64));
-    int64 current_influence = 0;
-    double W = 0;
-    for (auto v : candidate.N)
-        W = std::max(W, (double) coveredNum_tmp[v]);
-    double W_min = W * xi / A.size() / k;
-    while (W > W_min) {
-        for (auto v : candidate.N) {
-            if (!nodeRemain[v]) continue;
-            if (coveredNum_tmp[v] >= W) {
-                int64 u0 = candidate.source_participant(v);
-                if (u0 == -1) {
-                    nodeRemain[v] = false;
-                    continue;
-                }
-                //select
-                bi_seeds.emplace_back(v, u0);
-                current_influence += coveredNum_tmp[v];
-                candidate.choose(u0);
-                nodeRemain[v] = false;
-                for (int64 RIIndex : RRI.covered[v]) {
-                    if (RISetCovered[RIIndex]) continue;
-                    for (int64 u : RRI.R[RIIndex]) {
-                        coveredNum_tmp[u]--;
-                    }
-                    RISetCovered[RIIndex] = true;
-                }
-            }
-        }
-        W *= 1.0 - xi;
-    }
-    for (int64 i : candidate.N) nodeRemain[i] = false;
-    return current_influence;
-}
-
-
 /*!
  * @brief Use modified OPIM-C+ to find k nodes in candidate with most influence.
  * @param graph : the graph
@@ -207,7 +163,7 @@ double
 method_FOPIM(Graph &graph, int64 k, std::vector<int64> &A, std::vector<bi_node> &bi_seeds, double eps, std::string type) {
     assert(bi_seeds.empty());
     const double delta = 1.0 / graph.n, xi = 0.05;
-    const double approx = (type == "DT") ? sqr(1.0 - xi) / (2.0 - xi) : 0.5;
+    const double approx = 0.5;
     std::vector<bi_node> pre_seeds;
     method_random(graph, k, A, pre_seeds);
     int64 opt_lower_bound = pre_seeds.size();
@@ -234,9 +190,7 @@ method_FOPIM(Graph &graph, int64 k, std::vector<int64> &A, std::vector<bi_node> 
         double upperC;
         if (type == "RR+") upperC = RR_OPIM_Selection(graph, A, k, bi_seeds, R1, true);
         else if (type == "RR") upperC = RR_OPIM_Selection(graph, A, k, bi_seeds, R1, false) / approx;
-        else if (type == "MG+") upperC = MG_OPIM_Selection(graph, A, k, bi_seeds, R1, true);
         else if (type == "MG") upperC = MG_OPIM_Selection(graph, A, k, bi_seeds, R1, false) / approx;
-        else if (type == "DT") upperC = DT_OPIM_Selection(graph, A, k, bi_seeds, R1, xi) / approx;
         else {
             std::cerr << "error: invalid FOPIM type!\n";
             exit(1);
@@ -253,7 +207,7 @@ method_FOPIM(Graph &graph, int64 k, std::vector<int64> &A, std::vector<bi_node> 
         R2.resize(graph, R2.R.size() * 2ll);
         time1 += time_by(cur);
     }
-    printf("time1: %.3f time2: %.3f\n", time1, time2);
+    //printf("time1: %.3f time2: %.3f\n", time1, time2);
     auto end_time = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> elapsed = end_time - start_time;
     delete[] coveredNum_tmp;
