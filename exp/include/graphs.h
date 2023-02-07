@@ -13,7 +13,6 @@
  * @brief triple<int, double, double> to represent an edge
  * first argument : index of outgoing int64
  * second argument : p_{u,v} in IC/WC model
- * third argument : m_{u,v} in IC-M model
  */
 struct Edge {
     int64 v;

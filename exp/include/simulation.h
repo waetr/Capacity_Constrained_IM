@@ -45,7 +45,7 @@ double estimate_neighbor_overlap(Graph &graph, std::vector<int64> &seeds) {
 }
 
 /*!
- * @brief New calculation of influence spread in BIM, in which the effect of ap is excluded
+ * @brief New calculation of influence spread, in which the effect of ap is excluded
  * @param graph : the graph that define propagation models(IC-M)
  * @param S : the seed set
  * @param A : the active participant

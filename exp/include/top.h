@@ -8,22 +8,30 @@
 static std::string graphFilePath;
 static std::string ApFilePath;
 
+static int64 args_k;
+static int64 args_g;
+static double args_eps;
+
 /*!
- * @brief Initialize the file path of the graph, verbose flag, etc. through command line arguments.
+ * @brief Initialize the file path of the graph, etc. through command line arguments.
  * @param argc
  * @param argv
  */
 void init_commandLine(int argc, char const *argv[]) {
-    auto args = util::argparser("The experiment of BIM.");
+    auto args = util::argparser("The experiment of CIM.");
     args.set_program_name("exp")
             .add_help_option()
             .add_argument<std::string>("input", "initialize graph file")
-            .add_option<int64>("-r", "--rounds", "number of MC simulation iterations per time, default is 10000", 10000)
+            .add_option<int64>("-g", "--greedy", "Setup of greedy approaches", 1)
+            .add_option<int64>("-k", "--k", "Budget $k$ in CIM, default as 10", 10)
+            .add_option<double>("-e", "--eps", "Epsilon in algorithms extended of OPIM-C, default as 0.1", 0.1)
             .parse(argc, argv);
     graphFilePath = "../data/" + args.get_argument_string("input") + ".txt";
     ApFilePath = "../data/" + args.get_argument_string("input") + ".ap";
-    MC_iteration_rounds = args.get_option_int64("--rounds");
-    //std::cout << "MC_iteration_rounds set to " << MC_iteration_rounds << std::endl;
+    MC_iteration_rounds = 10000;//args.get_option_int64("--rounds");
+    args_k = args.get_option_int64("--k");
+    args_g = args.get_option_int64("--greedy");
+    args_eps = args.get_option_double("--eps");
 }
 
 std::vector<std::vector<int64>> AP_from_file(const std::string &filename) {

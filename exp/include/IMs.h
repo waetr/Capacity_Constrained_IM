@@ -133,7 +133,7 @@ double method_local_Degree(Graph &graph, int64 k, std::vector<int64> &A, std::ve
  * @param A : the active participant set A
  * @param seeds : returns the seed set S (each element is a pair <node, AP>)
  */
-double method_greedy_CELF(Graph &graph, int64 k, std::vector<int64> &A, std::vector<bi_node> &seeds) {
+double method_MG_CELF(Graph &graph, int64 k, std::vector<int64> &A, std::vector<bi_node> &seeds) {
     assert(seeds.empty());
     /// initialization
     CandidateNeigh candidate(graph, A, k);
@@ -182,7 +182,7 @@ double method_greedy_CELF(Graph &graph, int64 k, std::vector<int64> &A, std::vec
  * @param A : the active participant set A
  * @param seeds : returns the seed set S (each element is a pair <node, AP>)
  */
-double method_greedy_vanilla(Graph &graph, int64 k, std::vector<int64> &A, std::vector<bi_node> &seeds) {
+double method_MG_vanilla(Graph &graph, int64 k, std::vector<int64> &A, std::vector<bi_node> &seeds) {
     assert(seeds.empty());
     /// initialization
     std::vector<bi_node> candidate;
