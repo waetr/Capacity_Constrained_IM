@@ -160,7 +160,8 @@ MG_OPIM_Selection(Graph &graph, std::vector<int64> &A, int64 k, std::vector<bi_n
  * @param S : returns final S as a passed parameter
  */
 double
-method_FOPIM(Graph &graph, int64 k, std::vector<int64> &A, std::vector<bi_node> &bi_seeds, double eps, std::string type) {
+method_FOPIM(Graph &graph, int64 k, std::vector<int64> &A, std::vector<bi_node> &bi_seeds, double eps,
+             std::string type) {
     assert(bi_seeds.empty());
     const double delta = 1.0 / graph.n, xi = 0.05;
     const double approx = 0.5;
@@ -175,14 +176,16 @@ method_FOPIM(Graph &graph, int64 k, std::vector<int64> &A, std::vector<bi_node> 
     double sum_log = 0;
     for (auto ap:A) sum_log += logcnk(graph.deg_out[ap], k);
     double C_max = 2.0 * graph.n * sqr(
-            approx * sqrt(log(6.0 / delta)) + sqrt(approx * (sum_log + log(6.0 / delta)))) / eps / eps / opt_lower_bound;
-    double C_0 = 2.0 * sqr(approx * sqrt(log(6.0 / delta)) + sqrt(approx * (sum_log + log(6.0 / delta)))) / sqrt(opt_lower_bound);
+            approx * sqrt(log(6.0 / delta)) + sqrt(approx * (sum_log + log(6.0 / delta)))) / eps / eps /
+                   opt_lower_bound;
+    double C_0 = 2.0 * sqr(approx * sqrt(log(6.0 / delta)) + sqrt(approx * (sum_log + log(6.0 / delta)))) /
+                 sqrt(opt_lower_bound);
     cur = clock();
     R1.resize(graph, (size_t) C_0);
     R2.resize(graph, (size_t) C_0);
     time1 += time_by(cur);
     auto i_max = (int64) (log2(C_max / C_0) + 1);
-//    printf("lower-bound of optimal: %ld i_max: %ld\n", opt_lower_bound, i_max);
+    //printf("lower-bound of optimal: %ld i_max: %ld\n", opt_lower_bound, i_max);
     double d0 = log(3.0 * i_max / delta);
     for (int64 i = 1; i <= i_max; i++) {
         bi_seeds.clear();
@@ -200,14 +203,14 @@ method_FOPIM(Graph &graph, int64 k, std::vector<int64> &A, std::vector<bi_node> 
         double lower = sqr(sqrt(lowerC + 2.0 * d0 / 9.0) - sqrt(d0 / 2.0)) - d0 / 18.0;
         double upper = sqr(sqrt(upperC + d0 / 2.0) + sqrt(d0 / 2.0));
         double a0 = lower / upper;
-//        printf("a0:%.3f theta0:%zu lowerC: %.3f upperC: %.3f\n", a0, R1.R.size(), lowerC, upperC);
+        //printf("a0:%.3f theta0:%zu lowerC: %.3f upperC: %.3f\n", a0, R1.R.size(), lowerC, upperC);
         if (a0 > 0.5 - eps || i == i_max) break;
         cur = clock();
         R1.resize(graph, R1.R.size() * 2ll);
         R2.resize(graph, R2.R.size() * 2ll);
         time1 += time_by(cur);
     }
-    //printf("time1: %.3f time2: %.3f\n", time1, time2);
+    printf("time1: %.3f time2: %.3f size: %zu, size1: %zu\n", time1, time2, R1.numOfRRsets(), R1.sizeOfRRsets());
     auto end_time = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> elapsed = end_time - start_time;
     delete[] coveredNum_tmp;
@@ -253,9 +256,140 @@ double method_local_OPIM(Graph &graph, int64 k, std::vector<int64> &A, double ep
             R2.resize(graph, R2.R.size() * 2ll);
         }
         for (auto u : bi_seeds) {
-            if (seeds_unique.find(u.first) == seeds_unique.end()) {
+            if (std::find(A.begin(), A.end(), u.first) == A.end() &&
+                seeds_unique.find(u.first) == seeds_unique.end()) {
                 seeds_unique.insert(u.first);
                 seeds.emplace_back(u);
+            }
+        }
+    }
+
+    auto end_time = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> elapsed = end_time - start_time;
+    delete[] coveredNum_tmp;
+    delete[] nodeRemain;
+    return elapsed.count();
+}
+
+/*!
+ * @brief Selection phase of IMM : Select a set S of size k that covers the maximum RI sets in R
+ * @param graph : the graph
+ * @param candidate : candidate node set in which seed set can choose nodes
+ * @param k : the size of S
+ * @param S : returns S as an passed parameter
+ * @param RRI : the set of RR sets
+ * @return : the fraction of RI sets in R that are covered by S
+ */
+double IMMNodeSelection(Graph &graph, std::vector<int64> &candidate, int64 k, std::vector<int64> &S, RRContainer &RRI) {
+    S.clear();
+    std::vector<bool> RISetCovered(RRI.R.size(), false);
+    for (int64 i : candidate) nodeRemain[i] = true;
+    memcpy(coveredNum_tmp, RRI.coveredNum, graph.n * sizeof(int64));
+    std::priority_queue<std::pair<int64, int64>> Q;
+    for (int64 i : candidate) Q.push(std::make_pair(coveredNum_tmp[i], i));
+    int64 influence = 0;
+
+    while (S.size() < k && !Q.empty()) {
+        int64 value = Q.top().first;
+        int64 maxInd = Q.top().second;
+        Q.pop();
+        if (value > coveredNum_tmp[maxInd]) {
+            Q.push(std::make_pair(coveredNum_tmp[maxInd], maxInd));
+            continue;
+        }
+        influence += coveredNum_tmp[maxInd];
+        S.emplace_back(maxInd);
+        nodeRemain[maxInd] = false;
+        for (int64 RIIndex : RRI.covered[maxInd]) {
+            if (RISetCovered[RIIndex]) continue;
+            for (int64 u : RRI.R[RIIndex]) {
+                if (nodeRemain[u]) coveredNum_tmp[u]--;
+            }
+            RISetCovered[RIIndex] = true;
+        }
+    }
+    for (int64 i : candidate) nodeRemain[i] = false;
+    return (double) influence / RRI.R.size();
+}
+
+/*!
+ * @brief Sampling phase of IMM : generate sufficient RI sets into R.
+ * @param graph : the graph
+ * @param candidate : candidate node set in which seed set can choose nodes
+ * @param k : the size of the seed set
+ * @param eps : argument related to accuracy.
+ * @param iota : argument related to accuracy.
+ * @param RRI : the set of RR sets
+ */
+void IMMSampling(Graph &graph, std::vector<int64> &candidate, int64 k, double eps, double iota, RRContainer &RRI) {
+    double epsilon_prime = eps * sqrt(2);
+    double LB = 1;
+    std::vector<int64> S_tmp;
+    auto End = (int) (log2(graph.n) + 1e-9 - 1);
+    for (int i = 1; i <= End; i++) {
+        auto ci = (int64) ((2.0 + 2.0 / 3.0 * epsilon_prime) *
+                           (iota * log(graph.n) + logcnk(candidate.size(), k) + log(log2(graph.n))) /
+                           sqr(epsilon_prime) *
+                           pow(2.0, i));
+        RRI.resize(graph, ci);
+
+        double ept = IMMNodeSelection(graph, candidate, k, S_tmp, RRI);
+        if (ept > 1.0 / pow(2.0, i)) {
+            LB = ept * graph.n / (1.0 + epsilon_prime);
+            break;
+        }
+    }
+    double e = exp(1);
+    double alpha = sqrt(iota * log(graph.n) + log(2));
+    double beta = sqrt((1.0 - 1.0 / e) * (logcnk(candidate.size(), k) + iota * log(graph.n) + log(2)));
+    auto C = (int64) (2.0 * graph.n * sqr((1.0 - 1.0 / e) * alpha + beta) / LB / sqr(eps));
+    RRI.resize(graph, C);
+}
+
+/*!
+ * @brief Use IMM to find k nodes in candidate with most influence.
+ * @param graph : the graph
+ * @param candidate : candidate node set in which seed set can choose nodes
+ * @param k : the size of the seed set
+ * @param eps : approximation argument. default as 0.5.
+ * @param iota : argument related to failure probability. default as 1.
+ * @param S : returns final S as a passed parameter
+ * @param RRI : the set of RR sets
+ */
+void IMM_full(Graph &G, std::vector<int64> &candidate, int64 k, double eps, double iota, std::vector<int64> &S,
+              RRContainer &RRI) {
+    double iota_new = iota * (1.0 + log(2) / log(G.n));
+    IMMSampling(G, candidate, k, eps, iota_new, RRI);
+    IMMNodeSelection(G, candidate, k, S, RRI);
+}
+
+/*!
+ * @brief Encapsulated operations for Option 2 using IM solver : IMM
+ * @param graph : the graph
+ * @param k : the number in the problem definition
+ * @param A : the active participant set A
+ * @param seeds : returns the seed set S = {S_1, S_2, ..., S_n}
+ */
+double method_local_IMM(Graph &graph, int64 k, std::vector<int64> &A, double eps, std::vector<bi_node> &seeds) {
+    assert(seeds.empty());
+    coveredNum_tmp = new int64[graph.n];
+    nodeRemain = new bool[graph.n];
+    auto start_time = std::chrono::high_resolution_clock::now();
+    std::set<int64> seeds_reorder;
+    for (int64 u : A) {
+        std::vector<int64> neighbours, one_seed;
+        for (auto &edge : graph.g[u]) {
+            if (std::find(A.begin(), A.end(), edge.v) == A.end())
+                neighbours.emplace_back(edge.v);
+        }
+        std::vector<int64> ap = {u};
+        RRContainer RRI(graph, A, true);
+        IMM_full(graph, neighbours, k, eps, 1, one_seed, RRI);
+        for (int64 w : one_seed) {
+            assert(std::find(A.begin(), A.end(), w) == A.end());
+            if (seeds_reorder.find(w) == seeds_reorder.end()) {
+                seeds_reorder.insert(w);
+                seeds.emplace_back(w, u);
             }
         }
     }

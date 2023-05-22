@@ -4,9 +4,14 @@
 using namespace std;
 
 int main(int argc, char const *argv[]) {
-    double cur = clock();
-    freopen("../data/physic.ap", "w", stdout);
-    init_commandLine(argc, argv);
+    if (argc != 2) {
+        printf("Usage: [dataset_name]");
+        return 0;
+    }
+    string dataset_name = argv[1];
+    string graphFilePath = "../data/" + dataset_name + ".txt";
+    string ApFilePath = "../data/" + dataset_name + ".ap";
+    freopen(ApFilePath.c_str(), "w", stdout);
     Graph G(graphFilePath);
     G.set_diffusion_model(IC);
     vector<int64> A;

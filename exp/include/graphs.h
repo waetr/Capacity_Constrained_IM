@@ -97,17 +97,32 @@ public:
     /*!
      * @brief Set the diffusion model to IC/LT. (Now only IC is supported.)
      * @param new_type : the name of the diffusion model.
+     * @param p0 : if p0 > 0, then the activation probability will be set as p0 uniformly.
      */
-    void set_diffusion_model(model_type new_type) {
+    void set_diffusion_model(model_type new_type, double p0 = 0) {
         diff_model = new_type;
-        for (int64 i = 0; i < n; i++) {
-            for (int64 j = 0; j < g[i].size(); j++) {
-                g[i][j].p = 1.0 / deg_in[g[i][j].v];
+        if (p0 > 0) {
+            printf("p0:%.3f\n", p0);
+            for (int64 i = 0; i < n; i++) {
+                for (int64 j = 0; j < g[i].size(); j++) {
+                    g[i][j].p = p0;
+                }
             }
-        }
-        for (int64 i = 0; i < n; i++) {
-            for (int64 j = 0; j < gT[i].size(); j++) {
-                gT[i][j].p = 1.0 / deg_in[i];
+            for (int64 i = 0; i < n; i++) {
+                for (int64 j = 0; j < gT[i].size(); j++) {
+                    gT[i][j].p = p0;
+                }
+            }
+        } else{
+            for (int64 i = 0; i < n; i++) {
+                for (int64 j = 0; j < g[i].size(); j++) {
+                    g[i][j].p = 1.0 / deg_in[g[i][j].v];
+                }
+            }
+            for (int64 i = 0; i < n; i++) {
+                for (int64 j = 0; j < gT[i].size(); j++) {
+                    gT[i][j].p = 1.0 / deg_in[i];
+                }
             }
         }
     }

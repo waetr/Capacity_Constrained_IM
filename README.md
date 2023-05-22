@@ -1,6 +1,6 @@
 # Capacity Constrained IM
 
-Environment: Windows/Linux with $c++14$, $cmake$ and $OpenMP$.
+Environment: Windows/Linux with `c++17`, `cmake` and `OpenMP`.
 
 ## Compile and Run
 
@@ -16,16 +16,16 @@ make
 #### Run
 
 ```bash
-./exp xxx [--k aa --eps bb --greedy cc]
+./exp [dataset_name] k eps greedy_option
 ```
 
-**xxx**: Name of the graph file in /data/;
+**dataset_name**: Name of the graph file in `/data/`;
 
-**--k aa**: Set the constant $k$ as $aa$. (default as 10)
+**k**: Set the constant $k$.
 
-**--eps bb**: Set the parameter $\epsilon$ of solutions extending *OPIM-C* as $bb$. (default as 0.1)
+**eps**: Set the parameter $\epsilon$ of solutions extending *OPIM-C*.
 
-**--greedy cc**: Specify the type of MC simulation-based solutions as $cc$ to execute. Possible values:
+**greedy_option**: Specify the type of MC simulation-based solutions to execute. Possible values:
 
 + **0**: Do not execute these solutions.
 + **1** (default): Execute these solutions with CELF trick.
@@ -34,20 +34,12 @@ make
 #### Example
 
 ```bash
-dnc-corecipient --k 10 --eps 0.05 --greedy 1
+dnc-corecipient 10 0.05 1
 ```
 
 Run the experiments on *DNC* dataset, with $k=10,\epsilon=0.05$, with the CELF greedy solutions.
 
 ## More Experiments
-
-If you want to execute more experiments mentioned in our paper,
-
-edit the following statement in CMakeLists.txt.
-
-```cmake
-add_executable(exp src/exp_batch.cpp)
-```
 
 **exp_batch.cpp**: (default) Main experiment.
 

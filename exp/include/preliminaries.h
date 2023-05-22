@@ -189,4 +189,27 @@ void printvec(std::vector<double> &a) {
     printf("]\n");
 }
 
+std::vector<std::vector<int64>> AP_from_file(const std::string &filename) {
+    std::vector<std::vector<int64>> res;
+    std::ifstream inFile(filename, std::ios::in);
+    if (!inFile.is_open()) {
+        std::cerr << "(get error) AP file not found: " << filename << std::endl;
+        std::exit(-1);
+    }
+    std::string line, word;
+    std::istringstream sin;
+    std::vector<int64> one_AP;
+    while (getline(inFile, line)) {
+        if (line.empty()) continue;
+        sin.clear();
+        sin.str(line);
+        one_AP.clear();
+        while (std::getline(sin, word, ','))
+            one_AP.emplace_back(std::stoi(word));
+        res.emplace_back(one_AP);
+    }
+    inFile.close();
+    return res;
+}
+
 #endif //EXP_MODELS_H

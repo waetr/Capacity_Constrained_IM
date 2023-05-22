@@ -1,5 +1,4 @@
-#include <bits/stdc++.h>
-#include "top.h"
+#include "IMs.h"
 #include <omp.h>
 
 using namespace std;
@@ -7,9 +6,15 @@ using namespace std;
 const int exp_round = 3;
 
 int main(int argc, char const *argv[]) {
+    if (argc != 2) {
+        printf("Usage: [dataset_name]");
+        return 0;
+    }
+    string dataset_name = argv[1];
+    string graphFilePath = "../data/" + dataset_name + ".txt";
+    string ApFilePath = "../data/" + dataset_name + ".ap";
     double start_time = omp_get_wtime();
     double cur = clock();
-    init_commandLine(argc, argv);
     Graph G(graphFilePath);
     G.set_diffusion_model(IC);
     printf("read time = %.3f n = %ld m = %ld\n", time_by(cur), G.n, G.m);
